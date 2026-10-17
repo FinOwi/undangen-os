@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import GuestManager from "./GuestManager";
 
 export interface ThemeOption { slug: string; name: string; }
 export interface InvitationInitial {
@@ -90,6 +91,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
   const [dt, setDt] = useState("");
   const [venue, setVenue] = useState(c.venue ?? "");
   const [venueAddr, setVenueAddr] = useState(c.venue_addr ?? "");
+  const [isPrivate, setIsPrivate] = useState(c.private === true);
   const [mapsQ, setMapsQ] = useState(c.maps_q ?? "");
   const [quote, setQuote] = useState(c.quote ?? "");
   const [quoteSrc, setQuoteSrc] = useState(c.quote_src ?? "");
@@ -176,7 +178,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         gift1_bank: g1bank, gift1_num: g1num, gift1_an: g1an || `a.n. ${c1full}`,
         gift2_bank: g2bank, gift2_num: g2num, gift2_an: g2an || (g2bank ? `a.n. ${c2full}` : ""),
         photo_cover: photoCover, photo_groom: photoGroom, photo_bride: photoBride,
-        story_photos: storyPhotos, gallery,
+        story_photos: storyPhotos, gallery, private: isPrivate,
       };
       const supabase = createClient();
       const title = `${c1} & ${c2}`;
@@ -227,6 +229,26 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         <Field label="Nama lengkap mempelai 2"><input className={inputCls} value={c2full} onChange={(e) => setC2full(e.target.value)} placeholder="Ani Wijaya" /></Field>
         <Field label="Orang tua mempelai 1"><input className={inputCls} value={p1} onChange={(e) => setP1(e.target.value)} placeholder="Bpk. … & Ibu …" /></Field>
         <Field label="Orang tua mempelai 2"><input className={inputCls} value={p2} onChange={(e) => setP2(e.target.value)} placeholder="Bpk. … & Ibu …" /></Field>
+      </Section>
+
+      <Section title="Undangan Private 🔒">
+        <div className="md:col-span-2">
+          <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200">
+            <input type="checkbox" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)}
+              className="h-4 w-4 accent-amber-300" />
+            Aktifkan tautan tamu private (anti-forward, per tamu 1 tautan unik)
+          </label>
+          <p className="mt-1 text-xs text-zinc-500">
+            Tamu tanpa tautan valid melihat halaman “Tautan Tidak Ditemukan”. Tautan terikat ke perangkat pertama yang membukanya.
+          </p>
+        </div>
+        {isPrivate && initial?.id && (
+          <GuestManager invitationId={initial.id} slug={slug || initial.slug}
+            couple={`${c1} & ${c2}`.trim() || "mempelai"} />
+        )}
+        {isPrivate && !initial?.id && (
+          <p className="text-xs text-amber-200 md:col-span-2">Simpan undangan dulu, lalu kelola daftar tamu di sini.</p>
+        )}
       </Section>
 
       <Section title="Acara">
