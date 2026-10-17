@@ -74,6 +74,8 @@ h2.title{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.2
 /* ---------- MEMPELAI ---------- */
 .person{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 24px;margin:18px 0;box-shadow:0 12px 30px rgba(0,0,0,.06)}
 .mono{width:86px;height:86px;margin:0 auto 16px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:30px;font-weight:700;color:var(--accent-deep)}
+.pfoto{width:120px;height:150px;margin:0 auto 16px;border-radius:60px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 10px 26px rgba(0,0,0,.12)}
+.pfoto img{width:100%;height:100%;object-fit:cover;display:block}
 .person h3{font-family:var(--serif);font-size:24px;font-weight:600}
 .person .role{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-deep);margin:6px 0 10px}
 .person p{font-size:14px;color:var(--ink-soft)}
@@ -105,6 +107,8 @@ h2.title{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.2
 .tl .yr{font-family:var(--serif);font-weight:700;color:var(--accent-deep);font-size:17px}
 .tl h3{font-family:var(--serif);font-size:18px;margin:2px 0 4px}
 .tl p{font-size:14px;color:var(--ink-soft)}
+.tl .sph{margin:10px 0 2px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.tl .sph img{width:100%;height:170px;object-fit:cover;display:block}
 /* ---------- RSVP & UCAPAN ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 22px;margin-top:22px;box-shadow:0 12px 30px rgba(0,0,0,.06);text-align:left}
 .field{margin-bottom:14px}
@@ -222,13 +226,13 @@ body::after{content:"";position:fixed;inset:0;z-index:96;pointer-events:none;opa
     <h2 class="title rv">Dua Hati, Satu Tujuan</h2>
     <div class="divider rv"><span>@DIV_GLYPH@</span></div>
     <div class="person rv">
-      <div class="mono">@C1_INITIAL@</div>
+      @C1_PHOTOBLOCK@
       <h3>@C1FULL@</h3>
       <div class="role">Mempelai Pria</div>
       <p>@P1@</p>
     </div>
     <div class="person rv">
-      <div class="mono">@C2_INITIAL@</div>
+      @C2_PHOTOBLOCK@
       <h3>@C2FULL@</h3>
       <div class="role">Mempelai Wanita</div>
       <p>@P2@</p>
@@ -298,9 +302,9 @@ body::after{content:"";position:fixed;inset:0;z-index:96;pointer-events:none;opa
     <h2 class="title rv">Perjalanan Cinta</h2>
     <div class="divider rv"><span>@DIV_GLYPH@</span></div>
     <div class="tl">
-      <div class="item rv"><div class="yr">2019</div><h3>Awal Berjumpa</h3><p>Tak disangka, perkenalan singkat di sebuah acara kampus menjadi awal dari segalanya.</p></div>
-      <div class="item rv"><div class="yr">2023</div><h3>Lamaran</h3><p>Di bawah langit senja Danau Toba, @C1@ melamar @C2@ — dan jawabannya adalah ya.</p></div>
-      <div class="item rv"><div class="yr">2027</div><h3>Menuju Halal</h3><p>Kami memutuskan mengikat janji suci dan memulai babak baru sebagai suami istri.</p></div>
+      <div class="item rv"><div class="yr">2019</div><h3>Awal Berjumpa</h3>@STORY_PHOTO_1@<p>Tak disangka, perkenalan singkat di sebuah acara kampus menjadi awal dari segalanya.</p></div>
+      <div class="item rv"><div class="yr">2023</div><h3>Lamaran</h3>@STORY_PHOTO_2@<p>Di bawah langit senja Danau Toba, @C1@ melamar @C2@ — dan jawabannya adalah ya.</p></div>
+      <div class="item rv"><div class="yr">2027</div><h3>Menuju Halal</h3>@STORY_PHOTO_3@<p>Kami memutuskan mengikat janji suci dan memulai babak baru sebagai suami istri.</p></div>
     </div>
   </section>
 

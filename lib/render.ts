@@ -15,6 +15,9 @@ export interface OrderData {
   gift1_bank: string; gift1_num: string; gift1_an?: string;
   gift2_bank?: string; gift2_num?: string; gift2_an?: string;
   quote?: string; quote_src?: string;
+  // Slot foto berlabel (baru). Kosong = fallback lama (cover=gallery[0], mempelai=inisial).
+  photo_cover?: string; photo_groom?: string; photo_bride?: string;
+  story_photos?: string[];
 }
 
 interface ThemeDict { [k: string]: string }
@@ -57,8 +60,24 @@ export function renderInvitation(
     GIFT1_BANK: order.gift1_bank, GIFT1_NUM: order.gift1_num,
     GIFT1_RAW: order.gift1_num.replace(/\D/g, ""),
     GIFT1_AN: order.gift1_an || "a.n. " + c1full,
-    COVER_IMG: urls[0] || tema.COVER_IMG || "",
+    COVER_IMG: order.photo_cover || urls[0] || tema.COVER_IMG || "",
   });
+  // Blok foto mempelai: foto bila ada, fallback ke monogram inisial (kompatibel order lama).
+  const photoBlock = (url: string | undefined, initial: string, alt: string) =>
+    url
+      ? `<div class="pfoto"><img src="${url}" alt="${esc(alt)}" loading="lazy"></div>`
+      : `<div class="mono">${esc(initial)}</div>`;
+  const c1i = (c1[0] || "").toUpperCase(), c2i = (c2[0] || "").toUpperCase();
+  Object.assign(d, {
+    C1_PHOTOBLOCK: photoBlock(order.photo_groom, c1i, c1full),
+    C2_PHOTOBLOCK: photoBlock(order.photo_bride, c2i, c2full),
+  });
+  const sp = order.story_photos ?? [];
+  for (let i = 0; i < 3; i++) {
+    d[`STORY_PHOTO_${i + 1}`] = sp[i]
+      ? `<div class="sph"><img src="${sp[i]}" alt="${esc(`Cerita ${i + 1}`)}" loading="lazy"></div>`
+      : "";
+  }
   if (order.gift2_bank) {
     Object.assign(d, {
       GIFT2_BANK: order.gift2_bank, GIFT2_NUM: order.gift2_num || "",

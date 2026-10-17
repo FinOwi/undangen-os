@@ -29,6 +29,34 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+const fileCls = "block w-full text-sm text-zinc-400 file:mr-3 file:rounded-full file:border-0 file:bg-amber-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-900";
+
+function SlotBox({ title, hint, single, value, values, onClear, onRemove, onFiles }: {
+  title: string; hint: string; single?: boolean; value?: string; values?: string[];
+  onClear?: () => void; onRemove?: (i: number) => void; onFiles: (f: FileList | null) => void;
+}) {
+  const list = single ? (value ? [value] : []) : (values ?? []);
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+      <p className="text-sm font-semibold text-zinc-100">{title}</p>
+      <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>
+      <input type="file" accept="image/*" multiple={!single} onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }}
+        className={`${fileCls} mt-3`} />
+      {list.length > 0 && (
+        <div className="mt-3 grid grid-cols-4 gap-2 md:grid-cols-6">
+          {list.map((u, i) => (
+            <div key={u + i} className="group relative aspect-square overflow-hidden rounded-lg border border-zinc-700">
+              <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
+              <button type="button" onClick={() => single ? onClear?.() : onRemove?.(i)}
+                className="absolute right-1 top-1 rounded-full bg-red-950/90 px-2 py-0.5 text-[11px] text-red-200 opacity-0 group-hover:opacity-100">✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const HARI = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 
@@ -71,7 +99,13 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
   const [g2bank, setG2bank] = useState(c.gift2_bank ?? "");
   const [g2num, setG2num] = useState(c.gift2_num ?? "");
   const [g2an, setG2an] = useState(c.gift2_an ?? "");
-  const [photos, setPhotos] = useState<string[]>(c.gallery ?? []);
+  const [photoCover, setPhotoCover] = useState<string>(c.photo_cover ?? "");
+  const [photoGroom, setPhotoGroom] = useState<string>(c.photo_groom ?? "");
+  const [photoBride, setPhotoBride] = useState<string>(c.photo_bride ?? "");
+  const [storyPhotos, setStoryPhotos] = useState<string[]>(c.story_photos ?? []);
+  const [gallery, setGallery] = useState<string[]>(c.gallery ?? []);
+  const totalPhotos = () =>
+    (photoCover ? 1 : 0) + (photoGroom ? 1 : 0) + (photoBride ? 1 : 0) + storyPhotos.length + gallery.length;
   const [uploading, setUploading] = useState(0);
   const [slugMsg, setSlugMsg] = useState("");
   const [err, setErr] = useState("");
@@ -89,14 +123,18 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
     setSlugMsg(data ? "❌ Slug sudah dipakai" : "✅ Slug tersedia");
   }
 
-  async function onFiles(files: FileList | null) {
+  type Slot = "cover" | "groom" | "bride" | "story" | "gallery";
+  async function onFiles(files: FileList | null, slot: Slot) {
     if (!files || !files.length) return;
     if (!cloudName || !preset) { setErr("Upload Cloudinary belum dikonfigurasi (env). Minta bow set dulu."); return; }
-    if (photos.length + files.length > 30) { setErr("Maksimal 30 foto."); return; }
+    const limit = slot === "story" ? 3 - storyPhotos.length : slot === "gallery" ? 30 - totalPhotos() : 1;
+    if (limit <= 0) { setErr(slot === "story" ? "Maksimal 3 foto cerita." : "Maksimal 30 foto total."); return; }
+    if (totalPhotos() + files.length > 30) { setErr("Maksimal 30 foto total."); return; }
     setErr("");
     const s = slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-") || "tanpa-slug";
-    setUploading((u) => u + files.length);
-    for (const f of Array.from(files)) {
+    const take = Array.from(files).slice(0, slot === "cover" || slot === "groom" || slot === "bride" ? 1 : limit);
+    setUploading((u) => u + take.length);
+    for (const f of take) {
       try {
         const fd = new FormData();
         fd.append("file", f);
@@ -105,7 +143,12 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
         const j = await res.json();
         if (!res.ok) throw new Error(j?.error?.message || "upload gagal");
-        setPhotos((p) => [...p, cloudinaryUrl(j.secure_url)]);
+        const url = cloudinaryUrl(j.secure_url);
+        if (slot === "cover") setPhotoCover(url);
+        else if (slot === "groom") setPhotoGroom(url);
+        else if (slot === "bride") setPhotoBride(url);
+        else if (slot === "story") setStoryPhotos((p) => [...p, url]);
+        else setGallery((p) => [...p, url]);
       } catch (e: any) { setErr("Upload gagal: " + e.message); }
       finally { setUploading((u) => u - 1); }
     }
@@ -120,7 +163,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
     if (!dt && !initial) { setErr("Tanggal acara wajib diisi."); return; }
     if (!venue) { setErr("Venue wajib diisi."); return; }
     if (!g1bank || !g1num) { setErr("Rekening gift 1 wajib diisi."); return; }
-    if (photos.length === 0) { setErr("Upload minimal 1 foto (jadi cover)."); return; }
+    if (totalPhotos() === 0) { setErr("Upload minimal 1 foto."); return; }
 
     setSaving(true);
     try {
@@ -132,7 +175,8 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         quote, quote_src: quoteSrc,
         gift1_bank: g1bank, gift1_num: g1num, gift1_an: g1an || `a.n. ${c1full}`,
         gift2_bank: g2bank, gift2_num: g2num, gift2_an: g2an || (g2bank ? `a.n. ${c2full}` : ""),
-        gallery: photos,
+        photo_cover: photoCover, photo_groom: photoGroom, photo_bride: photoBride,
+        story_photos: storyPhotos, gallery,
       };
       const supabase = createClient();
       const title = `${c1} & ${c2}`;
@@ -195,22 +239,27 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         <Field label="Kata kunci maps"><input className={inputCls} value={mapsQ} onChange={(e) => setMapsQ(e.target.value)} placeholder="otomatis = venue" /></Field>
       </Section>
 
-      <Section title="Foto (maks 30 — foto pertama = cover)">
-        <div className="md:col-span-2">
-          <input type="file" accept="image/*" multiple onChange={(e) => onFiles(e.target.files)}
-            className="block w-full text-sm text-zinc-400 file:mr-3 file:rounded-full file:border-0 file:bg-amber-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-900" />
-          {uploading > 0 && <p className="mt-2 text-xs text-amber-200">Mengupload {uploading} foto…</p>}
-          <div className="mt-3 grid grid-cols-4 gap-2 md:grid-cols-6">
-            {photos.map((u, i) => (
-              <div key={u + i} className="group relative aspect-square overflow-hidden rounded-lg border border-zinc-700">
-                <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
-                {i === 0 && <span className="absolute left-1 top-1 rounded bg-amber-300 px-1.5 py-0.5 text-[10px] font-bold text-zinc-900">COVER</span>}
-                <button type="button" onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))}
-                  className="absolute right-1 top-1 rounded-full bg-red-950/90 px-2 py-0.5 text-[11px] text-red-200 opacity-0 group-hover:opacity-100">✕</button>
-              </div>
-            ))}
+      <Section title="Foto — isi per slot biar tidak ngasal">
+        <div className="md:col-span-2 flex flex-col gap-5">
+          <SlotBox title="📷 Foto Sampul" hint="Cover depan undangan · rekomendasi portrait 9:16 · kosong = pakai foto galeri pertama"
+            single value={photoCover} onClear={() => setPhotoCover("")}
+            onFiles={(f) => onFiles(f, "cover")} />
+          <div className="grid gap-5 md:grid-cols-2">
+            <SlotBox title="🤵 Foto Mempelai Pria" hint="Tampil di profil mempelai 1 · rekomendasi portrait 4:5 · kosong = inisial nama"
+              single value={photoGroom} onClear={() => setPhotoGroom("")}
+              onFiles={(f) => onFiles(f, "groom")} />
+            <SlotBox title="👰 Foto Mempelai Wanita" hint="Tampil di profil mempelai 2 · rekomendasi portrait 4:5 · kosong = inisial nama"
+              single value={photoBride} onClear={() => setPhotoBride("")}
+              onFiles={(f) => onFiles(f, "bride")} />
           </div>
-          <p className="mt-2 text-xs text-zinc-500">{photos.length}/30 foto</p>
+          <SlotBox title="💑 Foto Cerita" hint="Tampil di timeline Cerita Kami · maks 3 foto"
+            values={storyPhotos} onRemove={(i) => setStoryPhotos((p) => p.filter((_, j) => j !== i))}
+            onFiles={(f) => onFiles(f, "story")} />
+          <SlotBox title="🖼️ Galeri" hint="Grid Momen Bahagia Kami · bebas, total semua slot maks 30"
+            values={gallery} onRemove={(i) => setGallery((p) => p.filter((_, j) => j !== i))}
+            onFiles={(f) => onFiles(f, "gallery")} />
+          {uploading > 0 && <p className="text-xs text-amber-200">Mengupload {uploading} foto…</p>}
+          <p className="text-xs text-zinc-500">{totalPhotos()}/30 foto terisi</p>
         </div>
       </Section>
 

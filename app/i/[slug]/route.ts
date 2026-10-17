@@ -25,7 +25,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     return new NextResponse("Tema tidak ditemukan.", { status: 404 });
   }
 
-  const c = (data.content ?? {}) as Record<string, string>;
+  const c = (data.content ?? {}) as Record<string, any>;
   const order: OrderData = {
     tema: data.theme,
     c1: c.c1 ?? "", c1full: c.c1full ?? "", c2: c.c2 ?? "", c2full: c.c2full ?? "",
@@ -36,6 +36,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     gift1_bank: c.gift1_bank ?? "", gift1_num: c.gift1_num ?? "", gift1_an: c.gift1_an,
     gift2_bank: c.gift2_bank, gift2_num: c.gift2_num, gift2_an: c.gift2_an,
     quote: c.quote, quote_src: c.quote_src,
+    photo_cover: c.photo_cover, photo_groom: c.photo_groom, photo_bride: c.photo_bride,
+    story_photos: c.story_photos,
   };
   const urls: string[] = Array.isArray((data.content as { gallery?: unknown })?.gallery)
     ? ((data.content as { gallery: string[] }).gallery ?? [])
