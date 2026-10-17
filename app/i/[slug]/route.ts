@@ -42,7 +42,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     : [];
 
   const { html, leftover } = renderInvitation(tpl ?? "", tema, slug, order, urls);
-  if (leftover.length) console.warn(`[simcha-os] placeholder gantung utk slug=${slug}:`, leftover.join(","));
+  if (leftover.length) console.warn(`[undangen-os] placeholder gantung utk slug=${slug}:`, leftover.join(","));
 
   return new NextResponse(html, {
     headers: { "Content-Type": "text/html; charset=utf-8" },

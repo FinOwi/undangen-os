@@ -24,7 +24,7 @@ export default function AdminLogin() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
       <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Simcha OS</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Undangen OS</p>
         <h1 className="mt-2 text-2xl font-semibold text-amber-100">Masuk Admin</h1>
         <label className="mt-6 block text-xs text-zinc-400">Email</label>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}

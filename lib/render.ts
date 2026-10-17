@@ -4,7 +4,7 @@ import path from "path";
 // Port 1:1 dari renderOrder() di panel k3lola (terverifikasi byte-identik dgn build-order.py).
 // Tema tetap: 21 tema statis existing, tanpa rewrite React.
 
-const ASSET_BASE = "https://simcha.my.id/assets/";
+const ASSET_BASE = "https://undangen.my.id/assets/";
 
 export interface OrderData {
   tema: string;

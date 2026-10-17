@@ -1,5 +1,5 @@
 -- ============================================================
--- Simcha OS — schema Supabase
+-- Undangen OS — schema Supabase
 -- Jalankan di Supabase Dashboard → SQL Editor (project Simcha)
 -- ============================================================
 

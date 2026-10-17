@@ -53,7 +53,7 @@ export default function PantauPage({ params }: { params: Promise<{ slug: string 
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-10">
-      <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Simcha · Pantau RSVP</p>
+      <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Undangen · Pantau RSVP</p>
       <h1 className="mt-2 text-2xl font-semibold text-amber-100">/{slug}</h1>
 
       {loading && <p className="mt-8 text-sm text-zinc-400">Memuat…</p>}

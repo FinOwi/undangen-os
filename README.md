@@ -1,4 +1,4 @@
-# Simcha OS
+# Undangen OS
 
 Platform internal Simcha — kelola undangan digital model **done-for-you**.
 Bukan SaaS self-service: hanya admin (zgg) yang login; pembeli tetap order via WA.
@@ -30,7 +30,7 @@ Bukan SaaS self-service: hanya admin (zgg) yang login; pembeli tetap order via W
    Authentication → Add user → buat akun admin (email + password).
 2. **Env** (Vercel → Settings → Environment Variables, atau `.env.local`):
    lihat `.env.example`.
-3. **Vercel**: Import repo ini → Deploy. Tambah domain `app.simcha.my.id`
+3. **Vercel**: Import repo ini → Deploy. Tambah domain `app.undangen.my.id`
    (DNS: CNAME `app` → `cname.vercel-dns.com`).
 4. **Cloudinary**: daftar gratis → Upload preset **Unsigned** bernama
    `simcha_order` → isi env `NEXT_PUBLIC_CLOUDINARY_*`.

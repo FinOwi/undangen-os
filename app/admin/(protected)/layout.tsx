@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen">
       <aside className="hidden w-56 shrink-0 flex-col border-r border-zinc-800/80 bg-zinc-950/60 p-5 md:flex">
-        <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Simcha OS</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Undangen OS</p>
         <nav className="mt-8 flex flex-col gap-1">
           {NAV.map((n) => (
             <Link key={n.href} href={n.href}
@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
       <div className="min-w-0 flex-1">
         <header className="flex items-center justify-between border-b border-zinc-800/80 px-5 py-3 md:hidden">
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Simcha OS</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Undangen OS</p>
           <LogoutButton />
         </header>
         <nav className="flex gap-1 overflow-x-auto border-b border-zinc-800/80 px-4 py-2 md:hidden">
