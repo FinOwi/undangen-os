@@ -109,6 +109,8 @@ h2.title{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.2
 .tl p{font-size:14px;color:var(--ink-soft)}
 .tl .sph{margin:10px 0 2px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.08)}
 .tl .sph img{width:100%;height:170px;object-fit:cover;display:block}
+.vframe{margin:18px 0 4px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+.vframe iframe,.vframe video{width:100%;aspect-ratio:16/9;display:block;border:0}
 /* ---------- RSVP & UCAPAN ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 22px;margin-top:22px;box-shadow:0 12px 30px rgba(0,0,0,.06);text-align:left}
 .field{margin-bottom:14px}
@@ -307,6 +309,8 @@ body::after{content:"";position:fixed;inset:0;z-index:96;pointer-events:none;opa
       <div class="item rv"><div class="yr">2027</div><h3>Menuju Halal</h3>@STORY_PHOTO_3@<p>Kami memutuskan mengikat janji suci dan memulai babak baru sebagai suami istri.</p></div>
     </div>
   </section>
+
+  @VIDEO_SECTION@
 
   <section id="rsvp">
     <p class="eyebrow rv">Konfirmasi</p>

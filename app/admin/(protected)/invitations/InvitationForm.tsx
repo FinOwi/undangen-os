@@ -92,6 +92,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
   const [venue, setVenue] = useState(c.venue ?? "");
   const [venueAddr, setVenueAddr] = useState(c.venue_addr ?? "");
   const [isPrivate, setIsPrivate] = useState(c.private === true);
+  const [videoUrl, setVideoUrl] = useState(c.video_url ?? "");
   const [mapsQ, setMapsQ] = useState(c.maps_q ?? "");
   const [quote, setQuote] = useState(c.quote ?? "");
   const [quoteSrc, setQuoteSrc] = useState(c.quote_src ?? "");
@@ -178,7 +179,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         gift1_bank: g1bank, gift1_num: g1num, gift1_an: g1an || `a.n. ${c1full}`,
         gift2_bank: g2bank, gift2_num: g2num, gift2_an: g2an || (g2bank ? `a.n. ${c2full}` : ""),
         photo_cover: photoCover, photo_groom: photoGroom, photo_bride: photoBride,
-        story_photos: storyPhotos, gallery, private: isPrivate,
+        story_photos: storyPhotos, gallery, private: isPrivate, video_url: videoUrl,
       };
       const supabase = createClient();
       const title = `${c1} & ${c2}`;
@@ -249,6 +250,16 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         {isPrivate && !initial?.id && (
           <p className="text-xs text-amber-200 md:col-span-2">Simpan undangan dulu, lalu kelola daftar tamu di sini.</p>
         )}
+      </Section>
+
+      <Section title="Video (opsional)">
+        <div className="md:col-span-2">
+          <Field label="Link video prewedding (YouTube atau file mp4 langsung)">
+            <input className={inputCls} value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=…" />
+          </Field>
+          <p className="mt-1 text-xs text-zinc-500">Kosongkan bila tidak ada — seksi video otomatis disembunyikan.</p>
+        </div>
       </Section>
 
       <Section title="Acara">

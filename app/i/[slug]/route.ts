@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     gift2_bank: c.gift2_bank, gift2_num: c.gift2_num, gift2_an: c.gift2_an,
     quote: c.quote, quote_src: c.quote_src,
     photo_cover: c.photo_cover, photo_groom: c.photo_groom, photo_bride: c.photo_bride,
-    story_photos: c.story_photos,
+    story_photos: c.story_photos, video_url: c.video_url,
   };
   const urls: string[] = Array.isArray((data.content as { gallery?: unknown })?.gallery)
     ? ((data.content as { gallery: string[] }).gallery ?? [])

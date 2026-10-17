@@ -18,6 +18,18 @@ export interface OrderData {
   // Slot foto berlabel (baru). Kosong = fallback lama (cover=gallery[0], mempelai=inisial).
   photo_cover?: string; photo_groom?: string; photo_bride?: string;
   story_photos?: string[];
+  // Slot video opsional: URL YouTube (watch/embed/shorts/youtu.be) atau file mp4 langsung.
+  video_url?: string;
+}
+
+// YouTube watch/embed/shorts → embed; URL lain dianggap file video langsung.
+function videoEmbed(url: string): string {
+  if (!url) return "";
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/);
+  const inner = yt
+    ? `<iframe src="https://www.youtube.com/embed/${yt[1]}" title="Video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+    : `<video src="${url}" controls playsinline preload="metadata"></video>`;
+  return `<section id="video"><p class="eyebrow rv">Video</p><h2 class="title rv">Cuplikan Bahagia</h2><div class="vframe">${inner}</div></section>`;
 }
 
 interface ThemeDict { [k: string]: string }
@@ -86,6 +98,7 @@ export function renderInvitation(
     });
   }
   if (order.quote) { d.QUOTE = order.quote; d.QUOTE_SRC = order.quote_src || ""; }
+  d.VIDEO_SECTION = videoEmbed(order.video_url || "");
   d.GALLERY_ITEMS = urls.map((u, i) => {
     const alt = i === 0 ? `${c1} dan ${c2}` : "Momen bahagia";
     return `<a href="${u}"><img src="${u}" alt="${esc(alt)}" loading="lazy"></a>`;
