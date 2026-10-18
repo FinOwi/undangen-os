@@ -55,7 +55,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
 @keyframes qpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 .qrow.locked{opacity:.55}
 /* galeri per misi */
-.gal{position:relative;margin:0 18px;border-radius:14px;overflow:hidden;border:2px solid #e5d3a8;background:#111}
+.gal{position:relative;margin:12px 18px 0;border-radius:14px;overflow:hidden;border:2px solid #e5d3a8;background:#111}
+.galempty{margin:12px 18px 0;border-radius:14px;border:2px dashed #d8c58f;background:#fbf6e9;padding:34px 16px;text-align:center;color:#9a8a5f}
+.galempty .cam{font-size:2rem;display:block;margin-bottom:8px}
+.galempty span{font-size:13px}
 .gal img#galImg{width:100%;height:220px;object-fit:cover;display:block;touch-action:pan-y}
 .gbtn{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   border:none;background:rgba(20,20,40,.55);color:#fff;font-size:16px;cursor:pointer;z-index:2}
@@ -179,7 +182,7 @@ var WISUDA = {
 import * as THREE from 'three';
 /* ================= DATA SEMESTER (layout kampus 3D baru) ================= */
 var SEMDEF=[
- {no:1,key:"gerbang",pos:[0,50],blk:[0,58,8],judul:"Masuk Kampus",sub:"Awal Perjalanan",emoji:"🚪",
+ {no:1,key:"gerbang",pos:[0,50],blk:[[-5,58,2.6],[5,58,2.6]],judul:"Masuk Kampus",sub:"Awal Perjalanan",emoji:"🚪",
   x:"Langkah pertama dimulai di gerbang ini. Seragam baru, teman baru, dan mimpi yang besar — perjalanan 8 semester resmi dimulai!"},
  {no:2,key:"kuliah",pos:[-32,28],blk:[-42,28,10],judul:"Perkuliahan",sub:"Adaptasi & Teman Baru",emoji:"📚",
   x:"Duduk di bangku kuliah, mencatat ilmu, dan beradaptasi dengan dunia kampus. Teman-teman baru menjadi keluarga kedua."},
@@ -607,7 +610,7 @@ SEMDEF.forEach(function(s,i){
   scene.add(mk);markers.push(mk);
 });
 /* ================= STATE & INPUT ================= */
-var S={started:false,px:0,pz:22,tx:null,tz:null,face:0,moving:false,
+var S={started:false,px:0,pz:66,tx:null,tz:null,face:0,moving:false,
   camx:0,camz:38,camD:17,camMode:'follow',orbit:{az:0,el:0.42,d:17},
   visited:[false,false,false,false,false,false,false,false],
   near:-1,nearLocked:-1,active:0,dlgOpen:false,musicOn:false,t:0};
@@ -697,9 +700,12 @@ document.getElementById('btnCam').onclick=function(){
 };
 function collide(nx,nz){
   for(var i=0;i<SEMDEF.length;i++){
-    var b=SEMDEF[i].blk,dx=nx-b[0],dz=nz-b[1],r=b[2];
-    var d=Math.hypot(dx,dz);
-    if(d<r+1.6&&d>0.01){nx=b[0]+dx/d*(r+1.6);nz=b[1]+dz/d*(r+1.6);}
+    var b=SEMDEF[i].blk,list=Array.isArray(b[0])?b:[b];
+    for(var j=0;j<list.length;j++){
+      var c=list[j],dx=nx-c[0],dz=nz-c[1],r=c[2];
+      var d=Math.hypot(dx,dz);
+      if(d<r+1.6&&d>0.01){nx=c[0]+dx/d*(r+1.6);nz=c[1]+dz/d*(r+1.6);}
+    }
   }
   // air mancur
   var fd=Math.hypot(nx,nz);
@@ -716,7 +722,11 @@ function nextMission(){
 var CAMBLOCKS=[],CAMB_INIT=false;
 function camClear(px,pz,cx,cz){
   if(!CAMB_INIT){
-    SEMDEF.forEach(function(s){CAMBLOCKS.push(s.blk);});
+    SEMDEF.forEach(function(s){
+      var b=s.blk;
+      if(Array.isArray(b[0]))b.forEach(function(c){CAMBLOCKS.push(c);});
+      else CAMBLOCKS.push(b);
+    });
     CAMBLOCKS.push([0,0,8.6]); // air mancur
     CAMB_INIT=true;
   }
@@ -854,7 +864,7 @@ function drawMinimap(){
   SEMDEF.forEach(function(s,i){
     var col=S.visited[i]?'#2e9e5b':(i===S.active?'#f5c623':'#777777');
     var r=i===S.active?6+2*Math.sin(S.t*5):5;
-    dot(s.blk[0],s.blk[1],col,r);
+    dot(s.pos[0],s.pos[1],col,r);
   });
   dot(0,0,'#5fb8ec',5);
   dot(S.px,S.pz,'#fff',5);
@@ -906,10 +916,7 @@ function semData(i){
 function openDlg(i){
   S.dlgOpen=true;S.tx=null;
   var d=semData(i),done=S.visited[i];
-  var h='<img class="bld" src="/tema/wisuda-quest/assets/'+BLDIMG[d.key]+'.png" alt="">';
-  h+='<div class="shead"><span class="semno">SEMESTER '+d.no+'</span><h2>'+d.emoji+' '+esc(d.judul)+'</h2></div>';
-  h+='<div class="sub">'+esc(d.sub)+(d.y?' • '+esc(d.y):'')+'</div>';
-  h+='<div class="story">'+esc(d.x)+'</div>';
+  var h='<div class="shead"><span class="semno">SEMESTER '+d.no+'</span><h2>'+d.emoji+' '+esc(d.judul)+'</h2></div>';
   if(d.fotos.length){
     h+='<div class="gal"><img id="galImg" src="'+esc(d.fotos[0])+'" alt="Galeri semester '+d.no+'">';
     if(d.fotos.length>1){
@@ -920,8 +927,10 @@ function openDlg(i){
     if(d.fotos.length>1){
       h+='<div class="gthumbs">'+d.fotos.map(function(f,j){return '<img src="'+esc(f)+'" data-j="'+j+'" class="'+(j===0?'on':'')+'" alt="">';}).join('')+'</div>';
     }
+  }else{
+    h+='<div class="galempty"><span class="cam">📷</span><span>Foto kenangan semester ini akan tampil di sini</span></div>';
   }
-  h+='<div class="xprow">⚡ +'+(100*d.no)+' XP</div>';
+  h+='<div class="story">'+esc(d.x)+'</div>';
   h+='<div class="btnrow"><button class="btn back" id="dlgBack">Kembali</button><button class="btn go" id="dlgGo">'+(done?"Tutup":"Selesaikan Misi ✓")+'</button></div>';
   document.getElementById('dlgCard').innerHTML=h;
   document.getElementById('dlg').classList.add('on');
