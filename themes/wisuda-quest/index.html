@@ -51,6 +51,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
 .qrow{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px dashed #d8c89a}
 .qnum{width:38px;height:38px;flex:none;border-radius:50%;background:#1b2a4a;color:#ffd97a;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #f5a623;font-size:16px}
 .qrow.done .qnum{background:#2e9e5b;border-color:#2e9e5b;color:#fff}
+.qrow.active .qnum{background:#f5a623;border-color:#f5a623;color:#3a2503;animation:qpulse 1.2s infinite}
+@keyframes qpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.qrow.locked{opacity:.55}
 .qrow .qt{flex:1}
 .qrow .qt b{color:#1b2a4a;font-size:15px}
 .qrow .qt span{display:block;color:#8a6d1f;font-size:12px}
@@ -626,6 +629,11 @@ function collide(nx,nz){
   return [Math.max(-70,Math.min(70,nx)),Math.max(-70,Math.min(70,nz))];
 }
 /* ================= UPDATE ================= */
+// misi harus berurutan 1-8, tidak bisa skip
+function nextMission(){
+  for(var i=0;i<8;i++)if(!S.visited[i])return i;
+  return -1;
+}
 // jarak kamera aman (tidak terhalang gedung)
 var CAMBLOCKS=[],CAMB_INIT=false;
 function cameraClear(px,pz,wantD){
@@ -692,10 +700,11 @@ function update(dt){
     }
     setWalk(n.c,dt,true);
   });
-  // marker
+  // marker: hanya misi aktif yang tampil
+  S.active=nextMission();
   markers.forEach(function(mk,i){
-    mk.visible=!S.visited[i];
-    mk.position.y=9+Math.sin(S.t*3+i)*0.8;
+    mk.visible=(i===S.active);
+    if(mk.visible)mk.position.y=9+Math.sin(S.t*3+i)*0.8;
   });
   // kamera third-person rendah (bukan dari atas)
   var wantD=17;
@@ -719,19 +728,26 @@ function update(dt){
     fountainWater.material.opacity=0.75+Math.sin(S.t*4)*0.12;
   }
   if(window._wisudaGrp)window._wisudaGrp.userData.toga.rotation.y+=dt*0.4;
-  // dekat checkpoint?
-  S.near=-1;
+  // dekat checkpoint? (hanya misi aktif bisa dimasuki)
+  S.near=-1;S.nearLocked=-1;
   if(!S.dlgOpen){
     for(var i=0;i<SEMDEF.length;i++){
       var s=SEMDEF[i];
-      if(Math.hypot(S.px-s.pos[0],S.pz-s.pos[1])<9){S.near=i;break;}
+      if(Math.hypot(S.px-s.pos[0],S.pz-s.pos[1])<9){
+        if(i===S.active)S.near=i;
+        else if(!S.visited[i])S.nearLocked=i;
+        break;
+      }
     }
   }
   var pr=document.getElementById('prompt');
   if(S.near>=0&&!S.dlgOpen){
     pr.textContent=(S.visited[S.near]?"Lihat lagi: ":"Masuk: ")+SEMDEF[S.near].judul+" →";
-    pr.classList.add('on');
-  }else pr.classList.remove('on');
+    pr.classList.add('on');pr.dataset.lock="";
+  }else if(S.nearLocked>=0&&!S.dlgOpen&&S.active>=0){
+    pr.textContent="🔒 "+SEMDEF[S.nearLocked].judul+" — selesaikan Semester "+(S.active+1)+" dulu";
+    pr.classList.add('on');pr.dataset.lock="1";
+  }else{pr.classList.remove('on');pr.dataset.lock="";}
   drawMinimap();
   updateConfetti(dt);
 }
@@ -746,7 +762,9 @@ function drawMinimap(){
     mmc.arc(W/2+x*sc,W/2+z*sc,r||5,0,7);mmc.fill();
   }
   SEMDEF.forEach(function(s,i){
-    dot(s.blk[0],s.blk[1],S.visited[i]?'#2e9e5b':'#f5c623',6);
+    var col=S.visited[i]?'#2e9e5b':(i===S.active?'#f5c623':'#777777');
+    var r=i===S.active?6+2*Math.sin(S.t*5):5;
+    dot(s.blk[0],s.blk[1],col,r);
   });
   dot(0,0,'#5fb8ec',5);
   dot(S.px,S.pz,'#fff',5);
@@ -820,7 +838,10 @@ function openDlg(i){
   };
 }
 function closeDlg(){document.getElementById('dlg').classList.remove('on');S.dlgOpen=false;}
-document.getElementById('prompt').onclick=function(){if(S.near>=0)openDlg(S.near);};
+document.getElementById('prompt').onclick=function(){
+  if(S.near>=0)openDlg(S.near);
+  else if(S.nearLocked>=0&&S.active>=0)toast("🔒 Selesaikan Semester "+(S.active+1)+": "+SEMDEF[S.active].judul+" dulu!");
+};
 function updateHUD(){
   var n=S.visited.filter(Boolean).length;
   document.getElementById('hudLv').textContent="LEVEL "+n+"/8";
@@ -828,10 +849,13 @@ function updateHUD(){
   document.querySelector('#hud .ava').textContent=n===8?"🎓":"🚶";
 }
 function openQuest(){
-  var h="";
+  var h="",act=nextMission();
   for(var i=0;i<8;i++){
     var d=semData(i),dn=S.visited[i];
-    h+='<div class="qrow'+(dn?' done':'')+'"><div class="qnum">'+(dn?'✓':d.no)+'</div><div class="qt"><b>'+d.emoji+' Semester '+d.no+': '+esc(d.judul)+'</b><span>'+esc(d.sub)+'</span></div><div class="qcheck">'+(dn?'🎓':'🔒')+'</div></div>';
+    var cls=dn?' done':(i===act?' active':' locked');
+    var mark=dn?'✓':(i===act?d.no:'🔒');
+    var ic=dn?'🎓':(i===act?'❗':'🔒');
+    h+='<div class="qrow'+cls+'"><div class="qnum">'+mark+'</div><div class="qt"><b>'+d.emoji+' Semester '+d.no+': '+esc(d.judul)+'</b><span>'+esc(d.sub)+'</span></div><div class="qcheck">'+ic+'</div></div>';
   }
   document.getElementById('qlist').innerHTML=h;
   document.getElementById('quest').classList.add('on');S.dlgOpen=true;
@@ -927,7 +951,7 @@ document.getElementById('btnMulai').onclick=function(){
   document.getElementById('hud').style.display='flex';
   document.getElementById('minimap').style.display='block';
   S.started=true;
-  toast('🗺️ Misi baru: kunjungi 8 gedung!');
+  toast('🗺️ Misi 1: Gerbang Universitas — ikuti urutan ya!');
   setTimeout(function(){if(!S.musicOn)toggleMusic();},400);
 };
 /* kamera awal */
