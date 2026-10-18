@@ -221,6 +221,13 @@ export default function StaticTemplateForm({ themes, initial, templateId }: {
                 ) : fd.type === "datetime" ? (
                   <input type="datetime-local" className={inputCls} value={fields[k] ?? ""}
                     onChange={(e) => setField(k, e.target.value)} />
+                ) : fd.type === "select" ? (
+                  <select className={inputCls} value={fields[k] ?? fd.def ?? ""}
+                    onChange={(e) => setField(k, e.target.value)}>
+                    {(fd.options ?? []).map((op) => (
+                      <option key={op} value={op}>{op}</option>
+                    ))}
+                  </select>
                 ) : (
                   <input className={inputCls} value={fields[k] ?? ""}
                     placeholder={fd.placeholder} onChange={(e) => setField(k, e.target.value)} />

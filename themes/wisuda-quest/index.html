@@ -45,6 +45,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
 #btnMulai{margin-top:18px;background:linear-gradient(180deg,#f5a623,#dd8a0e);border:4px solid #fff;color:#3a2503;font-family:inherit;font-weight:900;font-size:22px;padding:14px 58px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.35);transition:transform .15s}
 #btnMulai:active{transform:scale(.94)}
 #start .hint{margin-top:14px;color:#0f2742aa;font-size:13px;font-weight:700}
+.genpick{display:flex;gap:10px;justify-content:center;margin:14px 0 2px}
+.gen{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.2);color:#fff;border-radius:14px;padding:9px 20px;font-size:26px;cursor:pointer;font-family:inherit;transition:all .2s}
+.gen span{font-size:15px;font-weight:700}
+.gen.on{border-color:#f5a623;background:rgba(245,166,35,.18);box-shadow:0 0 18px rgba(245,166,35,.35);transform:scale(1.04)}
 #start .mascot{font-size:90px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.3));animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 #quest .card{border-radius:20px}
@@ -121,6 +125,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
   <h1>WISUDA QUEST</h1>
   <p>Ikuti perjalanan 8 semester menuju wisuda.<br>Kunjungi setiap gedung, selesaikan misinya, dan rayakan kelulusan!</p>
   <div class="to" id="startTo"></div>
+  <div class="genpick">
+    <button class="gen" data-g="cowok">👨‍🎓<span>Cowok</span></button>
+    <button class="gen" data-g="cewek">👩‍🎓<span>Cewek</span></button>
+  </div>
   <button id="btnMulai">▶ MULAI</button>
   <div class="hint">Ketuk tanah untuk berjalan • WASD / panah • D-pad di HP</div>
 </div>
@@ -163,6 +171,7 @@ var WISUDA = {
   REK:[{b:"BCA",n:"8210 456 789",a:"Raka Pratama"},{b:"DANA",n:"0812 3456 7890",a:"Raka Pratama"}],
   ALAMAT:"Jl. Universitas No. 1, Medan",
   MUSIK:"",
+  KELAMIN:"cowok",
   FOTO:{wisudawan:"",semester:[
     ["/tema/wisuda-quest/assets/bld_gerbang.png","/tema/wisuda-quest/assets/bld_kuliah.png"],
     ["/tema/wisuda-quest/assets/bld_kuliah.png"],
@@ -432,55 +441,97 @@ function bench(x,z,ry){
   [-1.4,1.4].forEach(function(px){grp.add(box(0.25,1.1,1,0x5a5a5a,px,0.55,0));});
   grp.position.set(x,0,z);grp.rotation.y=ry||0;scene.add(grp);
 }
-/* karakter chibi 3D */
+/* karakter chibi 3D v2 — gender: cowok / cewek */
 function chibi(o){
   o=o||{};
-  var skin=o.skin||0xffd9b3,hairC=o.hair||0x3a2a20,
-      shirt=o.shirt||0x4a90d9,pants=o.pants||0x2c3e50;
-  var grp=new THREE.Group();
-  var parts={};
-  // kaki
-  // kaki (pivot di pinggul y=1.1)
-  parts.legL=box(0.55,1.1,0.6,pants,0,0,0);
-  parts.legR=box(0.55,1.1,0.6,pants,0,0,0);
-  [parts.legL,parts.legR].forEach(function(l,i){
-    l.geometry.translate(0,-0.55,0);
-    l.position.set(i?0.35:-0.35,1.1,0);
-    grp.add(l);
+  var gender=o.gender||'cowok';
+  var skin=o.skin||0xffd9b3,
+      hairC=o.hair||(gender==='cewek'?0x6b4423:0x2e2118),
+      shirt=o.shirt||(gender==='cewek'?0xe0507a:0x4a90d9),
+      pants=o.pants||0x2c3e50;
+  var grp=new THREE.Group(),parts={};
+  function cap(r,len,color){
+    var m=new THREE.Mesh(new THREE.CapsuleGeometry(r,len,6,14),M(color));
+    m.castShadow=true;return m;
+  }
+  // kaki kapsul (pivot pinggul y=1.15)
+  parts.legL=cap(0.27,0.55,pants);parts.legL.geometry.translate(0,-0.42,0);
+  parts.legL.position.set(-0.32,1.15,0);grp.add(parts.legL);
+  parts.legR=cap(0.27,0.55,pants);parts.legR.geometry.translate(0,-0.42,0);
+  parts.legR.position.set(0.32,1.15,0);grp.add(parts.legR);
+  // sepatu bulat (ikut ayunan kaki)
+  [parts.legL,parts.legR].forEach(function(l){
+    var sh=new THREE.Mesh(new THREE.SphereGeometry(0.3,12,10),M(0x3a3a44,0.6));
+    sh.scale.set(1,0.65,1.4);sh.position.set(0,-0.95,0.1);sh.castShadow=true;l.add(sh);
   });
-  // badan
-  var body=box(1.5,1.5,1,shirt,0,1.85,0);grp.add(body);parts.body=body;
-  // lengan
-  // lengan (pivot di bahu y=2.5)
-  parts.armL=box(0.42,1.2,0.45,shirt,0,0,0);
-  parts.armR=box(0.42,1.2,0.45,shirt,0,0,0);
+  // rok untuk cewek
+  if(gender==='cewek'){
+    var skirt=new THREE.Mesh(new THREE.CylinderGeometry(0.78,1.04,0.9,18),M(0x8a2b4a));
+    skirt.position.y=1.3;skirt.castShadow=true;grp.add(skirt);
+  }
+  // badan kapsul
+  var body=cap(0.72,0.55,shirt);body.position.y=1.95;grp.add(body);parts.body=body;
+  // lengan kapsul (pivot bahu y=2.5)
+  parts.armL=cap(0.19,0.6,shirt);parts.armL.geometry.translate(0,-0.4,0);
+  parts.armL.position.set(-0.92,2.5,0);grp.add(parts.armL);
+  parts.armR=cap(0.19,0.6,shirt);parts.armR.geometry.translate(0,-0.4,0);
+  parts.armR.position.set(0.92,2.5,0);grp.add(parts.armR);
   // tangan
-  var hL=new THREE.Mesh(new THREE.SphereGeometry(0.28,10,8),M(skin));
-  hL.position.set(-1,1.15,0);grp.add(hL);
-  var hR=hL.clone();hR.position.x=1;grp.add(hR);
-  // kepala besar
-  var head=new THREE.Mesh(new THREE.SphereGeometry(1.15,20,16),M(skin,0.7));
-  head.position.y=3.6;head.castShadow=true;grp.add(head);parts.head=head;
-  // rambut
-  var hair=new THREE.Mesh(new THREE.SphereGeometry(1.2,20,16,0,Math.PI*2,0,Math.PI/2.1),M(hairC,0.9));
-  hair.position.y=3.75;hair.castShadow=true;grp.add(hair);
-  // mata
-  [-0.42,0.42].forEach(function(ex){
-    var e=new THREE.Mesh(new THREE.SphereGeometry(0.14,8,8),M(0x1a1a1a,0.4));
-    e.position.set(ex,3.6,1.05);grp.add(e);
+  [parts.armL,parts.armR].forEach(function(a){
+    var h=new THREE.Mesh(new THREE.SphereGeometry(0.21,12,10),M(skin));
+    h.position.set(0,-0.85,0);h.castShadow=true;a.add(h);
+  });
+  // kepala
+  var head=new THREE.Mesh(new THREE.SphereGeometry(1.08,24,18),M(skin,0.65));
+  head.position.y=3.62;head.castShadow=true;grp.add(head);parts.head=head;
+  // mata anime (putih + pupil + highlight)
+  [-0.4,0.4].forEach(function(ex){
+    var w=new THREE.Mesh(new THREE.SphereGeometry(0.17,12,10),M(0xffffff,0.35));
+    w.position.set(ex,3.66,0.92);grp.add(w);
+    var pu=new THREE.Mesh(new THREE.SphereGeometry(0.085,10,8),M(0x1a1a1a,0.3));
+    pu.position.set(ex,3.66,1.05);grp.add(pu);
+    var hl=new THREE.Mesh(new THREE.SphereGeometry(0.035,8,6),M(0xffffff,0.2));
+    hl.position.set(ex+0.045,3.71,1.1);grp.add(hl);
+  });
+  // alis
+  [-0.4,0.4].forEach(function(ex){
+    var b=box(0.3,0.06,0.06,hairC,ex,4.0,0.96);b.rotation.z=ex>0?-0.12:0.12;grp.add(b);
+  });
+  // blush
+  [-0.66,0.66].forEach(function(ex){
+    var bl=new THREE.Mesh(new THREE.SphereGeometry(0.11,10,8),
+      new THREE.MeshStandardMaterial({color:0xff8fa0,roughness:1,transparent:true,opacity:0.75}));
+    bl.scale.set(1,0.6,0.45);bl.position.set(ex,3.38,0.84);grp.add(bl);
   });
   // senyum
-  var sm=new THREE.Mesh(new THREE.TorusGeometry(0.3,0.06,8,12,Math.PI),M(0x8a4a3a,0.6));
-  sm.position.set(0,3.32,1.08);sm.rotation.x=0;sm.rotation.z=Math.PI;grp.add(sm);
-  // ransel
-  if(o.backpack!==false){
-    grp.add(box(1,1.3,0.5,o.pack||0xe74c3c,0,1.95,-0.72));
+  var sm=new THREE.Mesh(new THREE.TorusGeometry(0.26,0.055,8,14,Math.PI),M(0x9a4a3a,0.6));
+  sm.position.set(0,3.34,1.0);sm.rotation.z=Math.PI;grp.add(sm);
+  // rambut
+  if(gender==='cewek'){
+    var hb=new THREE.Mesh(new THREE.SphereGeometry(0.95,18,14),M(hairC,0.9));
+    hb.scale.set(1.15,1.7,0.95);hb.position.set(0,2.75,-0.5);hb.castShadow=true;grp.add(hb);
+    var cp=new THREE.Mesh(new THREE.SphereGeometry(1.14,24,18,0,Math.PI*2,0,Math.PI/2.05),M(hairC,0.9));
+    cp.position.y=3.78;cp.castShadow=true;grp.add(cp);
+    [-0.85,0.85].forEach(function(ex){
+      var lk=cap(0.15,0.75,hairC);lk.position.set(ex,2.95,0.42);grp.add(lk);
+    });
+    var bowM=M(0xe0507a,0.6);
+    var b1=new THREE.Mesh(new THREE.SphereGeometry(0.22,10,8),bowM);
+    b1.scale.set(1,0.7,0.5);b1.position.set(-0.28,4.78,0.1);b1.rotation.z=0.5;b1.castShadow=true;grp.add(b1);
+    var b2=b1.clone();b2.position.x=0.28;b2.rotation.z=-0.5;grp.add(b2);
+    var bk=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),bowM);
+    bk.position.set(0,4.75,0.12);grp.add(bk);
+  }else{
+    var cp2=new THREE.Mesh(new THREE.SphereGeometry(1.14,24,18,0,Math.PI*2,0,Math.PI/2.1),M(hairC,0.9));
+    cp2.position.y=3.78;cp2.castShadow=true;grp.add(cp2);
+    var tuft=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.5,8),M(hairC,0.9));
+    tuft.position.set(0.15,4.88,0.35);tuft.rotation.z=-0.35;tuft.castShadow=true;grp.add(tuft);
   }
-  // pivot kaki di pinggul untuk ayunan
-  [parts.armL,parts.armR].forEach(function(a,i){
-    a.geometry.translate(0,-0.6,0);a.position.set(i?1:-1,2.5,0);
-    grp.add(a);
-  });
+  // ransel bulat
+  if(o.backpack!==false){
+    var pk=new THREE.Mesh(new THREE.SphereGeometry(0.62,14,12),M(o.pack||0xe74c3c,0.8));
+    pk.scale.set(0.95,1.1,0.55);pk.position.set(0,2.0,-0.85);pk.castShadow=true;grp.add(pk);
+  }
   grp.traverse(function(m){if(m.isMesh){m.castShadow=true;}});
   scene.add(grp);
   return {group:grp,parts:parts,walk:0};
@@ -593,14 +644,18 @@ cloud(-40,42,-60,1.4);cloud(30,48,-40,1.1);cloud(-10,44,50,1.2);cloud(55,40,20,0
   clouds.push({g:grp,sp:0.25});
 })();
 /* ================= PEMAIN & NPC ================= */
-var player=chibi({shirt:0x4a90d9,pack:0xe74c3c});
-player.group.position.set(0,0,38);
+var player=null;
+function buildPlayer(){
+  if(player)scene.remove(player.group);
+  player=chibi({gender:S.gender,shirt:S.gender==='cewek'?0xe0507a:0x4a90d9,pack:0xe74c3c});
+  player.group.position.set(S.px,0,S.pz);
+}
 var NPCS=[
   {c:chibi({shirt:0xe8913a,backpack:false}),x:-38,z:-2,r:6},
   {c:chibi({shirt:0x9b59b6,backpack:false,hair:0x1a1a1a}),x:-34,z:-14,r:7},
   {c:chibi({shirt:0x2e9e8f,backpack:false}),x:34,z:20,r:6},
   {c:chibi({shirt:0x546e7a,backpack:false,hair:0x777777}),x:28,z:-32,r:6},
-  {c:chibi({shirt:0xd44d6d,backpack:false}),x:-6,z:-44,r:5}
+  {c:chibi({gender:'cewek',shirt:0xe0507a,backpack:false,hair:0x1a1a1a}),x:-6,z:-44,r:5}
 ];
 NPCS.forEach(function(n,i){n.c.group.position.set(n.x,0,n.z);n.a=Math.random()*7;n.i=i;});
 /* penanda misi */
@@ -614,7 +669,9 @@ SEMDEF.forEach(function(s,i){
 var S={started:false,px:0,pz:66,tx:null,tz:null,face:0,moving:false,
   camx:0,camz:38,camD:17,camMode:'follow',orbit:{az:0,el:0.42,d:17},
   visited:[false,false,false,false,false,false,false,false],
-  near:-1,nearLocked:-1,active:0,dlgOpen:false,musicOn:false,t:0};
+  near:-1,nearLocked:-1,active:0,dlgOpen:false,musicOn:false,t:0,gender:'cowok'};
+if(typeof WISUDA!=="undefined"&&WISUDA.KELAMIN==="cewek")S.gender="cewek";
+buildPlayer();
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 var ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
 var keys={};
@@ -1108,6 +1165,13 @@ setInterval(musicTick,240);
   if(qp)document.getElementById('startTo').innerHTML='Halo, <b>'+esc(qp)+'</b>! 👋';
   if(innerWidth<760)document.getElementById('dpad').style.display='grid';
 })();
+document.querySelectorAll('.gen').forEach(function(b){
+  if(b.getAttribute('data-g')===S.gender)b.classList.add('on');
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.gen').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');S.gender=b.getAttribute('data-g');buildPlayer();
+  });
+});
 document.getElementById('btnMulai').onclick=function(){
   document.getElementById('start').style.display='none';
   document.getElementById('hud').style.display='flex';

@@ -135,6 +135,7 @@ export async function renderStaticTheme(
       REK: rek,
       ALAMAT: c.alamat ?? "",
       MUSIK: c.music_url ?? "",
+      KELAMIN: c.kelamin ?? "cowok",
       FOTO: { wisudawan: c.wisudawan ?? "", semester: semFoto },
       SEMESTER: semesters,
     };

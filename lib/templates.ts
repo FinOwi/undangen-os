@@ -5,11 +5,12 @@
 export interface FieldDef {
   key: string;
   label: string;
-  type: "text" | "datetime" | "textarea";
+  type: "text" | "datetime" | "textarea" | "select";
   placeholder?: string;
   required?: boolean;
   section: string;
   def?: string;
+  options?: string[];
 }
 
 export interface PhotoSlotDef {
@@ -121,6 +122,7 @@ const WISUDA_FIELDS: FieldDef[] = [
   { key: "kampus", label: "Kampus", type: "text", placeholder: "Universitas Sumatera Utara", section: "Wisudawan" },
   { key: "nim", label: "NIM", type: "text", placeholder: "211401001", section: "Wisudawan" },
   { key: "gelar", label: "Gelar", type: "text", placeholder: "S.Kom", section: "Wisudawan" },
+  { key: "kelamin", label: "Karakter default", type: "select", options: ["cowok", "cewek"], def: "cowok", section: "Wisudawan" },
   { key: "dt", label: "Tanggal & jam sidang", type: "datetime", required: true, section: "Acara" },
   { key: "sidang_waktu", label: "Jam sidang", type: "text", placeholder: "09.00 \u2013 11.00 WIB", section: "Acara" },
   { key: "sidang_tempat", label: "Tempat sidang", type: "text", placeholder: "Aula FMIPA USU, Medan", section: "Acara" },
