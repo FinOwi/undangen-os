@@ -103,6 +103,38 @@ const PETA_SLOTS: PhotoSlotDef[] = PETA_STOPS.map((s, i) => ({
   max: 1,
 }));
 
+const WISUDA_FIELDS: FieldDef[] = [
+  { key: "nama", label: "Nama wisudawan", type: "text", placeholder: "Raka Pratama", required: true, section: "Wisudawan" },
+  { key: "panggilan", label: "Nama panggilan", type: "text", placeholder: "Raka", section: "Wisudawan" },
+  { key: "jurusan", label: "Jurusan", type: "text", placeholder: "Teknik Informatika", section: "Wisudawan" },
+  { key: "kampus", label: "Kampus", type: "text", placeholder: "Universitas Sumatera Utara", section: "Wisudawan" },
+  { key: "nim", label: "NIM", type: "text", placeholder: "211401001", section: "Wisudawan" },
+  { key: "gelar", label: "Gelar", type: "text", placeholder: "S.Kom", section: "Wisudawan" },
+  { key: "dt", label: "Tanggal & jam sidang", type: "datetime", required: true, section: "Acara" },
+  { key: "sidang_waktu", label: "Jam sidang", type: "text", placeholder: "09.00 \u2013 11.00 WIB", section: "Acara" },
+  { key: "sidang_tempat", label: "Tempat sidang", type: "text", placeholder: "Aula FMIPA USU, Medan", section: "Acara" },
+  { key: "sidang_maps", label: "Link maps sidang", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "wa", label: "No. WhatsApp (format 628\u2026)", type: "text", placeholder: "6281234567890", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", placeholder: "BCA", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama wisudawan", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
+];
+const WISUDA_SLOTS: PhotoSlotDef[] = [
+  { key: "wisudawan", label: "\u2460 1. Foto Wisudawan", hint: "Aula Sidang \u00b7 portrait", max: 1 },
+  { key: "semester_1", label: "\u2461 2. Foto Semester 1", hint: "Gerbang Kampus \u00b7 semester 1", max: 1 },
+  { key: "semester_2", label: "\u2462 3. Foto Semester 2", hint: "Perpustakaan \u00b7 semester 2", max: 1 },
+  { key: "semester_3", label: "\u2463 4. Foto Semester 3", hint: "Kantin \u00b7 semester 3", max: 1 },
+  { key: "semester_4", label: "\u2464 5. Foto Semester 4", hint: "Lab Komputer \u00b7 semester 4", max: 1 },
+  { key: "semester_5", label: "\u2465 6. Foto Semester 5", hint: "Gedung Kuliah \u00b7 semester 5", max: 1 },
+  { key: "semester_6", label: "\u2466 7. Foto Semester 6", hint: "Posko KKN \u00b7 semester 6", max: 1 },
+  { key: "semester_7", label: "\u2467 8. Foto Semester 7", hint: "Ruang Dosen \u00b7 semester 7", max: 1 },
+  { key: "semester_8", label: "\u2468 9. Foto Semester 8", hint: "Aula Sidang \u00b7 semester 8", max: 1 },
+];
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -117,6 +149,13 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     file: "peta-perjalanan/index.html",
     fields: PETA_FIELDS,
     photoSlots: PETA_SLOTS,
+  },
+  {
+    id: "wisuda-quest",
+    name: "Wisuda Quest — game 8 semester",
+    file: "wisuda-quest/index.html",
+    fields: WISUDA_FIELDS,
+    photoSlots: WISUDA_SLOTS,
   },
 ];
 

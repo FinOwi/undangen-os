@@ -102,6 +102,40 @@ export async function renderStaticTheme(
     const next = html.replace(/var D=\{[\s\S]*?\]\};/, "var D=" + JSON.stringify(D) + ";");
     if (next === html) throw new Error("blok D tidak ditemukan di tema peta-perjalanan");
     html = next;
+  } else if (templateId === "wisuda-quest") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { bank: string; no: string; nama: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ bank: c.gift1_bank ?? "", no: c.gift1_num ?? "", nama: c.gift1_an || `a.n. ${c.nama ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ bank: c.gift2_bank ?? "", no: c.gift2_num ?? "", nama: c.gift2_an || `a.n. ${c.nama ?? ""}` });
+    const semFoto = Array.from({ length: 8 }, (_, i) => c[`semester_${i + 1}`] ?? "");
+    const semesters = Array.from({ length: 8 }, (_, i) => ({
+      t: c[`sem${i + 1}_t`] ?? "",
+      y: c[`sem${i + 1}_y`] ?? "",
+      x: c[`sem${i + 1}_x`] ?? "",
+    }));
+    const wisuda = {
+      NAMA: c.nama ?? "",
+      PANGGILAN: c.panggilan ?? "",
+      JURUSAN: c.jurusan ?? "",
+      KAMPUS: c.kampus ?? "",
+      NIM: c.nim ?? "",
+      GELAR: c.gelar ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      SIDANG_WAKTU: c.sidang_waktu ?? "",
+      SIDANG_TEMPAT: c.sidang_tempat ?? "",
+      SIDANG_MAPS: c.sidang_maps ?? "https://maps.google.com",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      FOTO: { wisudawan: c.wisudawan ?? "", semester: semFoto },
+      SEMESTER: semesters,
+    };
+    const next = html.replace(/var WISUDA = \{[\s\S]*?\n\};/, "var WISUDA = " + JSON.stringify(wisuda) + ";");
+    if (next === html) throw new Error("blok WISUDA tidak ditemukan di tema wisuda-quest");
+    html = next;
   } else {
     throw new Error("template statis tidak dikenal: " + templateId);
   }
