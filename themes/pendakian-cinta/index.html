@@ -495,7 +495,7 @@ function update(dt){
   // kamera
   var target=clamp(S.x-view.w*0.38,0,WORLD_W-view.w*0.85);
   S.camX+=(target-S.camX)*Math.min(1,dt*5);
-  var targetY=-elev(S.x);
+  var targetY=elev(S.x);
   S.camY+=(targetY-S.camY)*Math.min(1,dt*3.2);
   // HUD
   var pr=clamp(S.x/WORLD_W,0,1);
