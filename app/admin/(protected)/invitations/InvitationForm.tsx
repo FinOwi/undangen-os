@@ -2,13 +2,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import { getStaticTemplate } from "@/lib/templates";
+import StaticTemplateForm from "./StaticTemplateForm";
 import GuestManager from "./GuestManager";
+import type { ThemeOption, InvitationInitial } from "./types";
 
-export interface ThemeOption { slug: string; name: string; }
-export interface InvitationInitial {
-  id: string; slug: string; theme: string; status: string;
-  content: Record<string, any>;
-}
+export type { ThemeOption, InvitationInitial };
 
 const inputCls = "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-amber-300";
 const labelCls = "block text-xs font-medium text-zinc-400";
@@ -79,11 +78,26 @@ function cloudinaryUrl(url: string) {
   return url.replace("/upload/", "/upload/f_auto,q_auto,w_1600/");
 }
 
-export default function InvitationForm({ themes, initial }: { themes: ThemeOption[]; initial?: InvitationInitial }) {
+export default function InvitationForm({ themes, initial, defaultTheme }: { themes: ThemeOption[]; initial?: InvitationInitial; defaultTheme?: string }) {
+  const router = useRouter();
+  const [theme, setTheme] = useState(initial?.theme ?? defaultTheme ?? themes[0]?.slug ?? "");
+
+  // Template statis (RPG Cinta, Peta Perjalanan, ...) → form dinamis sendiri.
+  const statik = getStaticTemplate(theme);
+  if (statik) {
+    return <StaticTemplateForm themes={themes} initial={initial} templateId={theme} />;
+  }
+
+  return <EngineForm themes={themes} initial={initial} theme={theme} setTheme={setTheme} />;
+}
+
+function EngineForm({ themes, initial, theme, setTheme }: {
+  themes: ThemeOption[]; initial?: InvitationInitial;
+  theme: string; setTheme: (t: string) => void;
+}) {
   const router = useRouter();
   const c = initial?.content ?? {};
   const [slug, setSlug] = useState(initial?.slug ?? "");
-  const [theme, setTheme] = useState(initial?.theme ?? themes[0]?.slug ?? "");
   const [status, setStatus] = useState(initial?.status ?? "draft");
   const [c1, setC1] = useState(c.c1 ?? ""); const [c1full, setC1full] = useState(c.c1full ?? "");
   const [c2, setC2] = useState(c.c2 ?? ""); const [c2full, setC2full] = useState(c.c2full ?? "");
@@ -212,7 +226,7 @@ export default function InvitationForm({ themes, initial }: { themes: ThemeOptio
         </Field>
         <Field label="Tema">
           <select className={inputCls} value={theme} onChange={(e) => setTheme(e.target.value)}>
-            {themes.map((t) => <option key={t.slug} value={t.slug}>{t.name}</option>)}
+            {themes.map((t) => <option key={t.slug} value={t.slug}>{t.kind === "static" ? "🎮 " : ""}{t.name}</option>)}
           </select>
         </Field>
         <Field label="Status">

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase-server";
 import { loadEngine } from "@/lib/render";
+import { STATIC_TEMPLATES } from "@/lib/templates";
 import InvitationForm, { type ThemeOption, type InvitationInitial } from "../../InvitationForm";
 
 export default async function EditInvitationPage({ params }: { params: Promise<{ id: string }> }) {
@@ -10,9 +11,16 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
   if (!data) notFound();
 
   const { themes } = await loadEngine();
-  const list: ThemeOption[] = (themes ?? [])
-    .filter((t) => (t as { slug?: string }).slug)
-    .map((t) => ({ slug: (t as { slug: string }).slug, name: (t as { name?: string }).name ?? (t as { slug: string }).slug }));
+  const list: ThemeOption[] = [
+    ...((themes ?? [])
+      .filter((t) => (t as { slug?: string }).slug)
+      .map((t) => ({
+        slug: (t as { slug: string }).slug,
+        name: (t as { name?: string }).name ?? (t as { slug: string }).slug,
+        kind: "engine" as const,
+      }))),
+    ...STATIC_TEMPLATES.map((t) => ({ slug: t.id, name: t.name, kind: "static" as const })),
+  ];
 
   const initial: InvitationInitial = {
     id: data.id, slug: data.slug, theme: data.theme, status: data.status, content: data.content ?? {},

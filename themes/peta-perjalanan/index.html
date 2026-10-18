@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peta Perjalanan Putri &amp; Andika</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Fraunces:ital,wght@0,500;1,400&display=swap">
+<style>
+:root{--bg:#e8eef5;--street:#fff;--street2:#d3dfec;--block:#dbe6f1;--water:#bfe0ee;--park:#cfe8d6;--route:#e8590c;--glow:rgba(232,89,12,.4);--ink:#14243a;--muted:#46586f;--card:rgba(255,255,255,.88);--cb:#c4d2e3;--accent:#0b6f62;--k:1;--win:rgba(255,255,255,.65);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1626;--street:#223652;--street2:#162840;--block:#0f1d31;--water:#0d2a3d;--park:#10281f;--route:#ffb020;--glow:rgba(255,176,32,.4);--ink:#e8eef8;--muted:#9db0c8;--card:rgba(19,34,58,.88);--cb:#2b4263;--accent:#34e0c0;--k:.62;--win:#ffd36e}}
+:root[data-theme="dark"]{--bg:#0c1626;--street:#223652;--street2:#162840;--block:#0f1d31;--water:#0d2a3d;--park:#10281f;--route:#ffb020;--glow:rgba(255,176,32,.4);--ink:#e8eef8;--muted:#9db0c8;--card:rgba(19,34,58,.88);--cb:#2b4263;--accent:#34e0c0;--k:.62;--win:#ffd36e}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 48px)}
+body{margin:0;position:relative;background:var(--bg);color:var(--ink);font:400 16px/1.6 Fraunces,Georgia,serif;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--route);outline-offset:2px}
+.map{position:absolute;inset:0;z-index:-1;background-color:var(--block);background-image:repeating-linear-gradient(90deg,var(--street) 0 7px,transparent 7px 180px),repeating-linear-gradient(0deg,var(--street) 0 7px,transparent 7px 150px),repeating-linear-gradient(90deg,var(--street2) 0 2px,transparent 2px 60px),repeating-linear-gradient(0deg,var(--street2) 0 2px,transparent 2px 50px)}
+
+main{position:relative;max-width:560px;margin:0 auto}
+.route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pl 1.6s ease-out infinite}
+@keyframes pl{from{transform:scale(1);opacity:.6}to{transform:scale(2.6);opacity:0}}
+section{position:relative;scroll-snap-align:start;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:72px 16px}
+.lab{font:700 11px/1 'Chakra Petch',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+h1,h2{font-weight:500;line-height:1.1;margin:.3em 0}
+h1{font-size:clamp(40px,12vw,64px)}
+.cover{align-items:center;text-align:center}
+.cover p{margin:.4em 0;color:var(--muted)}
+.btn{background:var(--route);color:#111;border:0;border-radius:10px;padding:14px 26px;font:700 14px 'Chakra Petch',sans-serif;letter-spacing:.06em;cursor:pointer;margin-top:18px}
+.pin{position:absolute;top:50%;width:38px;height:38px;margin-top:-19px;border-radius:50%;background:var(--card);border:3px solid var(--route);display:grid;place-items:center;font:700 14px 'Chakra Petch',sans-serif;z-index:2}
+.l .pin{left:10%}.r .pin{right:10%}
+.pin.sf{left:50%;margin-left:-19px;right:auto}
+#startpin{top:auto;bottom:36px;margin-top:0}#endpin{top:36px;margin-top:0}
+.card{position:relative;z-index:1;width:min(70%,380px);background:var(--card);backdrop-filter:blur(8px);border:1px solid var(--cb);border-radius:16px;overflow:hidden;opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.in .card{opacity:1;transform:none}
+.l .card{margin-left:auto}.r .card{margin-right:auto}
+.card img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.cap{padding:12px 14px 16px}.cap h2{font-size:22px}.cap p{margin:0;color:var(--muted);font-size:15px}
+.fin{text-align:center}
+.cd{display:flex;gap:12px;justify-content:center;margin:12px 0}
+.cd div{background:var(--card);border:1px solid var(--cb);border-radius:10px;padding:8px 12px;min-width:64px;font:700 22px 'Chakra Petch',sans-serif}
+.cd small{display:block;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.ev{position:relative;z-index:1;background:var(--card);border:1px solid var(--cb);border-radius:14px;padding:14px;margin:10px 0;text-align:left}
+.ev h3{margin:0 0 4px;font-weight:500}.ev a{color:var(--accent);font-weight:500}
+.f{width:100%;padding:10px;margin:0 0 10px;border:1px solid var(--cb);border-radius:8px;background:var(--bg)}
+.hud{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) 12px 8px;background:var(--card);backdrop-filter:blur(10px);border-bottom:1px solid var(--cb);font:700 12px 'Chakra Petch',sans-serif}
+.hud svg{width:18px;height:18px;fill:var(--route)}
+.bar{flex:1;height:6px;border-radius:3px;background:var(--street2);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--route)}
+.ib{background:none;border:1px solid var(--cb);border-radius:8px;padding:4px 8px;cursor:pointer}
+.toast{position:fixed;z-index:30;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);width:min(92vw,360px);display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:#10192b;color:#f4f7fc;border:1px solid #ffc857;box-shadow:0 8px 28px rgba(0,0,0,.35);transform:translate(-50%,-160%);opacity:0;transition:transform .5s cubic-bezier(.2,1,.3,1),opacity .3s;overflow:hidden}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast.show::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);transform:translateX(-100%);animation:sh 1.2s .3s ease-out}
+@keyframes sh{to{transform:translateX(100%)}}
+.toast svg{width:34px;height:34px;fill:#ffc857;flex:none}
+.toast small{display:block;font:700 10px 'Chakra Petch',sans-serif;letter-spacing:.2em;color:#ffc857}
+.toast strong{display:block;font:700 17px 'Chakra Petch',sans-serif}.toast span{font-size:13px;color:#b8c5d9}
+.pin.on{background:var(--route);color:#111;animation:pop .5s}
+@keyframes pop{50%{transform:scale(1.35)}}
+.sign{position:relative;z-index:1;display:inline-flex;background:#0b7a4b;color:#fff;border:2px solid #fff;border-radius:6px;padding:3px 9px;font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.08em;margin-bottom:10px;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.l .sign{align-self:flex-end}.r .sign{align-self:flex-start}
+.card{cursor:zoom-in}
+#city{position:absolute;inset:0;pointer-events:none}
+.cover::before,.fin::before{content:"";position:absolute;inset:6% 3% 8%;background:var(--card);backdrop-filter:blur(6px);border:1px solid var(--cb);border-radius:24px}
+.cover>:not(.pin),.fin>:not(.pin){position:relative;z-index:1}
+.lm{display:block;margin:4px auto 0;width:min(270px,74%);background:none;border:0;padding:0;cursor:pointer;color:var(--ink)}
+.lm svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 10px 10px rgba(0,0,0,.25));transition:transform .3s}
+.lm:hover svg,.lm:focus-visible svg{transform:translateY(-4px) scale(1.03)}
+.lm small{display:block;margin-top:6px;font:700 10px 'Chakra Petch',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.sheet{position:fixed;inset:0;z-index:45;background:rgba(5,10,20,.6);display:flex;align-items:flex-end;justify-content:center}.sheet[hidden]{display:none}
+.sheet>div{width:min(100%,520px);background:var(--bg);border:1px solid var(--cb);border-radius:20px 20px 0 0;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:upx .35s ease-out}
+@keyframes upx{from{transform:translateY(100%)}}
+@media (prefers-reduced-motion:reduce){.sheet>div{animation:none}.lm svg{transition:none}}
+.bld{position:absolute;transform:translate(-50%,-100%) scaleY(.01);transform-origin:50% 100%;opacity:0;transition:transform 1s cubic-bezier(.2,1.2,.3,1) var(--d,0s),opacity .5s var(--d,0s)}
+.bld.up{transform:translate(-50%,-100%);opacity:1}
+.bld svg{display:block;overflow:visible}
+@media (prefers-reduced-motion:reduce){.bld{transform:translate(-50%,-100%);opacity:1;transition:none}}
+.bob{animation:bob 2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-8px)}}
+.cloud{position:fixed;left:0;fill:var(--ink);opacity:.07;animation:dr 70s linear infinite}
+.plane{position:fixed;left:0;top:34%;font-size:20px;color:var(--ink);opacity:.25;animation:dr 50s linear infinite 4s}
+@keyframes dr{from{transform:translateX(-120px)}to{transform:translateX(110vw)}}
+.compass{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:56px;height:56px;z-index:15}.compass svg{width:100%;height:100%;transform-origin:50% 50%}
+.sp{position:fixed;z-index:40;pointer-events:none;width:8px;height:8px;border-radius:2px;animation:bst .9s ease-out forwards}
+@keyframes bst{to{transform:translate(var(--dx),var(--dy)) rotate(360deg);opacity:0}}
+.ht{animation:ht 1.6s ease-out forwards;font-size:14px}@keyframes ht{to{transform:translateY(-34px);opacity:0}}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(5,10,20,.92);display:grid;place-items:center;padding:16px;color:#fff;text-align:center}.lb[hidden]{display:none}.lb img{max-width:100%;max-height:78svh;border-radius:12px}.lb .ib{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;color:#fff;border-color:rgba(255,255,255,.4)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card{opacity:1;transform:none;transition:none}.toast{transition:none}.toast.show::after,.pulse,.bob,.cloud,.plane,.ht,.sp,.pin.on{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tr" viewBox="0 0 24 24"><path d="M7 3h10v2h3v3a4 4 0 0 1-4 4h-.3A5 5 0 0 1 13 14.9V17h3v2H8v-2h3v-2.1A5 5 0 0 1 8.3 12H8a4 4 0 0 1-4-4V5h3V3Zm-1 4v1a2 2 0 0 0 1.2 1.8A5 5 0 0 1 7 8V7H6Zm12 0h-1v1a5 5 0 0 1-.2 1.8A2 2 0 0 0 18 8V7Z"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><pattern id="wl" width="8" height="10" patternUnits="userSpaceOnUse" patternTransform="skewY(26.565)"><rect x="1.5" y="2.5" width="4" height="5" fill="var(--win)"/></pattern><pattern id="wr" width="8" height="10" patternUnits="userSpaceOnUse" patternTransform="skewY(-26.565)"><rect x="1.5" y="2.5" width="4" height="5" fill="var(--win)"/></pattern></defs></svg>
+<div class="map" aria-hidden="true"><svg class="cloud" style="top:10%;width:110px" viewBox="0 0 60 24"><path d="M10 22a8 8 0 0 1 2-15 10 10 0 0 1 19-1 8 8 0 0 1 17 4 6 6 0 0 1 2 12z"/></svg><svg class="cloud" style="top:48%;width:80px;animation-duration:95s;animation-delay:-35s" viewBox="0 0 60 24"><path d="M10 22a8 8 0 0 1 2-15 10 10 0 0 1 19-1 8 8 0 0 1 17 4 6 6 0 0 1 2 12z"/></svg><svg class="cloud" style="top:78%;width:130px;animation-duration:120s;animation-delay:-70s" viewBox="0 0 60 24"><path d="M10 22a8 8 0 0 1 2-15 10 10 0 0 1 19-1 8 8 0 0 1 17 4 6 6 0 0 1 2 12z"/></svg><span class="plane">✈</span></div>
+<header class="hud"><svg aria-hidden="true"><use href="#tr"/></svg><span id="cnt" aria-label="Achievement terbuka">0/13</span><div class="bar" aria-hidden="true"><i id="pg"></i></div><button class="ib" id="mus" hidden aria-label="Putar atau jeda musik">♪</button><button class="ib" id="th" aria-label="Ganti mode peta siang atau malam">☀/☾</button></header>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg aria-hidden="true"><use href="#tr"/></svg><div><small>ACHIEVEMENT UNLOCKED</small><strong id="tt"></strong><span id="ts"></span></div></div>
+<div class="compass" aria-hidden="true"><svg id="cmp" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="var(--card)" stroke="var(--cb)" stroke-width="2"/><path d="M28 50L34 28H22Z" fill="none" stroke="var(--muted)"/><path d="M28 6L34 28H22Z" fill="var(--route)"/><circle cx="28" cy="28" r="2.5" fill="var(--ink)"/></svg></div>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Foto diperbesar"><button class="ib" id="lbx" aria-label="Tutup foto">✕</button><figure style="margin:0"><img id="lbi" alt=""><figcaption id="lbc" style="margin-top:10px"></figcaption></figure></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Lokasi acara"><div><button class="ib" id="shx" style="float:right" aria-label="Tutup">✕</button><div id="shb"></div></div></div>
+<div id="city" aria-hidden="true"></div>
+<main id="main">
+<svg class="route" id="route" aria-hidden="true" preserveAspectRatio="none"><g id="orn"></g><path id="rb" fill="none" stroke="var(--street)" stroke-width="16" stroke-linecap="round"/><path id="rd" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="8 12" opacity=".55"/><path id="rp" fill="none" stroke="var(--route)" stroke-width="6" stroke-linecap="round" style="filter:drop-shadow(0 0 6px var(--glow))"/><g id="hearts"></g><g id="car"><circle r="12" fill="var(--route)" class="pulse"/><g id="cr"><rect x="-12" y="-7" width="24" height="14" rx="6" fill="var(--route)" stroke="#fff" stroke-width="2"/><rect x="-3" y="-4.5" width="8" height="9" rx="2" fill="#fff" opacity=".9"/></g></g></svg>
+<section class="cover" id="cover"><svg class="bob" width="30" height="40" viewBox="0 0 30 40" aria-hidden="true"><path d="M15 38C5 24 2 19 2 14a13 13 0 0 1 26 0c0 5-3 10-13 24Z" fill="var(--route)"/><circle cx="15" cy="14" r="5" fill="#fff"/></svg><div class="lab">Peta perjalanan menuju</div><h1 id="names"></h1><p id="dl"></p><p>Kepada Yth.<br><strong id="tamu">Tamu Undangan</strong></p><button class="btn" id="go">Mulai Perjalanan →</button><span class="pin sf" id="startpin" aria-hidden="true">▶</span></section>
+<div id="stops"></div>
+<section class="fin" id="finish"><span class="pin sf" id="endpin" aria-hidden="true">★</span><div class="lab">Tujuan akhir</div><h2>Tiba di Hari Bahagia</h2><button class="lm" id="lm" aria-label="Lihat lokasi acara"><svg viewBox="-84 -160 144 164" aria-hidden="true"><ellipse cx="-12" cy="-14" rx="78" ry="22" fill="#000" opacity=".16"/><ellipse class="pulse" cx="-12" cy="-14" rx="60" ry="17" fill="none" stroke="var(--route)" stroke-width="2"/><polygon points="-80,-40 0,0 0,-56 -80,-96" style="fill:hsl(28 40% calc(var(--k)*46%))"/><polygon points="-80,-40 0,0 0,-56 -80,-96" fill="url(#wl)"/><polygon points="0,0 56,-28 56,-84 0,-56" style="fill:hsl(28 40% calc(var(--k)*60%))"/><polygon points="0,0 56,-28 56,-84 0,-56" fill="url(#wr)"/><polygon points="14,-7 28,-14 28,-42 14,-35" fill="var(--bg)" opacity=".85"/><polygon points="-80,-96 0,-56 56,-84 -24,-124" style="fill:hsl(28 40% calc(var(--k)*76%))"/><polygon points="-49,-94 -5,-72 -5,-102 -49,-124" style="fill:hsl(28 40% calc(var(--k)*46%))"/><polygon points="-49,-94 -5,-72 -5,-102 -49,-124" fill="url(#wl)"/><polygon points="-5,-72 25,-87 25,-117 -5,-102" style="fill:hsl(28 40% calc(var(--k)*60%))"/><polygon points="-5,-72 25,-87 25,-117 -5,-102" fill="url(#wr)"/><polygon points="-49,-124 -5,-102 25,-117 -19,-139" style="fill:hsl(28 40% calc(var(--k)*76%))"/><path d="M-28 -121A16 18 0 0 1 4 -121Z" style="fill:hsl(42 85% calc(var(--k)*58%))"/><path d="M-12 -139V-152" stroke="var(--route)" stroke-width="2"/><path d="M-12 -152l10 3-10 3z" fill="var(--route)"/><g transform="translate(-19 -176) scale(.45)"><g class="bob"><path d="M15 38C5 24 2 19 2 14a13 13 0 0 1 26 0c0 5-3 10-13 24Z" fill="var(--route)"/><circle cx="15" cy="14" r="5" fill="#fff"/></g></g></svg><small>Ketuk gedung untuk lihat lokasi</small></button><div class="cd" id="cd" aria-live="off"></div><div id="events"></div>
+<form class="ev" id="rsvp"><h3>Konfirmasi kehadiran</h3><input class="f" id="rn" placeholder="Nama lengkap" required aria-label="Nama lengkap"><select class="f" id="rh" aria-label="Kehadiran"><option>Hadir</option><option>Tidak hadir</option></select><select class="f" id="rj" aria-label="Jumlah tamu"><option>1 orang</option><option>2 orang</option><option>3 orang</option></select><textarea class="f" id="rp" rows="2" placeholder="Doa dan ucapan" aria-label="Doa dan ucapan"></textarea><button class="btn" type="submit" style="margin:0;width:100%">Kirim lewat WhatsApp</button></form>
+<div id="gifts"></div><p style="color:var(--muted)">Merupakan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p></section>
+</main>
+<script>
+(function(){
+var D={names:['Putri','Andika'],date:'2027-12-28T08:00:00+07:00',dateLabel:'Minggu, 28 Desember 2027',wa:'6281234567890',music:'/tema/peta-perjalanan/assets/bgm.m4a',
+events:[{t:'Akad Nikah',d:'Minggu, 28 Desember 2027 · 08.00 WIB',p:'Menara 165, Jakarta Selatan',m:'https://maps.google.com'},{t:'Resepsi',d:'Minggu, 28 Desember 2027 · 11.00–14.00 WIB',p:'Menara 165, Jakarta Selatan',m:'https://maps.google.com'}],
+gifts:[{b:'BCA',n:'1234567890',a:'Putri Cantika Sari'},{b:'BRI',n:'0987654321',a:'Putra Andika Pratama'}],
+stops:[
+{t:'Awal Berjumpa',y:'2019',x:'Perkenalan singkat di acara kampus, tanpa tahu itu awal segalanya.',img:'/tema/peta-perjalanan/assets/foto-galeri2.webp'},
+{t:'Obrolan Pertama',y:'2019',x:'Dari pesan singkat menjadi obrolan yang tak pernah selesai.',img:'/tema/peta-perjalanan/assets/foto-ngobrol.webp'},
+{t:'Kencan Pertama',y:'2020',x:'Kopi sore dan cerita yang terasa terlalu cepat habis.',img:'/tema/peta-perjalanan/assets/foto-kencan.webp'},
+{t:'Jarak Memisahkan',y:'2021',x:'Berjauhan, tetapi kabar tak pernah putus.',img:''},
+{t:'Liburan Bersama',y:'2022',x:'Menyusuri kota baru dan menemukan sisi lain satu sama lain.',img:'/tema/peta-perjalanan/assets/foto-pasangan.webp'},
+{t:'Bertemu Keluarga',y:'2022',x:'Restu pertama datang dari meja makan keluarga.',img:'/tema/peta-perjalanan/assets/foto-keluarga.webp'},
+{t:'Melewati Badai',y:'2023',x:'Ujian yang justru menguatkan kami.',img:''},
+{t:'Lamaran',y:'2024',x:'Satu pertanyaan, satu jawaban: ya.',img:'/tema/peta-perjalanan/assets/foto-galeri1.webp'},
+{t:'Menyusun Rencana',y:'2026',x:'Memilih tanggal, tempat, dan segala yang kami impikan.',img:'/tema/peta-perjalanan/assets/foto-rencana.webp'},
+{t:'Menuju Halal',y:'2027',x:'Perjalanan panjang ini berhenti di satu tujuan.',img:'/tema/peta-perjalanan/assets/foto-akad.webp'}]};
+var $=function(s){return document.querySelector(s)},e=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function ph(i){var h=(i*37+200)%360;return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl('+h+' 45% 55%)"/><stop offset="1" stop-color="hsl('+(h+40)+' 50% 30%)"/></linearGradient></defs><rect width="400" height="500" fill="url(#g)"/><text x="200" y="260" font-family="sans-serif" font-size="28" fill="#fff" text-anchor="middle" opacity=".85">FOTO '+(i+1)+'</text></svg>')}
+$('#names').textContent=D.names.join(' & ');$('#dl').textContent=D.dateLabel;
+document.title='Peta Perjalanan '+D.names.join(' & ');
+var g=new URLSearchParams(location.search).get('to');if(g)$('#tamu').textContent=g;
+$('#stops').innerHTML=D.stops.map(function(s,i){var n=('0'+(i+1)).slice(-2);return '<section class="stop '+(i%2?'r':'l')+'" data-i="'+(i+1)+'" aria-label="Stop '+(i+1)+'"><span class="pin" aria-hidden="true">'+(i+1)+'</span><div class="sign">'+(i<D.stops.length-1?(D.stops.length-1-i)+' stop menuju hari H':'Tujuan di depan')+'</div><article class="card" tabindex="0" role="button" aria-label="Perbesar foto: '+e(s.t)+'"><img src="'+e(s.img||ph(i))+'" alt="Foto: '+e(s.t)+'" width="400" height="500" loading="lazy"><div class="cap"><div class="lab">Stop '+n+' · '+e(s.y)+'</div><h2>'+e(s.t)+'</h2><p>'+e(s.x)+'</p></div></article></section>'}).join('');
+$('#events').innerHTML=D.events.map(function(v){return '<div class="ev"><h3>'+e(v.t)+'</h3>'+e(v.d)+'<br>'+e(v.p)+'<br><a href="'+e(v.m)+'" target="_blank" rel="noopener">Buka rute di peta →</a></div>'}).join('');
+$('#gifts').innerHTML=D.gifts.map(function(v,i){return '<div class="ev"><h3>'+e(v.b)+' · '+e(v.n)+'</h3>a.n. '+e(v.a)+'<br><button class="ib" data-n="'+e(v.n)+'" style="margin-top:8px">Salin nomor rekening</button></div>'}).join('');
+$('#gifts').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;try{navigator.clipboard.writeText(b.dataset.n);b.textContent='Tersalin ✓'}catch(x){}});
+var T=Date.parse(D.date);function tick(){var d=Math.max(0,T-Date.now()),u=[[864e5,'Hari'],[36e5,'Jam'],[6e4,'Menit'],[1e3,'Detik']],h='';u.forEach(function(x){var n=Math.floor(d/x[0]);d-=n*x[0];h+='<div>'+('0'+n).slice(-2)+'<small>'+x[1]+'</small></div>'});$('#cd').innerHTML=h}tick();setInterval(tick,1000);
+$('#rsvp').onsubmit=function(ev){ev.preventDefault();var m='Konfirmasi kehadiran%0ANama: '+encodeURIComponent($('#rn').value)+'%0AStatus: '+encodeURIComponent($('#rh').value)+'%0AJumlah: '+encodeURIComponent($('#rj').value)+'%0AUcapan: '+encodeURIComponent($('#rp').value);window.open('https://wa.me/'+D.wa+'?text='+m,'_blank')};
+/* achievement */
+var A=[{t:'Perjalanan Dimulai',s:'Kamu membuka undangan'}].concat(D.stops.map(function(s,i){return{t:s.t,s:'Pemberhentian '+(i+1)+' dari '+D.stops.length}}),[{t:'Tiba di Tujuan',s:'Sampai di hari bahagia'},{t:'Lokasi Ditemukan',s:'Kamu mengetuk gedung acara'}]);
+var done={},cnt=0,tm;
+function fx(k){var P=[$('#startpin')].concat([].slice.call(document.querySelectorAll('.stop .pin')),[$('#endpin')]);if(P[k])P[k].classList.add('on');if(navigator.vibrate)navigator.vibrate(25);if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;var c=['#ffc857','#e8590c','#34e0c0','#fff'];for(var i=0;i<16;i++){var s=document.createElement('i');s.className='sp';s.style.left='50vw';s.style.top='96px';s.style.background=c[i%4];var a=Math.random()*6.28,r=60+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',Math.sin(a)*r+'px');document.body.appendChild(s);setTimeout(function(n){return function(){n.remove()}}(s),950)}}
+function unlock(k){if(done[k])return;done[k]=1;cnt++;fx(k);$('#cnt').textContent=cnt+'/'+A.length;$('#tt').textContent=A[k].t;$('#ts').textContent=A[k].s;var t=$('#toast');t.classList.remove('show');void t.offsetWidth;t.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){t.classList.remove('show')},3200)}
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');unlock(en.target.id==='finish'?A.length-2:+en.target.dataset.i)}})},{threshold:.55});
+document.querySelectorAll('.stop').forEach(function(s){io.observe(s)});io.observe($('#finish'));
+$('#go').onclick=function(){unlock(0);if(au)au.play().catch(function(){});$('.stop').scrollIntoView({behavior:'smooth'})};
+var lb=$('#lb');function openLb(c){var im=c.querySelector('img');$('#lbi').src=im.src;$('#lbi').alt=im.alt;$('#lbc').textContent=c.querySelector('h2').textContent;lb.hidden=false;$('#lbx').focus()}function closeLb(){lb.hidden=true}
+$('#stops').addEventListener('click',function(ev){var c=ev.target.closest('.card');if(c)openLb(c)});$('#stops').addEventListener('keydown',function(ev){if(ev.key==='Enter'){var c=ev.target.closest('.card');if(c)openLb(c)}});lb.addEventListener('click',function(ev){if(ev.target!==$('#lbi'))closeLb()});addEventListener('keydown',function(ev){if(ev.key==='Escape'){closeLb();$('#sheet').hidden=true}});
+function openSheet(){var ev=D.events,st=new Date(T),en=new Date(T+108e5),f=function(x){return x.toISOString().replace(/[-:]|\.\d{3}/g,'')},bs='display:block;text-align:center;text-decoration:none;';
+$('#shb').innerHTML='<div class="lab">Lokasi acara</div><h2 style="font-size:26px">'+e(ev[0].p)+'</h2>'+ev.map(function(v){return '<p style="margin:.2em 0"><strong>'+e(v.t)+'</strong><br>'+e(v.d)+'</p>'}).join('')+'<a class="btn" style="'+bs+'" target="_blank" rel="noopener" href="'+e(ev[0].m)+'">Buka rute di peta</a><a class="btn" style="'+bs+'background:var(--card);color:var(--ink);border:1px solid var(--cb)" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('Pernikahan '+D.names.join(' & '))+'&dates='+f(st)+'/'+f(en)+'&location='+encodeURIComponent(ev[0].p)+'">Simpan ke kalender</a>';
+$('#sheet').hidden=false;unlock(A.length-1);$('#shx').focus()}
+$('#lm').onclick=openSheet;$('#sheet').addEventListener('click',function(ev){if(ev.target===this||ev.target.id==='shx')this.hidden=true});
+/* tema siang/malam, musik */
+$('#th').onclick=function(){var r=document.documentElement,c=r.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.dataset.theme=c==='dark'?'light':'dark'};
+var au=null;if(D.music){au=new Audio(D.music);au.loop=true;$('#mus').hidden=false;$('#mus').onclick=function(){au.paused?au.play():au.pause()}}
+/* rute */
+var main=$('#main'),rp=$('#rp'),car=$('#car'),pts=[],L=0,mTop=0;
+var OR=[function(){return '<circle cy="-14" r="12" fill="#3f9b5f"/><rect x="-2" y="-4" width="4" height="12" fill="#8a5a3c"/>'},function(){return '<rect x="-11" y="-30" width="22" height="38" rx="2" fill="var(--muted)"/><path d="M-6-24h4v4h-4zM2-24h4v4H2zM-6-14h4v4h-4zM2-14h4v4H2z" fill="var(--bg)"/>'},function(){return '<path d="M-22 8L-4-22 6-6 12-14 24 8Z" fill="var(--accent)" opacity=".8"/>'},function(){return '<path d="M-14 8V-8L0-20l14 12V8Z" fill="var(--route)" opacity=".85"/><rect x="-3" y="-2" width="6" height="10" fill="var(--bg)"/>'}];
+function drawOrn(W){var h='';for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],y=(a[1]+b[1])/2;for(var k=0;k<2;k++){var x=k?W*.7:W*.3;h+='<g transform="translate('+x+' '+(y+(k?40:-40))+')" opacity=".55">'+OR[((i+k)%2)*2]()+'</g>'}}$('#orn').innerHTML=h}
+var HU=[205,175,32,345,260],io2=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting)en.target.classList.add('up')})},{threshold:.1});
+function bld(w,d,h,hu){var f=function(l){return 'fill:hsl('+hu+' 30% calc(var(--k)*'+l+'%)'},Lx=-w,Ly=-w/2,Rx=d,Ry=-d/2,Bx=d-w,By=-(w+d)/2,pl=[Lx,Ly,0,0,0,-h,Lx,Ly-h].join(' '),pr=[0,0,Rx,Ry,Rx,Ry-h,0,-h].join(' '),pt=[Lx,Ly-h,0,-h,Rx,Ry-h,Bx,By-h].join(' ');
+return '<svg width="'+(w+d)+'" height="'+(h-By)+'" viewBox="'+Lx+' '+(By-h)+' '+(w+d)+' '+(h-By)+'"><ellipse cx="'+(Bx/2)+'" cy="'+(By/2)+'" rx="'+(w+d)*.6+'" ry="'+(w+d)*.2+'" fill="#000" opacity=".14"/><polygon points="'+pl+'" style="'+f(42)+'"/><polygon points="'+pl+'" fill="url(#wl)"/><polygon points="'+pr+'" style="'+f(56)+'"/><polygon points="'+pr+'" fill="url(#wr)"/><polygon points="'+pt+'" style="'+f(72)+'"/></svg>'}
+function poly(p,s){return '<polygon points="'+p.join(' ')+'" style="'+s+'"/>'}
+function shf(hu,l){return 'fill:hsl('+hu+' 32% calc(var(--k)*'+l+'%))'}
+/* rumah tapak atap limas */
+function house(s,hu){var wh=s*1.05,rh=s*0.62,g='';
+g+='<ellipse cx="0" cy="'+(-s/2)+'" rx="'+(s*1.05)+'" ry="'+(s*0.42)+'" fill="#000" opacity=".13"/>';
+g+=poly([0,-s-wh,-s,-s/2-wh,0,-s/2-wh-rh],shf(hu,34));
+g+=poly([0,-s-wh,s,-s/2-wh,0,-s/2-wh-rh],shf(hu,30));
+g+=poly([-s,-s/2,0,0,0,-wh,-s,-s/2-wh],shf(hu,68));
+g+=poly([0,0,s,-s/2,s,-s/2-wh,0,-wh],shf(hu,55));
+g+=poly([-s,-s/2-wh,0,-wh,0,-s/2-wh-rh],shf(18,54));
+g+=poly([0,-wh,s,-s/2-wh,0,-s/2-wh-rh],shf(14,44));
+var dw=s*0.26,dh=wh*0.62,bx=-s*0.7,by=-s*0.35;
+g+=poly([bx,by,bx+dw*0.89,by+dw*0.44,bx+dw*0.89,by+dw*0.44-dh,bx,by-dh],shf(hu,26));
+var wx=s*0.42,wy=-s*0.21,ww2=s*0.2,wh2=wh*0.3;
+g+=poly([wx,wy,wx+ww2*0.89,wy-ww2*0.44,wx+ww2*0.89,wy-ww2*0.44-wh2,wx,wy-wh2],shf(205,78));
+var t=(-s/2-wh-rh).toFixed(1),hh=(s/2+wh+rh+s*0.3).toFixed(1),ww=(s*2.5).toFixed(1);
+return '<svg width="'+ww+'" height="'+hh+'" viewBox="'+(-s*1.25).toFixed(1)+' '+t+' '+ww+' '+hh+'">'+g+'</svg>'}
+/* ruko: badan + papan nama + etalase */
+function ruko(w,d,fh,hu,ac){var Lx=-w,Ly=-w/2,Rx=d,Ry=-d/2,Bx=d-w,By=-(w+d)/2,g='';
+g+='<ellipse cx="'+(Bx/2).toFixed(1)+'" cy="'+(By/2).toFixed(1)+'" rx="'+(w*0.95).toFixed(1)+'" ry="'+(w*0.4).toFixed(1)+'" fill="#000" opacity=".13"/>';
+g+=poly([Lx,Ly,0,0,0,-fh,Lx,Ly-fh],shf(hu,62));
+g+=poly([0,0,Rx,Ry,Rx,Ry-fh,0,-fh],shf(hu,50));
+g+=poly([Lx,Ly-fh,0,-fh,Rx,Ry-fh,Bx,By-fh],shf(hu,74));
+g+=poly([Lx+2,Ly-fh+7,-3,-fh+7,-3,-fh+14,Lx+2,Ly-fh+14],'fill:'+ac);
+g+=poly([Lx+1,Ly-fh+24,-2,-fh+24,-2,-fh+31,Lx+1,Ly-fh+31],shf(hu,30));
+g+=poly([Lx+1,Ly-fh+31,-2,-fh+31,-2,-fh+33,Lx+1,Ly-fh+33],'fill:#f8f9fa;opacity:.85');
+var t=(-fh-Math.max(w,d)-2).toFixed(1),hh=(fh+Math.max(w,d)+7).toFixed(1),ww=(w+d+8).toFixed(1);
+return '<svg width="'+ww+'" height="'+hh+'" viewBox="'+(-w-4)+' '+t+' '+ww+' '+hh+'">'+g+'</svg>'}
+/* masjid: kubah + menara */
+function mosque(s){var wh=s*1.15,g='',hu=45;
+g+='<ellipse cx="0" cy="'+(-s/2)+'" rx="'+(s*1.15)+'" ry="'+(s*0.46)+'" fill="#000" opacity=".13"/>';
+g+=poly([-s,-s/2,0,0,0,-wh,-s,-s/2-wh],shf(hu,70));
+g+=poly([0,0,s,-s/2,s,-s/2-wh,0,-wh],shf(hu,58));
+g+=poly([-s,-s/2-wh,0,-wh,s,-s/2-wh,0,-s-wh],shf(hu,78));
+var cy=-s/2-wh,r=s*0.52;
+g+='<path d="M'+(-r)+' '+cy+' A '+r+' '+(r*1.15)+' 0 0 1 '+r+' '+cy+' Z" style="'+shf(160,42)+'"/>';
+g+='<rect x="-0.8" y="'+(cy-r*1.15-7)+'" width="1.6" height="7" style="'+shf(hu,30)+'"/>';
+g+='<circle cx="0" cy="'+(cy-r*1.15-8)+'" r="2" style="'+shf(45,70)+'"/>';
+var mx=s*0.78,my=-s*0.62,mh=s*2.4;
+g+='<rect x="'+(mx-2.6)+'" y="'+(my-mh)+'" width="5.2" height="'+mh+'" style="'+shf(hu,60)+'"/>';
+g+='<path d="M'+(mx-3.4)+' '+(my-mh)+' L '+mx+' '+(my-mh-5)+' L '+(mx+3.4)+' '+(my-mh)+' Z" style="'+shf(160,42)+'"/>';
+var t=(cy-r*1.15-11).toFixed(1),hh=(-t+s*0.3).toFixed(1),ww=(s*2.6).toFixed(1);
+return '<svg width="'+ww+'" height="'+hh+'" viewBox="'+(-s*1.3).toFixed(1)+' '+t+' '+ww+' '+hh+'">'+g+'</svg>'}
+var GX=140,GY=120;function rnd(n){return((n*9301+49297)%233280)/233280}
+function drawCity(){var c=$('#city'),cr=c.getBoundingClientRect(),m=main.getBoundingClientRect(),W=cr.width,H=cr.height,ox=m.left-cr.left,oy=m.top-cr.top,LL=rp.getTotalLength(),S=[],k=W<420?.8:1,rx=function(v){return W*(.5+.36*Math.sin(v/1100+1))};
+for(var l=0;l<=LL;l+=24){var q=rp.getPointAtLength(l);S.push([q.x+ox,q.y+oy])}
+var rd='M'+rx(-60)+' -60';for(var v=-20;v<=H+60;v+=40)rd+=' L'+rx(v)+' '+v;
+var cols=Math.ceil(W/GX)+1,rows=Math.ceil(H/GY)+1,pk=Math.min(.3,Math.max(.02,1-2000/(cols*rows*4))),base='',B=[];
+for(var r=0;r<rows;r++)for(var cc=0;cc<cols;cc++){var bx=cc*GX+7,by=r*GY+7,park=(cc*5+r*3)%16===0;
+if(park)base+='<rect x="'+(bx+8)+'" y="'+(by+8)+'" width="'+(GX-23)+'" height="'+(GY-23)+'" rx="10" fill="var(--park)"/>';
+for(var sy=0;sy<2;sy++)for(var sx=0;sx<2;sx++){var n=r*131+cc*17+sy*5+sx+1,x=bx+(sx?.74:.26)*(GX-7),y2=by+(sy?.98:.52)*(GY-7);
+if(y2>H-8||x>W+20||Math.abs(x-rx(y2))<42||rnd(n)<pk)continue;
+var bad=0;for(var i=0;i<S.length;i++){var dx=S[i][0]-x,dy=S[i][1]-y2;if(dx*dx+dy*dy<2500){bad=1;break}}if(bad)continue;
+var pick=rnd(n+5),hue=HU[Math.floor(rnd(n+4)*5)],bs='';
+if(pick<.34)bs=house((13+rnd(n+6)*7)*k,28+Math.floor(rnd(n+7)*20));
+else if(pick<.62)bs=ruko((14+rnd(n+6)*6)*k,(12+rnd(n+8)*5)*k,(30+rnd(n+9)*18)*k,hue,['#e8590c','#0b6f62','#c2255c','#1971c2'][Math.floor(rnd(n+10)*4)]);
+else if(pick<.78){var bw=(16+Math.floor(rnd(n+1)*3)*4)*k,bh=(rnd(n+11)>.88?(110+rnd(n+2)*70):(42+rnd(n+2)*58))*k;bs=bld(bw,bw,bh,hue)}
+else if(pick<.82)bs=mosque((13+rnd(n+12)*3)*k);
+else bs='<svg width="30" height="34" viewBox="-14 -26 28 34">'+OR[0]()+'</svg>';
+B.push({x:x,y:y2,s:bs});}}
+B.sort(function(a,b){return a.y-b.y||a.x-b.x});
+c.innerHTML='<svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><path d="'+rd+'" fill="none" stroke="var(--water)" stroke-width="44" stroke-linejoin="round" opacity=".85"/>'+base+'</svg>'+B.map(function(b,i){return '<div class="bld" style="left:'+b.x+'px;top:'+b.y+'px;--d:'+((i%5)*.08)+'s">'+b.s+'</div>'}).join('');
+c.querySelectorAll('.bld').forEach(function(b){io2.observe(b)})}
+function build(){var m=main.getBoundingClientRect(),pins=[$('#startpin')].concat([].slice.call(document.querySelectorAll('.stop .pin')),[$('#endpin')]);mTop=m.top+scrollY;
+pts=pins.map(function(p){var r=p.getBoundingClientRect();return[r.left+r.width/2-m.left,r.top+r.height/2-m.top]});
+var d='M'+pts[0][0]+' '+pts[0][1];for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],ym=(a[1]+b[1])/2;d+=' C'+a[0]+' '+ym+' '+b[0]+' '+ym+' '+b[0]+' '+b[1]}
+$('#route').setAttribute('viewBox','0 0 '+m.width+' '+m.height);['#rb','#rd','#rp'].forEach(function(s){$(s).setAttribute('d',d)});
+drawCity();L=rp.getTotalLength();rp.style.strokeDasharray=L;upd()}
+var lastH=0,NS='http://www.w3.org/2000/svg';function heart(p){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=document.createElementNS(NS,'text');t.setAttribute('x',p.x-4+(Math.random()*16-8));t.setAttribute('y',p.y);t.setAttribute('class','ht');t.setAttribute('fill','var(--route)');t.textContent='♥';$('#hearts').appendChild(t);setTimeout(function(){t.remove()},1700)}
+var busy=0;function upd(){busy=0;if(!L)return;var y=scrollY+innerHeight*.5-mTop,lo=0,hi=L;
+if(y>pts[0][1]){for(var i=0;i<16;i++){var mid=(lo+hi)/2;if(rp.getPointAtLength(mid).y<y)lo=mid;else hi=mid}}
+var p=rp.getPointAtLength(lo),q=rp.getPointAtLength(Math.min(L,lo+3)),o=rp.getPointAtLength(Math.max(0,lo-3));rp.style.strokeDashoffset=L-lo;car.setAttribute('transform','translate('+p.x+' '+p.y+')');$('#cr').setAttribute('transform','rotate('+(Math.atan2(q.y-o.y,q.x-o.x)*57.3)+')');$('#pg').style.width=(lo/L*100)+'%';document.querySelector('.map').style.setProperty('--sy',scrollY);$('#cmp').style.transform='rotate('+scrollY*.12+'deg)';if(Math.abs(lo-lastH)>40&&lo>0){lastH=lo;heart(p)}}
+addEventListener('scroll',function(){if(!busy){busy=1;requestAnimationFrame(upd)}},{passive:true});
+addEventListener('resize',build);addEventListener('load',build);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(build);build();
+})();
+</script>
+</body>
+</html>

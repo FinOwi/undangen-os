@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { loadEngine, renderInvitation, getTheme, type OrderData } from "@/lib/render";
+import { getStaticTemplate } from "@/lib/templates";
+import { renderStaticTheme } from "@/lib/static-render";
 import { createPublicClient } from "@/lib/supabase-public";
 import { guestCookieName } from "@/lib/guest-links";
 import { linkNotFoundPage, deviceMismatchPage } from "@/lib/private-pages";
@@ -65,34 +67,46 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     guestName = (row.guest_name as string) || null;
   }
 
-  const { tpl, themes } = await loadEngine();
-  const tema = getTheme(themes ?? [], data.theme);
-  if (!tema) {
-    return new NextResponse("Tema tidak ditemukan.", { status: 404 });
+  // ---------- render: tema statis (RPG Cinta, Peta Perjalanan, ...) ----------
+  const statik = getStaticTemplate(data.theme);
+  let out: string;
+  if (statik) {
+    try {
+      out = await renderStaticTheme(data.theme, c);
+    } catch (e: any) {
+      console.error(`[undangen-os] renderStaticTheme gagal utk slug=${slug}:`, e.message);
+      return new NextResponse("Gagal merender tema.", { status: 500 });
+    }
+  } else {
+    const { tpl, themes } = await loadEngine();
+    const tema = getTheme(themes ?? [], data.theme);
+    if (!tema) {
+      return new NextResponse("Tema tidak ditemukan.", { status: 404 });
+    }
+
+    const order: OrderData = {
+      tema: data.theme,
+      c1: c.c1 ?? "", c1full: c.c1full ?? "", c2: c.c2 ?? "", c2full: c.c2full ?? "",
+      p1: c.p1, p2: c.p2,
+      venue: c.venue, venue_addr: c.venue_addr, maps_q: c.maps_q,
+      iso: c.iso ?? "", label: c.label ?? "", short: c.short ?? "",
+      cover: c.cover ?? "", date_rsvp: c.date_rsvp,
+      gift1_bank: c.gift1_bank ?? "", gift1_num: c.gift1_num ?? "", gift1_an: c.gift1_an,
+      gift2_bank: c.gift2_bank, gift2_num: c.gift2_num, gift2_an: c.gift2_an,
+      quote: c.quote, quote_src: c.quote_src,
+      photo_cover: c.photo_cover, photo_groom: c.photo_groom, photo_bride: c.photo_bride,
+      story_photos: c.story_photos, video_url: c.video_url,
+    };
+    const urls: string[] = Array.isArray((data.content as { gallery?: unknown })?.gallery)
+      ? ((data.content as { gallery: string[] }).gallery ?? [])
+      : [];
+
+    const { html, leftover } = renderInvitation(tpl ?? "", tema, slug, order, urls);
+    if (leftover.length) console.warn(`[undangen-os] placeholder gantung utk slug=${slug}:`, leftover.join(","));
+    out = html;
   }
 
-  const order: OrderData = {
-    tema: data.theme,
-    c1: c.c1 ?? "", c1full: c.c1full ?? "", c2: c.c2 ?? "", c2full: c.c2full ?? "",
-    p1: c.p1, p2: c.p2,
-    venue: c.venue, venue_addr: c.venue_addr, maps_q: c.maps_q,
-    iso: c.iso ?? "", label: c.label ?? "", short: c.short ?? "",
-    cover: c.cover ?? "", date_rsvp: c.date_rsvp,
-    gift1_bank: c.gift1_bank ?? "", gift1_num: c.gift1_num ?? "", gift1_an: c.gift1_an,
-    gift2_bank: c.gift2_bank, gift2_num: c.gift2_num, gift2_an: c.gift2_an,
-    quote: c.quote, quote_src: c.quote_src,
-    photo_cover: c.photo_cover, photo_groom: c.photo_groom, photo_bride: c.photo_bride,
-    story_photos: c.story_photos, video_url: c.video_url,
-  };
-  const urls: string[] = Array.isArray((data.content as { gallery?: unknown })?.gallery)
-    ? ((data.content as { gallery: string[] }).gallery ?? [])
-    : [];
-
-  const { html, leftover } = renderInvitation(tpl ?? "", tema, slug, order, urls);
-  if (leftover.length) console.warn(`[undangen-os] placeholder gantung utk slug=${slug}:`, leftover.join(","));
-
   // Nama tamu private: ganti pembaca ?to= di template dgn nama tervalidasi.
-  let out = html;
   if (guestName) {
     out = out.replace(
       "new URLSearchParams(location.search).get('to')",

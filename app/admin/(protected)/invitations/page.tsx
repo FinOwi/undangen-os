@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase-server";
+import { templateDisplayName } from "@/lib/templates";
 import { StatusButtons, DeleteButton } from "./RowActions";
 
 export default async function InvitationsPage() {
@@ -28,7 +29,7 @@ export default async function InvitationsPage() {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className="font-medium text-zinc-100">{r.title}</p>
-                <p className="text-xs text-zinc-500">/{r.slug} · {r.theme} · {new Date(r.created_at).toLocaleDateString("id-ID")}</p>
+                <p className="text-xs text-zinc-500">/{r.slug} · {templateDisplayName(r.theme)} · {new Date(r.created_at).toLocaleDateString("id-ID")}</p>
               </div>
               <span className={`rounded-full px-2.5 py-1 text-[11px] ${
                 r.status === "published" ? "bg-emerald-950 text-emerald-300"
