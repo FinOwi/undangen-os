@@ -170,6 +170,50 @@ const ROSE_SLOTS: PhotoSlotDef[] = [
   { key: "galeri", label: "🖼️ 4–9. Galeri Kenangan", hint: "6 foto · section galeri", max: 6 },
 ];
 
+const LAKON_FIELDS: FieldDef[] = [
+  { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: "Galih", required: true, section: "Mempelai" },
+  { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: "Galih Prasetyo", required: true, section: "Mempelai" },
+  { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: "Sekar", required: true, section: "Mempelai" },
+  { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: "Sekar Ayu Lestari", required: true, section: "Mempelai" },
+  { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak … & Ibu …", section: "Mempelai" },
+  { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak … & Ibu …", section: "Mempelai" },
+  { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+  { key: "akad_t", label: "Acara 1 — judul", type: "text", def: "Akad Nikah", section: "Acara" },
+  { key: "akad_jam", label: "Acara 1 — jam", type: "text", placeholder: "08.00 – 10.00 WIB", section: "Acara" },
+  { key: "akad_tempat", label: "Acara 1 — tempat", type: "text", placeholder: "Pendopo …, Yogyakarta", section: "Acara" },
+  { key: "akad_maps", label: "Acara 1 — link maps", type: "text", placeholder: "https://maps.google.com/?q=…", section: "Acara" },
+  { key: "resepsi_t", label: "Acara 2 — judul", type: "text", def: "Resepsi", section: "Acara" },
+  { key: "resepsi_jam", label: "Acara 2 — jam", type: "text", placeholder: "11.00 – 14.00 WIB", section: "Acara" },
+  { key: "resepsi_tempat", label: "Acara 2 — tempat", type: "text", placeholder: "Pendopo …, Yogyakarta", section: "Acara" },
+  { key: "resepsi_maps", label: "Acara 2 — link maps", type: "text", placeholder: "https://maps.google.com/?q=…", section: "Acara" },
+  { key: "ayat", label: "Ayat / kutipan", type: "textarea", def: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.", section: "Ayat" },
+  { key: "ayat_src", label: "Sumber ayat", type: "text", def: "QS. Ar-Rūm : 21", section: "Ayat" },
+  { key: "story1_t", label: "Kisah 1 — judul", type: "text", def: "Pitepangan", section: "Kisah" },
+  { key: "story1_x", label: "Kisah 1 — cerita", type: "textarea", def: "Kenal di acara kampus — obrolan singkat yang ternyata awal segalanya.", section: "Kisah" },
+  { key: "story2_t", label: "Kisah 2 — judul", type: "text", def: "Katresnan Tuwuh", section: "Kisah" },
+  { key: "story2_x", label: "Kisah 2 — cerita", type: "textarea", def: "Makin sering bertemu, makin yakin: ini orangnya.", section: "Kisah" },
+  { key: "story3_t", label: "Kisah 3 — judul", type: "text", def: "Lamaran", section: "Kisah" },
+  { key: "story3_x", label: "Kisah 3 — cerita", type: "textarea", def: "Satu pertanyaan, satu jawaban: ya, dengan restu keluarga.", section: "Kisah" },
+  { key: "wa", label: "No. WhatsApp RSVP (628…)", type: "text", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. …", section: "Kontak & Gift" },
+];
+
+const LAKON_SLOTS: PhotoSlotDef[] = [
+  { key: "foto_pria", label: "🤵 1. Foto Mempelai Pria", hint: "Jejer · bingkai oval emas", max: 1 },
+  { key: "foto_wanita", label: "👰 2. Foto Mempelai Wanita", hint: "Jejer · bingkai oval emas", max: 1 },
+  { key: "foto_pasangan", label: "💑 3. Foto Pasangan", hint: "Finale Tanceb Kayon · bingkai oval", max: 1 },
+  { key: "story1_img", label: "📖 4. Foto Kisah 1", hint: "Lelampahan · opsional", max: 1 },
+  { key: "story2_img", label: "📖 5. Foto Kisah 2", hint: "Lelampahan · opsional", max: 1 },
+  { key: "story3_img", label: "📖 6. Foto Kisah 3", hint: "Lelampahan · opsional", max: 1 },
+  { key: "galeri", label: "🖼️ 7–12. Galeri Kenangan", hint: "6 foto · Tetenger", max: 6 },
+];
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -198,6 +242,13 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     file: "baroque-rose/index.html",
     fields: ROSE_FIELDS,
     photoSlots: ROSE_SLOTS,
+  },
+  {
+    id: "lakon-cinta",
+    name: "Lakon Cinta — wayang interaktif",
+    file: "lakon-cinta/index.html",
+    fields: LAKON_FIELDS,
+    photoSlots: LAKON_SLOTS,
   },
 ];
 
