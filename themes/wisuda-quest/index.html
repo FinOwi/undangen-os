@@ -441,66 +441,54 @@ function bench(x,z,ry){
   [-1.4,1.4].forEach(function(px){grp.add(box(0.25,1.1,1,0x5a5a5a,px,0.55,0));});
   grp.position.set(x,0,z);grp.rotation.y=ry||0;scene.add(grp);
 }
-/* karakter SLENDER — gaya Roblox viral: kurus, tinggi, emo, serba hitam */
+/* karakter NOOB KLASIK — Roblox: blocky kuning-biru-hijau + senyum ikonik */
+var _faceTex=null;
+function faceTexture(){
+  if(_faceTex)return _faceTex;
+  var cv=document.createElement('canvas');cv.width=cv.height=256;
+  var g=cv.getContext('2d');
+  g.fillStyle='#f5cd30';g.fillRect(0,0,256,256);
+  g.fillStyle='#232323';
+  g.beginPath();g.ellipse(86,100,19,27,0,0,Math.PI*2);g.fill();
+  g.beginPath();g.ellipse(170,100,19,27,0,0,Math.PI*2);g.fill();
+  g.lineWidth=13;g.lineCap='round';g.strokeStyle='#232323';
+  g.beginPath();g.arc(128,136,54,0.4,Math.PI-0.4);g.stroke();
+  _faceTex=new THREE.CanvasTexture(cv);
+  _faceTex.colorSpace=THREE.SRGBColorSpace;
+  return _faceTex;
+}
 function chibi(o){
   o=o||{};
   var gender=o.gender||'cowok';
-  var skin=o.skin||0xf2e2d0,
-      hairC=o.hair||0x0d0d0f,
-      shirt=o.shirt||0x141416,
-      pants=o.pants||0x0e0e10;
+  var yellow=0xf5cd30, blue=o.shirt||0x0d6fc4, green=o.pants||0x7fbf3f;
   var grp=new THREE.Group(),parts={};
-  function cap(r,len,color){
-    var m=new THREE.Mesh(new THREE.CapsuleGeometry(r,len,6,14),M(color,0.9));
+  function bx(w,h,d,color){
+    var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M(color,0.85));
     m.castShadow=true;return m;
   }
-  // kaki jenjang (pivot pinggul y=1.7)
-  parts.legL=cap(0.22,0.95,pants);parts.legL.geometry.translate(0,-0.6,0);
-  parts.legL.position.set(-0.26,1.7,0);grp.add(parts.legL);
-  parts.legR=cap(0.22,0.95,pants);parts.legR.geometry.translate(0,-0.6,0);
-  parts.legR.position.set(0.26,1.7,0);grp.add(parts.legR);
-  // sepatu blocky hitam (ikut ayunan kaki)
-  [parts.legL,parts.legR].forEach(function(l){
-    var sh=new THREE.Mesh(new THREE.BoxGeometry(0.34,0.24,0.62),M(0x050506,0.7));
-    sh.position.set(0,-1.28,0.08);sh.castShadow=true;l.add(sh);
-  });
-  // badan kurus
-  var body=cap(0.5,0.85,shirt);body.position.y=2.55;grp.add(body);parts.body=body;
-  // dress hitam untuk cewek
+  // kaki kotak (pivot pinggul y=1.5)
+  parts.legL=bx(0.55,1.5,0.6,green);parts.legL.geometry.translate(0,-0.75,0);
+  parts.legL.position.set(-0.33,1.5,0);grp.add(parts.legL);
+  parts.legR=bx(0.55,1.5,0.6,green);parts.legR.geometry.translate(0,-0.75,0);
+  parts.legR.position.set(0.33,1.5,0);grp.add(parts.legR);
+  // badan kotak
+  var body=bx(1.7,1.6,0.95,blue);body.position.y=2.3;grp.add(body);parts.body=body;
+  // lengan kotak (pivot bahu y=2.95)
+  parts.armL=bx(0.5,1.5,0.6,yellow);parts.armL.geometry.translate(0,-0.75,0);
+  parts.armL.position.set(-1.1,2.95,0);grp.add(parts.armL);
+  parts.armR=bx(0.5,1.5,0.6,yellow);parts.armR.geometry.translate(0,-0.75,0);
+  parts.armR.position.set(1.1,2.95,0);grp.add(parts.armR);
+  // kepala kotak + wajah senyum klasik
+  var plainM=M(yellow,0.85);
+  var faceM=new THREE.MeshStandardMaterial({map:faceTexture(),roughness:0.85});
+  var head=new THREE.Mesh(new THREE.BoxGeometry(1.25,1.05,1.1),
+    [plainM,plainM,plainM,plainM,faceM,plainM]);
+  head.position.y=3.6;head.castShadow=true;grp.add(head);parts.head=head;
+  // rambut cewek ala Roblox (kotak)
   if(gender==='cewek'){
-    var dr=new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.8,1.15,16),M(0x101012,0.9));
-    dr.position.y=1.72;dr.castShadow=true;grp.add(dr);
-  }
-  // lengan kurus (pivot bahu y=3.1)
-  parts.armL=cap(0.15,0.75,shirt);parts.armL.geometry.translate(0,-0.5,0);
-  parts.armL.position.set(-0.68,3.1,0);grp.add(parts.armL);
-  parts.armR=cap(0.15,0.75,shirt);parts.armR.geometry.translate(0,-0.5,0);
-  parts.armR.position.set(0.68,3.1,0);grp.add(parts.armR);
-  // tangan pucat
-  [parts.armL,parts.armR].forEach(function(a){
-    var h=new THREE.Mesh(new THREE.SphereGeometry(0.16,10,8),M(skin,0.7));
-    h.position.set(0,-1.0,0);h.castShadow=true;a.add(h);
-  });
-  // kepala
-  var head=new THREE.Mesh(new THREE.SphereGeometry(0.85,20,16),M(skin,0.7));
-  head.position.y=4.15;head.castShadow=true;grp.add(head);parts.head=head;
-  // wajah minimal (emo): mata kecil + senyum tipis
-  [-0.28,0.28].forEach(function(ex){
-    var e=new THREE.Mesh(new THREE.SphereGeometry(0.09,8,8),M(0x141414,0.5));
-    e.position.set(ex,4.18,0.78);grp.add(e);
-  });
-  var sm=new THREE.Mesh(new THREE.TorusGeometry(0.2,0.045,8,12,Math.PI),M(0x5a3a3a,0.6));
-  sm.position.set(0,3.95,0.8);sm.rotation.z=Math.PI;grp.add(sm);
-  // rambut emo: cap + poni nutup mata kanan + belakang panjang
-  var cp=new THREE.Mesh(new THREE.SphereGeometry(0.92,20,16,0,Math.PI*2,0,Math.PI/1.9),M(hairC,0.95));
-  cp.position.y=4.28;cp.castShadow=true;grp.add(cp);
-
-  var back=cap(0.3,gender==='cewek'?1.3:0.7,hairC);
-  back.position.set(gender==='cewek'?0:-0.15,3.6,-0.75);grp.add(back);
-  // ransel hitam kecil
-  if(o.backpack!==false){
-    var pk=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,10),M(o.pack||0x1a1a1c,0.85));
-    pk.scale.set(0.95,1.05,0.5);pk.position.set(0,2.55,-0.68);pk.castShadow=true;grp.add(pk);
+    var hairC=o.hair||0x5a3a22;
+    var top=bx(1.37,0.5,1.22,hairC);top.position.y=4.3;grp.add(top);
+    var back=bx(1.37,1.35,0.35,hairC);back.position.set(0,3.62,-0.58);grp.add(back);
   }
   grp.traverse(function(m){if(m.isMesh){m.castShadow=true;}});
   scene.add(grp);
@@ -617,7 +605,7 @@ cloud(-40,42,-60,1.4);cloud(30,48,-40,1.1);cloud(-10,44,50,1.2);cloud(55,40,20,0
 var player=null;
 function buildPlayer(){
   if(player)scene.remove(player.group);
-  player=chibi({gender:S.gender,shirt:0x161618,pants:0x0c0c0e,pack:0x1a1a1c});
+  player=chibi({gender:S.gender});
   player.group.position.set(S.px,0,S.pz);
 }
 var NPCS=[
