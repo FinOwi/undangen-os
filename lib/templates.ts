@@ -135,6 +135,41 @@ const WISUDA_SLOTS: PhotoSlotDef[] = [
   { key: "semester_8", label: "\u2468 9. Galeri Semester 8", hint: "Gedung Wisuda \u00b7 semester 8 \u00b7 maks 6", max: 6 },
 ];
 
+const ROSE_FIELDS: FieldDef[] = [
+  { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: "Bagas", required: true, section: "Mempelai" },
+  { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: "Bagas Pratama", required: true, section: "Mempelai" },
+  { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: "Kirana", required: true, section: "Mempelai" },
+  { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: "Kirana Ayu", required: true, section: "Mempelai" },
+  { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak … & Ibu …", section: "Mempelai" },
+  { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak … & Ibu …", section: "Mempelai" },
+  { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+  { key: "akad_t", label: "Acara 1 — judul", type: "text", def: "Akad Nikah", section: "Acara" },
+  { key: "akad_jam", label: "Acara 1 — jam", type: "text", placeholder: "08.00 – 10.00 WIB", section: "Acara" },
+  { key: "akad_tempat", label: "Acara 1 — tempat", type: "text", placeholder: "Gedung …, Medan", section: "Acara" },
+  { key: "akad_maps", label: "Acara 1 — link maps", type: "text", placeholder: "https://maps.google.com/?q=…", section: "Acara" },
+  { key: "resepsi_t", label: "Acara 2 — judul", type: "text", def: "Resepsi", section: "Acara" },
+  { key: "resepsi_jam", label: "Acara 2 — jam", type: "text", placeholder: "11.00 – 14.00 WIB", section: "Acara" },
+  { key: "resepsi_tempat", label: "Acara 2 — tempat", type: "text", placeholder: "Gedung …, Medan", section: "Acara" },
+  { key: "resepsi_maps", label: "Acara 2 — link maps", type: "text", placeholder: "https://maps.google.com/?q=…", section: "Acara" },
+  { key: "ayat", label: "Ayat / kutipan", type: "textarea", def: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.", section: "Ayat" },
+  { key: "ayat_src", label: "Sumber ayat", type: "text", def: "QS. Ar-Rūm : 21", section: "Ayat" },
+  { key: "wa", label: "No. WhatsApp RSVP (628…)", type: "text", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. …", section: "Kontak & Gift" },
+];
+
+const ROSE_SLOTS: PhotoSlotDef[] = [
+  { key: "foto_pria", label: "🤵 1. Foto Mempelai Pria", hint: "Section mempelai · portrait oval", max: 1 },
+  { key: "foto_wanita", label: "👰 2. Foto Mempelai Wanita", hint: "Section mempelai · portrait oval", max: 1 },
+  { key: "foto_pasangan", label: "💑 3. Foto Pasangan", hint: "Section Celebrate · bingkai pearl arch", max: 1 },
+  { key: "galeri", label: "🖼️ 4–9. Galeri Kenangan", hint: "6 foto · section galeri", max: 6 },
+];
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -156,6 +191,13 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     file: "wisuda-quest/index.html",
     fields: WISUDA_FIELDS,
     photoSlots: WISUDA_SLOTS,
+  },
+  {
+    id: "baroque-rose",
+    name: "Baroque Rose — undangan elegan",
+    file: "baroque-rose/index.html",
+    fields: ROSE_FIELDS,
+    photoSlots: ROSE_SLOTS,
   },
 ];
 
