@@ -905,6 +905,7 @@ document.getElementById('btnMulai').onclick=function(){
 /* kamera awal */
 S.camx=0;S.camz=48;camera.position.set(0,30,48);camera.lookAt(0,2,16);
 updateHUD();
+window.WQ={S:S,openDlg:openDlg,openWin:openWin,SEMDEF:SEMDEF,closeDlg:closeDlg};
 requestAnimationFrame(loop);
 </script>
 </body>
