@@ -114,7 +114,7 @@ html,body{height:100%;overflow:hidden;background:#0b0d12;font-family:-apple-syst
 
 <div id="hud" class="hidden">
   <div id="prog"><div id="progFill"></div><div id="progMarks"></div><span id="progFlag">🚩</span><span id="progMe">🧗</span></div>
-  <div id="edl">❀ <b id="edlN">0</b>/<span id="edlT">0</span></div>
+  <div id="edl">❀ <b id="edlN">0</b>/<span id="edlT">0</span> · <span id="edlMdpl">0 mdpl</span></div>
   <div id="hbtns">
     <button class="hbtn" id="btnSkip">⏭ Puncak</button>
     <button class="hbtn hidden" id="btnMusic">🎵</button>
@@ -365,25 +365,38 @@ function resize(){
 }
 window.addEventListener("resize",resize);resize();
 
-var WORLD_W=5200,SPEED=145,GRAV=1650,JUMPV=-640;
-function groundY(x){
-  var H=view.h;
-  return H*0.80-(x/WORLD_W)*H*0.52+Math.sin(x*0.0035)*14+Math.sin(x*0.0011+2)*20;
+var WORLD_W=5200,GRAV=1650,JUMPV=-640;
+/* profil gunung: tanjakan curam zigzag + pos di tanah datar */
+var ELEV=[[0,0],[120,0],[950,640],[1150,640],[2000,1290],[2200,1290],[3050,1940],[3250,1940],[4100,2590],[4300,2590],[4950,3050],[5200,3050]];
+var ELEV_MAX=3050;
+function elev(x){
+  x=clamp(x,0,WORLD_W);
+  for(var i=0;i<ELEV.length-1;i++){
+    var a=ELEV[i],b=ELEV[i+1];
+    if(x>=a[0]&&x<=b[0]){
+      var t=(x-a[0])/((b[0]-a[0])||1);
+      t=t*t*(3-2*t);
+      return a[1]+(b[1]-a[1])*t;
+    }
+  }
+  return ELEV_MAX;
 }
-var POST_F=[0.20,0.40,0.60,0.80],PEAK_F=0.96;
+function slopeAt(x){return (elev(x+14)-elev(x-14))/28;}
+function groundY(x){return view.h*0.62-(elev(x)-S.camY);}
+var POST_F=[1000/WORLD_W,2000/WORLD_W,3000/WORLD_W,4000/WORLD_W],PEAK_F=0.96;
 var posts=[],obstacles=[],edels=[],pines=[],FAR=[],NEAR=[];
 (function genWorld(){
   var rnd=mulberry(7);
   POST_F.forEach(function(f,i){posts.push({x:f*WORLD_W,i:i});});
   for(var i=0;i<14;i++){
-    var x=350+i*360+rnd()*140;
+    var x=300+i*350+rnd()*120;
     if(x>WORLD_W*0.93)continue;
     var nearPost=POST_F.some(function(f){return Math.abs(x-f*WORLD_W)<230;});
     if(nearPost)continue;
     obstacles.push({x:x,type:i%2?"root":"rock"});
   }
   for(var j=0;j<12;j++){
-    var ex=500+j*380+rnd()*160;
+    var ex=450+j*390+rnd()*150;
     if(ex>WORLD_W*0.94)continue;
     edels.push({x:ex,taken:false,bob:rnd()*6.28});
   }
@@ -393,7 +406,7 @@ var posts=[],obstacles=[],edels=[],pines=[],FAR=[],NEAR=[];
 })();
 var PEAK_X=PEAK_F*WORLD_W;
 
-var S={mode:"cover",x:60,y:0,vy:0,grounded:true,ft:0,visited:[false,false,false,false],
+var S={mode:"cover",x:60,y:0,vy:0,grounded:true,ft:0,camY:0,slope:0,visited:[false,false,false,false],
   edel:0,done:false,paused:false,stun:0,camX:0};
 var P=[]; // particles
 function spawnP(x,y,n,colors,spd){
@@ -405,9 +418,9 @@ function spawnP(x,y,n,colors,spd){
 }
 /* langit fajar -> siang -> senja */
 var SKY=[
-  {p:0,top:"#2b2358",mid:"#a04a7a",bot:"#ffb36b"},
+  {p:0,top:"#7fb2e8",mid:"#bcd9f7",bot:"#ffe8c4"},
   {p:0.5,top:"#3f8fd6",mid:"#8fd0ff",bot:"#eaf7ff"},
-  {p:1,top:"#141033",mid:"#6e2f6e",bot:"#ff8c5a"}
+  {p:1,top:"#2b1a4e",mid:"#b4506e",bot:"#ffb36b"}
 ];
 function skyCol(p,key){
   var a=SKY[0],b=SKY[1];
@@ -429,7 +442,9 @@ window.addEventListener("keydown",function(e){
 function update(dt){
   if(S.mode!=="game"||S.paused)return;
   if(S.stun>0)S.stun-=dt;
-  if(!S.done&&S.stun<=0)S.x+=SPEED*dt;
+  var sl=slopeAt(S.x);S.slope=sl;
+  var spd=clamp(150-sl*70,95,155);
+  if(!S.done&&S.stun<=0)S.x+=spd*dt;
   S.ft+=dt;
   // fisika
   var g=groundY(S.x);
@@ -480,10 +495,13 @@ function update(dt){
   // kamera
   var target=clamp(S.x-view.w*0.38,0,WORLD_W-view.w*0.85);
   S.camX+=(target-S.camX)*Math.min(1,dt*5);
+  var targetY=-elev(S.x);
+  S.camY+=(targetY-S.camY)*Math.min(1,dt*3.2);
   // HUD
   var pr=clamp(S.x/WORLD_W,0,1);
   $("progFill").style.width=(pr*100)+"%";
   $("progMe").style.left=(pr*100)+"%";
+  $("edlMdpl").textContent=Math.round(elev(S.x)/ELEV_MAX*3200).toLocaleString("id-ID")+" mdpl";
   // partikel
   for(var n=P.length-1;n>=0;n--){
     var pt=P[n];pt.t+=dt;
@@ -516,7 +534,7 @@ var clouds=[];
 
 function render(){
   var W=view.w,H=view.h,cam=S.camX;
-  var pr=clamp(S.x/WORLD_W,0,1);
+  var pr=clamp(elev(S.x)/ELEV_MAX,0,1);
   // langit
   var gr=ctx.createLinearGradient(0,0,0,H);
   gr.addColorStop(0,skyCol(pr,"top"));gr.addColorStop(0.55,skyCol(pr,"mid"));gr.addColorStop(1,skyCol(pr,"bot"));
@@ -531,9 +549,10 @@ function render(){
   ctx.fillStyle="rgba(255,255,255,.75)";
   clouds.forEach(function(c){
     var cx=((c.x-cam*0.3+S.ft*c.v)%(W+400))-200;
-    ctx.fillRect(cx,c.y,70*c.s,18*c.s);
-    ctx.fillRect(cx+14*c.s,c.y-10*c.s,44*c.s,16*c.s);
-    ctx.fillRect(cx+60*c.s,c.y+4*c.s,40*c.s,14*c.s);
+    var cy=c.y-S.camY*0.08;
+    ctx.fillRect(cx,cy,70*c.s,18*c.s);
+    ctx.fillRect(cx+14*c.s,cy-10*c.s,44*c.s,16*c.s);
+    ctx.fillRect(cx+60*c.s,cy+4*c.s,40*c.s,14*c.s);
   });
   // gunung jauh & dekat
   ridge(FAR,0.22,H*0.72,pr>0.7?"#3a2a5e":"#6a7fa8",true);
@@ -568,26 +587,17 @@ function render(){
     if(o.type==="rock")ctx.drawImage(ROCK,sx-18,gy-21,36,21);
     else ctx.drawImage(ROOT,sx-18,gy-15,36,15);
   });
-  // tenda pos
-  posts.forEach(function(p,i){
-    var sx=p.x-cam;if(sx<-80||sx>W+80)return;
-    var gy=groundY(p.x);
-    ctx.drawImage(TENT,sx-28,gy-30,57,30);
-  });
-  // bendera puncak
-  (function(){
-    var sx=PEAK_X-cam;if(sx>-80&&sx<W+80){
-      var gy=groundY(PEAK_X);
-      ctx.drawImage(FLAG,sx-13,gy-42,27,42);
-    }
-  })();
+  // pos beneran: papan nama + bunga + shelter
+  posts.forEach(function(p,i){drawPost(p,i,W);});
+  drawPeak(W);
   // karakter
   (function(){
     var sx=S.x-cam,sy=S.y;
     var fr=S.grounded?(Math.floor(S.ft*7)%2?HERO_A:HERO_B):HERO_A;
+    var tilt=S.grounded?Math.atan(S.slope||0)*0.85:-0.08;
     ctx.save();ctx.translate(sx,sy);
     if(S.stun>0)ctx.translate(Math.sin(S.ft*40)*4,0);
-    if(!S.grounded)ctx.rotate(-0.1);
+    ctx.rotate(tilt);
     ctx.drawImage(fr,-28,-60,56,60);
     ctx.restore();
   })();
@@ -600,6 +610,64 @@ function render(){
   ctx.globalAlpha=1;
 }
 
+function flowerCluster(x,gy,n){
+  n=n||4;
+  for(var k=0;k<n;k++){
+    var fx=x+(k-(n-1)/2)*24;
+    var fy=gy-6-((k*37)%3)*5;
+    ctx.drawImage(EDELWEIS,fx-12,fy-24,24,24);
+  }
+  ctx.fillStyle="#3faf5f";
+  for(var g2=0;g2<6;g2++){
+    var gx=x-36+g2*15;
+    ctx.fillRect(gx,gy-12-((g2*29)%3)*4,5,12);
+  }
+}
+function drawPost(p,i,W){
+  var sx=p.x-S.camX;if(sx<-150||sx>W+150)return;
+  var gy=groundY(p.x);
+  var d=DAKI.POS[i];
+  flowerCluster(sx-95,gy,4);
+  flowerCluster(sx+95,gy,4);
+  ctx.drawImage(TENT,sx+58,gy-30,57,30);
+  ctx.fillStyle="#4a2f1a";
+  ctx.fillRect(sx-9,gy-66,11,66);
+  ctx.fillRect(sx+32,gy-66,11,66);
+  ctx.fillStyle="#8a5a2e";
+  ctx.fillRect(sx-48,gy-108,118,46);
+  ctx.strokeStyle="#2e1c0c";ctx.lineWidth=3;
+  ctx.strokeRect(sx-48,gy-108,118,46);
+  ctx.fillStyle="#6e4526";
+  ctx.beginPath();
+  ctx.moveTo(sx-58,gy-108);ctx.lineTo(sx+11,gy-128);ctx.lineTo(sx+80,gy-108);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle="#ffe9b8";ctx.textAlign="center";
+  ctx.font="11px 'Press Start 2P', monospace";
+  ctx.fillText("POS "+(i+1),sx+11,gy-88);
+  ctx.font="8px 'Press Start 2P', monospace";
+  ctx.fillStyle="#ffd166";
+  ctx.fillText(d.mdpl+" MDPL",sx+11,gy-72);
+}
+function drawPeak(W){
+  var sx=PEAK_X-S.camX;if(sx<-150||sx>W+150)return;
+  var gy=groundY(PEAK_X);
+  flowerCluster(sx-85,gy,5);
+  flowerCluster(sx+85,gy,5);
+  ctx.fillStyle="#6a6a72";
+  ctx.fillRect(sx-26,gy-34,52,34);
+  ctx.fillStyle="#7d7d88";
+  ctx.fillRect(sx-20,gy-52,40,20);
+  ctx.fillStyle="#8f8f9a";
+  ctx.fillRect(sx-14,gy-66,28,16);
+  ctx.strokeStyle="#3c3c44";ctx.lineWidth=2;
+  ctx.strokeRect(sx-26,gy-34,52,34);
+  ctx.fillStyle="#4a2f1a";ctx.fillRect(sx+34,gy-120,8,120);
+  ctx.fillStyle="#d94f3d";
+  var wv=Math.sin(S.ft*6)*4;
+  ctx.beginPath();
+  ctx.moveTo(sx+42,gy-120);ctx.lineTo(sx+104+wv,gy-108);ctx.lineTo(sx+42,gy-94);
+  ctx.closePath();ctx.fill();
+}
 var lastT=0;
 function loop(t){
   var dt=Math.min(0.05,(t-lastT)/1000||0.016);lastT=t;
