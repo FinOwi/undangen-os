@@ -626,6 +626,32 @@ function collide(nx,nz){
   return [Math.max(-70,Math.min(70,nx)),Math.max(-70,Math.min(70,nz))];
 }
 /* ================= UPDATE ================= */
+// jarak kamera aman (tidak terhalang gedung)
+var CAMBLOCKS=[],CAMB_INIT=false;
+function cameraClear(px,pz,wantD){
+  if(!CAMB_INIT){
+    SEMDEF.forEach(function(s){CAMBLOCKS.push(s.blk);});
+    CAMBLOCKS.push([0,0,8.6]); // air mancur
+    CAMB_INIT=true;
+  }
+  var dd=wantD;
+  for(var iter=0;iter<4;iter++){
+    var cx=px,cz=pz+dd,hit=false;
+    for(var i=0;i<CAMBLOCKS.length;i++){
+      var b=CAMBLOCKS[i];
+      var dx=cx-px,dz=cz-pz,l2=dx*dx+dz*dz;
+      var t=l2?((b[0]-px)*dx+(b[1]-pz)*dz)/l2:0;
+      t=Math.max(0,Math.min(1,t));
+      var qx=px+dx*t,qz=pz+dz*t;
+      if(Math.hypot(b[0]-qx,b[1]-qz)<b[2]+2){
+        dd=Math.max(6,Math.hypot(qx-px,qz-pz)-1);
+        hit=true;break;
+      }
+    }
+    if(!hit)break;
+  }
+  return dd;
+}
 function update(dt){
   S.t+=dt;
   var vx=0,vz=0,spd=16;
@@ -671,12 +697,14 @@ function update(dt){
     mk.visible=!S.visited[i];
     mk.position.y=9+Math.sin(S.t*3+i)*0.8;
   });
-  // kamera follow
-  var cx=S.px,cz=S.pz+20,cy=27;
-  S.camx+=(cx-S.camx)*Math.min(1,dt*4);
-  S.camz+=(cz-S.camz)*Math.min(1,dt*4);
-  camera.position.set(S.camx,cy,S.camz);
-  camera.lookAt(S.px,2,S.pz-4);
+  // kamera third-person rendah (bukan dari atas)
+  var wantD=17;
+  var clearD=cameraClear(S.px,S.pz,wantD);
+  S.camD=(S.camD==null?wantD:S.camD)+(clearD-(S.camD==null?wantD:S.camD))*Math.min(1,dt*6);
+  S.camx+=(S.px-S.camx)*Math.min(1,dt*5);
+  S.camz+=((S.pz+S.camD)-S.camz)*Math.min(1,dt*5);
+  camera.position.set(S.camx,9.5,S.camz);
+  camera.lookAt(S.px,4,S.pz-8);
   // awan
   clouds.forEach(function(c){c.g.position.x+=c.sp*dt;if(c.g.position.x>90)c.g.position.x=-90;});
   // air mancur
@@ -903,7 +931,7 @@ document.getElementById('btnMulai').onclick=function(){
   setTimeout(function(){if(!S.musicOn)toggleMusic();},400);
 };
 /* kamera awal */
-S.camx=0;S.camz=48;camera.position.set(0,30,48);camera.lookAt(0,2,16);
+S.camx=0;S.camz=39;S.camD=17;camera.position.set(0,9.5,39);camera.lookAt(0,4,14);
 updateHUD();
 window.WQ={S:S,openDlg:openDlg,openWin:openWin,SEMDEF:SEMDEF,closeDlg:closeDlg};
 requestAnimationFrame(loop);
