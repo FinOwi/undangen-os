@@ -162,6 +162,7 @@ var WISUDA = {
   WA:"6281234567890",
   REK:[{b:"BCA",n:"8210 456 789",a:"Raka Pratama"},{b:"DANA",n:"0812 3456 7890",a:"Raka Pratama"}],
   ALAMAT:"Jl. Universitas No. 1, Medan",
+  MUSIK:"",
   FOTO:{wisudawan:"",semester:[
     ["/tema/wisuda-quest/assets/bld_gerbang.png","/tema/wisuda-quest/assets/bld_kuliah.png"],
     ["/tema/wisuda-quest/assets/bld_kuliah.png"],
@@ -1051,8 +1052,9 @@ function note(f,t0,d,type,g){
   gn.gain.exponentialRampToValueAtTime(0.0001,t0+d);
   o.connect(gn);gn.connect(AC.destination);o.start(t0);o.stop(t0+d+0.05);
 }
+var MUSIKURL=(typeof WISUDA!=="undefined"&&WISUDA.MUSIK)||"",musEl=null;
 function musicTick(){
-  if(!S.musicOn||!AC)return;
+  if(!S.musicOn||!AC||musEl)return;
   var t0=AC.currentTime+0.05,base=261.63;
   var n=MEL[step%MEL.length];
   note(base*Math.pow(2,n/12),t0,0.22,'triangle',0.09);
@@ -1070,7 +1072,12 @@ function toggleMusic(){
   if(!AC)return;
   S.musicOn=!S.musicOn;
   document.getElementById('btnMusic').textContent=S.musicOn?"🎵":"🔇";
-  if(S.musicOn&&AC.state==='suspended')AC.resume();
+  if(S.musicOn){
+    if(MUSIKURL){
+      if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}
+      musEl.play().catch(function(){});
+    }else if(AC.state==='suspended')AC.resume();
+  }else if(musEl)musEl.pause();
 }
 document.getElementById('btnMusic').onclick=toggleMusic;
 setInterval(musicTick,240);

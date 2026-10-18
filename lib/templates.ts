@@ -27,6 +27,15 @@ export interface StaticTemplateDef {
   photoSlots: PhotoSlotDef[];
 }
 
+// Field musik custom — dipakai semua template statis (kosong = musik bawaan tema)
+const MUSIK_FIELD: FieldDef = {
+  key: "music_url",
+  label: "🎵 Link musik latar (MP3)",
+  type: "text",
+  placeholder: "https://…/musik.mp3 — kosongkan untuk musik bawaan",
+  section: "Musik",
+};
+
 const RPG_FIELDS: FieldDef[] = [
   { key: "c1", label: "Nama panggilan mempelai 1", type: "text", placeholder: "Bima", required: true, section: "Mempelai" },
   { key: "c1full", label: "Nama lengkap mempelai 1", type: "text", placeholder: "Bima Ginting", required: true, section: "Mempelai" },
@@ -50,6 +59,7 @@ const RPG_FIELDS: FieldDef[] = [
   { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
   { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. …", section: "Kontak & Gift" },
 ];
+RPG_FIELDS.push(MUSIK_FIELD);
 
 const RPG_SLOTS: PhotoSlotDef[] = [
   { key: "photo_pria", label: "🤵 1. Foto Mempelai Pria", hint: "Rumah Mempelai · portrait", max: 1 },
@@ -95,6 +105,7 @@ const PETA_FIELDS: FieldDef[] = [
     { key: `stop${i + 1}_x`, label: `Stop ${i + 1} — cerita`, type: "textarea", def: s.x, section: `Stop ${i + 1}` },
   ]),
 ];
+PETA_FIELDS.push(MUSIK_FIELD);
 
 const PETA_SLOTS: PhotoSlotDef[] = PETA_STOPS.map((s, i) => ({
   key: `stop${i + 1}_img`,
@@ -123,6 +134,7 @@ const WISUDA_FIELDS: FieldDef[] = [
   { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
   { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
 ];
+WISUDA_FIELDS.push(MUSIK_FIELD);
 const WISUDA_SLOTS: PhotoSlotDef[] = [
   { key: "wisudawan", label: "\u2460 1. Foto Wisudawan", hint: "Aula Sidang \u00b7 portrait", max: 1 },
   { key: "semester_1", label: "\u2461 2. Galeri Semester 1", hint: "Gerbang Kampus \u00b7 semester 1 \u00b7 maks 6", max: 6 },
@@ -162,6 +174,7 @@ const ROSE_FIELDS: FieldDef[] = [
   { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
   { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. …", section: "Kontak & Gift" },
 ];
+ROSE_FIELDS.push(MUSIK_FIELD);
 
 const ROSE_SLOTS: PhotoSlotDef[] = [
   { key: "foto_pria", label: "🤵 1. Foto Mempelai Pria", hint: "Section mempelai · portrait oval", max: 1 },
@@ -203,6 +216,7 @@ const LAKON_FIELDS: FieldDef[] = [
   { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
   { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. …", section: "Kontak & Gift" },
 ];
+LAKON_FIELDS.push(MUSIK_FIELD);
 
 const LAKON_SLOTS: PhotoSlotDef[] = [
   { key: "foto_pria", label: "🤵 1. Foto Mempelai Pria", hint: "Jejer · bingkai oval emas", max: 1 },

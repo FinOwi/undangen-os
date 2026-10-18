@@ -349,6 +349,7 @@ var LAKON = {
   WA:"6288279406268",
   REK:[{b:"BCA",n:"8210345678",a:"Galih Prasetyo"},{b:"Mandiri",n:"1370012345678",a:"Sekar Ayu Lestari"}],
   ALAMAT:"Jl. Kenanga No. 12, Yogyakarta — a.n. Galih & Sekar",
+  MUSIK:"",
   AYAT:"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.",
   AYAT_SRC:"QS. Ar-Rūm : 21",
   STORY:[
@@ -494,8 +495,9 @@ function gong(){
     o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+4.6);
   });
 }
+var MUSIKURL=(typeof LAKON!=="undefined"&&LAKON.MUSIK)||"",musEl=null;
 function melody(){
-  if(!musicOn) return;
+  if(!musicOn||musEl) return;
   deg += [-2,-1,-1,1,1,2][Math.floor(Math.random()*6)];
   deg = Math.max(0, Math.min(SCALE.length-1, deg));
   pluck(SCALE[deg]);
@@ -506,7 +508,15 @@ function setMusic(on){
   musicOn = on;
   document.getElementById("musicBtn").classList.toggle("off", !on);
   document.getElementById("musicBtn").textContent = on ? "🎵" : "🔇";
-  if(on){ ac(); melody(); } else if(melTimer){ clearTimeout(melTimer); melTimer = null; }
+  if(on){
+    if(MUSIKURL){
+      if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}
+      musEl.play().catch(function(){});
+    }else{ ac(); melody(); }
+  }else{
+    if(musEl)musEl.pause();
+    if(melTimer){ clearTimeout(melTimer); melTimer = null; }
+  }
 }
 document.getElementById("musicBtn").onclick = function(){ setMusic(!musicOn); };
 document.getElementById("topBtn").onclick = function(){ window.scrollTo({top:0, behavior:"smooth"}); };

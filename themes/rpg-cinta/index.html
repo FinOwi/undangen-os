@@ -130,6 +130,7 @@ var CFG = {
   WA:'6281234567890',
   REK:[{bank:'BCA',no:'8210888800',nama:'Bima Ginting'},{bank:'Mandiri',no:'8900777700',nama:'Sari Br Tarigan'}],
   ALAMAT:'Jl. Jamin Ginting No. 88, Berastagi, Tanah Karo',
+  MUSIK:'',
   FOTO:{ pria:'', wanita:'', galeri:['','','','','',''] }
 };
 function ph(label, c1, c2){
@@ -142,6 +143,17 @@ var GALERI = CFG.FOTO.galeri.map(function(g,i){ return g || ph('Foto '+(i+1),'#3
 
 /* ================= AUDIO ================= */
 var AC = null, musicOn = true, musicTimer = null;
+var MUSIKURL = (typeof CFG!=="undefined"&&CFG.MUSIK)||"", musEl = null;
+function startBg(){
+  if(MUSIKURL){
+    if(!musEl){ musEl = new Audio(MUSIKURL); musEl.loop = true; }
+    musEl.play().catch(function(){});
+  }else{ ac(); musicLoop(); }
+}
+function stopBg(){
+  if(musEl) musEl.pause();
+  if(musicTimer){ clearTimeout(musicTimer); musicTimer = null; }
+}
 function ac(){ if(!AC){ AC = new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state==='suspended') AC.resume(); return AC; }
 function beep(f, d, type, v, t){
   if(!musicOn) return;
@@ -624,7 +636,7 @@ document.getElementById('helpX').addEventListener('click', function(){ document.
 document.getElementById('musicBtn').addEventListener('click', function(){
   musicOn = !musicOn;
   this.classList.toggle('off', !musicOn);
-  if(musicOn){ ac(); musicLoop(); } else if(musicTimer){ clearTimeout(musicTimer); }
+  if(musicOn){ startBg(); } else { stopBg(); }
 });
 function winGame(){
   sfx('win');
@@ -783,7 +795,7 @@ requestAnimationFrame(loop);
   document.getElementById('startDate').textContent = CFG.TGL_TAMPIL;
   if(q) document.getElementById('guestHi').textContent = 'Halo, ' + q + '! 👋';
   document.getElementById('startBtn').addEventListener('click', function(){
-    ac(); musicLoop();
+    startBg();
     document.getElementById('start').classList.add('hide');
     gameStarted = true;
     toast('🎮 Selamat datang di Kampung Cinta!<br><small>Ketuk tanah untuk berjalan</small>', 3200);

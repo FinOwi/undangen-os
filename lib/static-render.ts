@@ -63,6 +63,7 @@ export async function renderStaticTheme(
       WA: c.wa ?? "",
       REK: rek,
       ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
       FOTO: {
         pria: c.photo_pria ?? "",
         wanita: c.photo_wanita ?? "",
@@ -88,7 +89,7 @@ export async function renderStaticTheme(
       date: f.iso,
       dateLabel: f.dateLabel,
       wa: c.wa ?? "",
-      music: "/tema/peta-perjalanan/assets/bgm.m4a",
+      music: c.music_url || "/tema/peta-perjalanan/assets/bgm.m4a",
       events: [
         { t: c.ev1_t ?? "Akad Nikah", d: c.ev1_d ?? "", p: c.ev1_p ?? "", m: c.ev1_m ?? "https://maps.google.com" },
         { t: c.ev2_t ?? "Resepsi", d: c.ev2_d ?? "", p: c.ev2_p ?? "", m: c.ev2_m ?? "https://maps.google.com" },
@@ -133,6 +134,7 @@ export async function renderStaticTheme(
       WA: c.wa ?? "",
       REK: rek,
       ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
       FOTO: { wisudawan: c.wisudawan ?? "", semester: semFoto },
       SEMESTER: semesters,
     };
@@ -166,6 +168,7 @@ export async function renderStaticTheme(
       WA: c.wa ?? "",
       REK: rek,
       ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
       AYAT: c.ayat ?? "",
       AYAT_SRC: c.ayat_src ?? "",
       FOTO: {
@@ -210,6 +213,7 @@ export async function renderStaticTheme(
       WA: c.wa ?? "",
       REK: rek,
       ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
       AYAT: c.ayat ?? "",
       AYAT_SRC: c.ayat_src ?? "",
       STORY: story,
