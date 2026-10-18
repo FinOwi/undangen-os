@@ -75,7 +75,7 @@ export default function StaticTemplateForm({ themes, initial, templateId }: {
     const p: Record<string, string | string[]> = {};
     for (const s of tpl.photoSlots) {
       const v = c[s.key];
-      p[s.key] = s.max === 1 ? (typeof v === "string" ? v : "") : (Array.isArray(v) ? v : []);
+      p[s.key] = s.max === 1 ? (typeof v === "string" ? v : "") : (Array.isArray(v) ? v : (typeof v === "string" && v ? [v] : []));
     }
     return p;
   });

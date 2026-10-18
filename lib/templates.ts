@@ -125,14 +125,14 @@ const WISUDA_FIELDS: FieldDef[] = [
 ];
 const WISUDA_SLOTS: PhotoSlotDef[] = [
   { key: "wisudawan", label: "\u2460 1. Foto Wisudawan", hint: "Aula Sidang \u00b7 portrait", max: 1 },
-  { key: "semester_1", label: "\u2461 2. Foto Semester 1", hint: "Gerbang Kampus \u00b7 semester 1", max: 1 },
-  { key: "semester_2", label: "\u2462 3. Foto Semester 2", hint: "Perpustakaan \u00b7 semester 2", max: 1 },
-  { key: "semester_3", label: "\u2463 4. Foto Semester 3", hint: "Kantin \u00b7 semester 3", max: 1 },
-  { key: "semester_4", label: "\u2464 5. Foto Semester 4", hint: "Lab Komputer \u00b7 semester 4", max: 1 },
-  { key: "semester_5", label: "\u2465 6. Foto Semester 5", hint: "Gedung Kuliah \u00b7 semester 5", max: 1 },
-  { key: "semester_6", label: "\u2466 7. Foto Semester 6", hint: "Posko KKN \u00b7 semester 6", max: 1 },
-  { key: "semester_7", label: "\u2467 8. Foto Semester 7", hint: "Ruang Dosen \u00b7 semester 7", max: 1 },
-  { key: "semester_8", label: "\u2468 9. Foto Semester 8", hint: "Aula Sidang \u00b7 semester 8", max: 1 },
+  { key: "semester_1", label: "\u2461 2. Galeri Semester 1", hint: "Gerbang Kampus \u00b7 semester 1 \u00b7 maks 6", max: 6 },
+  { key: "semester_2", label: "\u2462 3. Galeri Semester 2", hint: "Ruang Kuliah \u00b7 semester 2 \u00b7 maks 6", max: 6 },
+  { key: "semester_3", label: "\u2463 4. Galeri Semester 3", hint: "Perpustakaan \u00b7 semester 3 \u00b7 maks 6", max: 6 },
+  { key: "semester_4", label: "\u2464 5. Galeri Semester 4", hint: "Organisasi \u00b7 semester 4 \u00b7 maks 6", max: 6 },
+  { key: "semester_5", label: "\u2465 6. Galeri Semester 5", hint: "Laboratorium \u00b7 semester 5 \u00b7 maks 6", max: 6 },
+  { key: "semester_6", label: "\u2466 7. Galeri Semester 6", hint: "Penelitian \u00b7 semester 6 \u00b7 maks 6", max: 6 },
+  { key: "semester_7", label: "\u2467 8. Galeri Semester 7", hint: "Ruang Sidang \u00b7 semester 7 \u00b7 maks 6", max: 6 },
+  { key: "semester_8", label: "\u2468 9. Galeri Semester 8", hint: "Gedung Wisuda \u00b7 semester 8 \u00b7 maks 6", max: 6 },
 ];
 
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [

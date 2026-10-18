@@ -54,6 +54,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
 .qrow.active .qnum{background:#f5a623;border-color:#f5a623;color:#3a2503;animation:qpulse 1.2s infinite}
 @keyframes qpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 .qrow.locked{opacity:.55}
+/* galeri per misi */
+.gal{position:relative;margin:0 18px;border-radius:14px;overflow:hidden;border:2px solid #e5d3a8;background:#111}
+.gal img#galImg{width:100%;height:220px;object-fit:cover;display:block;touch-action:pan-y}
+.gbtn{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+  border:none;background:rgba(20,20,40,.55);color:#fff;font-size:16px;cursor:pointer;z-index:2}
+.gbtn.gl{left:8px}.gbtn.gr{right:8px}
+.gdots{position:absolute;bottom:8px;left:0;right:0;text-align:center;z-index:2}
+.gdots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);margin:0 3px;cursor:pointer}
+.gdots span.on{background:#f5a623;transform:scale(1.3)}
+.gthumbs{display:flex;gap:8px;padding:10px 18px 0;overflow-x:auto}
+.gthumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer;flex-shrink:0}
+.gthumbs img.on{border-color:#f5a623}
 .qrow .qt{flex:1}
 .qrow .qt b{color:#1b2a4a;font-size:15px}
 .qrow .qt span{display:block;color:#8a6d1f;font-size:12px}
@@ -92,6 +104,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#87bfe8;font-family:
   </div>
   <div class="hbtns">
     <button class="icobtn" id="btnQuest" title="Misi">🗺️</button>
+    <button class="icobtn" id="btnCam" title="Kamera bebas" style="opacity:.55">🎥</button>
     <button class="icobtn" id="btnMusic" title="Musik">🎵</button>
     <button class="icobtn" id="btnHelp" title="Bantuan">❓</button>
   </div>
@@ -146,7 +159,16 @@ var WISUDA = {
   WA:"6281234567890",
   REK:[{b:"BCA",n:"8210 456 789",a:"Raka Pratama"},{b:"DANA",n:"0812 3456 7890",a:"Raka Pratama"}],
   ALAMAT:"Jl. Universitas No. 1, Medan",
-  FOTO:{wisudawan:"",semester:["","","","","","","",""]},
+  FOTO:{wisudawan:"",semester:[
+    ["/tema/wisuda-quest/assets/bld_gerbang.png","/tema/wisuda-quest/assets/bld_kuliah.png"],
+    ["/tema/wisuda-quest/assets/bld_kuliah.png"],
+    ["/tema/wisuda-quest/assets/bld_perpus.png"],
+    ["/tema/wisuda-quest/assets/bld_organisasi.png"],
+    ["/tema/wisuda-quest/assets/bld_lab.png"],
+    ["/tema/wisuda-quest/assets/bld_penelitian.png"],
+    ["/tema/wisuda-quest/assets/bld_sidang.png"],
+    ["/tema/wisuda-quest/assets/bld_wisuda.png"]]},
+  /* demi demo: foto konsep per semester (data asli dari panel) */
   SEMESTER:[
     {t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},
     {t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""}
@@ -586,8 +608,10 @@ SEMDEF.forEach(function(s,i){
 });
 /* ================= STATE & INPUT ================= */
 var S={started:false,px:0,pz:22,tx:null,tz:null,face:0,moving:false,
-  camx:0,camz:38,visited:[false,false,false,false,false,false,false,false],
-  near:-1,dlgOpen:false,musicOn:false,t:0};
+  camx:0,camz:38,camD:17,camMode:'follow',orbit:{az:0,el:0.42,d:17},
+  visited:[false,false,false,false,false,false,false,false],
+  near:-1,nearLocked:-1,active:0,dlgOpen:false,musicOn:false,t:0};
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 var ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
 var keys={};
 addEventListener('keydown',function(e){
@@ -604,11 +628,12 @@ document.querySelectorAll('#dpad button').forEach(function(b){
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);
   b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
 });
-cv.addEventListener('pointerdown',function(e){
-  if(!S.started||S.dlgOpen)return;
+/* tap vs drag vs pinch */
+var ptrs=new Map(),downInfo=null,pinchD0=0;
+function tapMove(cx,cy){
   var r=cv.getBoundingClientRect();
-  ptr.x=((e.clientX-r.left)/r.width)*2-1;
-  ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+  ptr.x=((cx-r.left)/r.width)*2-1;
+  ptr.y=-((cy-r.top)/r.height)*2+1;
   ray.setFromCamera(ptr,camera);
   var hit=ray.intersectObject(ground);
   if(hit.length){
@@ -616,7 +641,60 @@ cv.addEventListener('pointerdown',function(e){
     S.tx=Math.max(-70,Math.min(70,p.x));
     S.tz=Math.max(-70,Math.min(70,p.z));
   }
+}
+cv.addEventListener('pointerdown',function(e){
+  if(!S.started||S.dlgOpen)return;
+  try{cv.setPointerCapture(e.pointerId);}catch(err){}
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1){
+    downInfo={x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};
+  }else{
+    downInfo=null;
+    var v=[...ptrs.values()];
+    pinchD0=Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y);
+  }
 });
+cv.addEventListener('pointermove',function(e){
+  if(!ptrs.has(e.pointerId))return;
+  var p=ptrs.get(e.pointerId);
+  var dx=e.clientX-p.x,dy=e.clientY-p.y;
+  p.x=e.clientX;p.y=e.clientY;
+  if(ptrs.size===2){
+    if(S.camMode==='free'){
+      var v=[...ptrs.values()];
+      var d1=Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y);
+      if(pinchD0>0)S.orbit.d=clamp(S.orbit.d*pinchD0/Math.max(1,d1),8,60);
+      pinchD0=d1;
+    }
+    return;
+  }
+  if(downInfo&&downInfo.id===e.pointerId){
+    if(Math.hypot(e.clientX-downInfo.x,e.clientY-downInfo.y)>10)downInfo.moved=true;
+    if(downInfo.moved&&S.camMode==='free'){
+      S.orbit.az-=dx*0.0055;
+      S.orbit.el=clamp(S.orbit.el+dy*0.004,0.1,1.35);
+    }
+  }
+});
+function ptrEnd(e){
+  ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinchD0=0;
+  if(downInfo&&downInfo.id===e.pointerId&&!downInfo.moved)tapMove(e.clientX,e.clientY);
+  downInfo=null;
+}
+cv.addEventListener('pointerup',ptrEnd);
+cv.addEventListener('pointercancel',ptrEnd);
+cv.addEventListener('wheel',function(e){
+  if(S.camMode==='free'&&S.started&&!S.dlgOpen){
+    e.preventDefault();
+    S.orbit.d=clamp(S.orbit.d*(1+e.deltaY*0.001),8,60);
+  }
+},{passive:false});
+document.getElementById('btnCam').onclick=function(){
+  S.camMode=S.camMode==='follow'?'free':'follow';
+  document.getElementById('btnCam').style.opacity=S.camMode==='free'?'1':'0.55';
+  toast(S.camMode==='free'?'🎥 Kamera bebas: geser untuk putar, cubit untuk zoom':'🎥 Kamera mengikuti pemain');
+};
 function collide(nx,nz){
   for(var i=0;i<SEMDEF.length;i++){
     var b=SEMDEF[i].blk,dx=nx-b[0],dz=nz-b[1],r=b[2];
@@ -634,26 +712,26 @@ function nextMission(){
   for(var i=0;i<8;i++)if(!S.visited[i])return i;
   return -1;
 }
-// jarak kamera aman (tidak terhalang gedung)
+// jarak kamera aman (tidak terhalang gedung) — versi umum untuk sudut bebas
 var CAMBLOCKS=[],CAMB_INIT=false;
-function cameraClear(px,pz,wantD){
+function camClear(px,pz,cx,cz){
   if(!CAMB_INIT){
     SEMDEF.forEach(function(s){CAMBLOCKS.push(s.blk);});
     CAMBLOCKS.push([0,0,8.6]); // air mancur
     CAMB_INIT=true;
   }
-  var dd=wantD;
+  var dx=cx-px,dz=cz-pz,dd=Math.hypot(dx,dz);
+  if(dd<0.01)return dd;
+  var ux=dx/dd,uz=dz/dd;
   for(var iter=0;iter<4;iter++){
-    var cx=px,cz=pz+dd,hit=false;
+    var hit=false;
     for(var i=0;i<CAMBLOCKS.length;i++){
       var b=CAMBLOCKS[i];
-      var dx=cx-px,dz=cz-pz,l2=dx*dx+dz*dz;
-      var t=l2?((b[0]-px)*dx+(b[1]-pz)*dz)/l2:0;
-      t=Math.max(0,Math.min(1,t));
-      var qx=px+dx*t,qz=pz+dz*t;
+      var t=(b[0]-px)*ux+(b[1]-pz)*uz;
+      if(t<0||t>dd)continue;
+      var qx=px+ux*t,qz=pz+uz*t;
       if(Math.hypot(b[0]-qx,b[1]-qz)<b[2]+2){
-        dd=Math.max(6,Math.hypot(qx-px,qz-pz)-1);
-        hit=true;break;
+        dd=Math.max(6,t-1);hit=true;break;
       }
     }
     if(!hit)break;
@@ -706,14 +784,26 @@ function update(dt){
     mk.visible=(i===S.active);
     if(mk.visible)mk.position.y=9+Math.sin(S.t*3+i)*0.8;
   });
-  // kamera third-person rendah (bukan dari atas)
-  var wantD=17;
-  var clearD=cameraClear(S.px,S.pz,wantD);
-  S.camD=(S.camD==null?wantD:S.camD)+(clearD-(S.camD==null?wantD:S.camD))*Math.min(1,dt*6);
-  S.camx+=(S.px-S.camx)*Math.min(1,dt*5);
-  S.camz+=((S.pz+S.camD)-S.camz)*Math.min(1,dt*5);
-  camera.position.set(S.camx,9.5,S.camz);
-  camera.lookAt(S.px,4,S.pz-8);
+  // kamera: follow (third-person rendah) atau bebas (orbit)
+  if(S.camMode==='free'){
+    var o=S.orbit;
+    var fx=S.px+Math.sin(o.az)*Math.cos(o.el)*o.d;
+    var fz=S.pz+Math.cos(o.az)*Math.cos(o.el)*o.d;
+    var fd=camClear(S.px,S.pz,fx,fz);
+    var fr=fd/Math.max(0.01,o.d);
+    S.camx=S.px+Math.sin(o.az)*Math.cos(o.el)*o.d*fr;
+    S.camz=S.pz+Math.cos(o.az)*Math.cos(o.el)*o.d*fr;
+    camera.position.set(S.camx,Math.sin(o.el)*o.d*fr+1.5,S.camz);
+    camera.lookAt(S.px,4,S.pz);
+  }else{
+    var wantD=17;
+    var clearD=camClear(S.px,S.pz,S.px,S.pz+wantD);
+    S.camD=(S.camD==null?wantD:S.camD)+(clearD-(S.camD==null?wantD:S.camD))*Math.min(1,dt*6);
+    S.camx+=(S.px-S.camx)*Math.min(1,dt*5);
+    S.camz+=((S.pz+S.camD)-S.camz)*Math.min(1,dt*5);
+    camera.position.set(S.camx,9.5,S.camz);
+    camera.lookAt(S.px,4,S.pz-8);
+  }
   // awan
   clouds.forEach(function(c){c.g.position.x+=c.sp*dt;if(c.g.position.x>90)c.g.position.x=-90;});
   // air mancur
@@ -808,8 +898,10 @@ function loop(ts){
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function semData(i){
   var c=WISUDA.SEMESTER[i]||{},d=SEMDEF[i];
+  var f=(WISUDA.FOTO.semester||[])[i];
+  var fotos=Array.isArray(f)?f.filter(Boolean):(f?[f]:[]);
   return{no:d.no,key:d.key,judul:c.t||d.judul,sub:d.sub,x:c.x||d.x,y:c.y||"",
-    foto:(WISUDA.FOTO.semester||[])[i]||"",emoji:d.emoji};
+    fotos:fotos,emoji:d.emoji};
 }
 function openDlg(i){
   S.dlgOpen=true;S.tx=null;
@@ -818,11 +910,44 @@ function openDlg(i){
   h+='<div class="shead"><span class="semno">SEMESTER '+d.no+'</span><h2>'+d.emoji+' '+esc(d.judul)+'</h2></div>';
   h+='<div class="sub">'+esc(d.sub)+(d.y?' • '+esc(d.y):'')+'</div>';
   h+='<div class="story">'+esc(d.x)+'</div>';
-  if(d.foto)h+='<div style="padding:0 18px"><img src="'+esc(d.foto)+'" style="width:100%;border-radius:14px;border:2px solid #e5d3a8" alt=""></div>';
+  if(d.fotos.length){
+    h+='<div class="gal"><img id="galImg" src="'+esc(d.fotos[0])+'" alt="Galeri semester '+d.no+'">';
+    if(d.fotos.length>1){
+      h+='<button class="gbtn gl" id="galPrev">◀</button><button class="gbtn gr" id="galNext">▶</button>';
+      h+='<div class="gdots">'+d.fotos.map(function(_,j){return '<span data-j="'+j+'" class="'+(j===0?'on':'')+'"></span>';}).join('')+'</div>';
+    }
+    h+='</div>';
+    if(d.fotos.length>1){
+      h+='<div class="gthumbs">'+d.fotos.map(function(f,j){return '<img src="'+esc(f)+'" data-j="'+j+'" class="'+(j===0?'on':'')+'" alt="">';}).join('')+'</div>';
+    }
+  }
   h+='<div class="xprow">⚡ +'+(100*d.no)+' XP</div>';
   h+='<div class="btnrow"><button class="btn back" id="dlgBack">Kembali</button><button class="btn go" id="dlgGo">'+(done?"Tutup":"Selesaikan Misi ✓")+'</button></div>';
   document.getElementById('dlgCard').innerHTML=h;
   document.getElementById('dlg').classList.add('on');
+  // galeri
+  if(d.fotos.length>1){
+    var gi=0,galImg=document.getElementById('galImg');
+    var thumbs=[...document.querySelectorAll('.gthumbs img')];
+    var dots=[...document.querySelectorAll('.gdots span')];
+    function galGo(j){
+      gi=(j+d.fotos.length)%d.fotos.length;
+      galImg.src=d.fotos[gi];
+      thumbs.forEach(function(t,k){t.classList.toggle('on',k===gi);});
+      dots.forEach(function(s,k){s.classList.toggle('on',k===gi);});
+    }
+    document.getElementById('galPrev').onclick=function(ev){ev.stopPropagation();galGo(gi-1);};
+    document.getElementById('galNext').onclick=function(ev){ev.stopPropagation();galGo(gi+1);};
+    thumbs.forEach(function(t){t.onclick=function(){galGo(parseInt(t.dataset.j,10));};});
+    // swipe di gambar utama
+    var sx=null;
+    galImg.addEventListener('pointerdown',function(e){sx=e.clientX;});
+    galImg.addEventListener('pointerup',function(e){
+      if(sx===null)return;
+      var dx=e.clientX-sx;sx=null;
+      if(Math.abs(dx)>30)galGo(gi+(dx<0?1:-1));
+    });
+  }
   document.getElementById('dlgBack').onclick=closeDlg;
   document.getElementById('dlgGo').onclick=function(){
     if(!S.visited[i]){

@@ -109,7 +109,10 @@ export async function renderStaticTheme(
       rek.push({ bank: c.gift1_bank ?? "", no: c.gift1_num ?? "", nama: c.gift1_an || `a.n. ${c.nama ?? ""}` });
     if (c.gift2_bank || c.gift2_num)
       rek.push({ bank: c.gift2_bank ?? "", no: c.gift2_num ?? "", nama: c.gift2_an || `a.n. ${c.nama ?? ""}` });
-    const semFoto = Array.from({ length: 8 }, (_, i) => c[`semester_${i + 1}`] ?? "");
+    const semFoto = Array.from({ length: 8 }, (_, i) => {
+      const v = c[`semester_${i + 1}`];
+      return Array.isArray(v) ? v.filter(Boolean) : (v ?? "");
+    });
     const semesters = Array.from({ length: 8 }, (_, i) => ({
       t: c[`sem${i + 1}_t`] ?? "",
       y: c[`sem${i + 1}_y`] ?? "",
