@@ -7,3 +7,19 @@ body {
   background: #0b0d12;
   color: #edeae2;
 }
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+::selection {
+  background: rgba(252, 211, 77, 0.35);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
+}
+/* cegah auto-zoom iOS saat fokus input */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}

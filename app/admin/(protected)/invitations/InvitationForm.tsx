@@ -6,56 +6,9 @@ import { getStaticTemplate } from "@/lib/templates";
 import StaticTemplateForm from "./StaticTemplateForm";
 import GuestManager from "./GuestManager";
 import type { ThemeOption, InvitationInitial } from "./types";
+import { inputCls, Field, Section, SlotBox, PageHeader, btnPrimary } from "../ui";
 
 export type { ThemeOption, InvitationInitial };
-
-const inputCls = "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-amber-300";
-const labelCls = "block text-xs font-medium text-zinc-400";
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className={labelCls}>{label}</span>
-      <div className="mt-1">{children}</div>
-    </label>
-  );
-}
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-amber-200/80">{title}</h2>
-      <div className="grid gap-4 md:grid-cols-2">{children}</div>
-    </section>
-  );
-}
-
-const fileCls = "block w-full text-sm text-zinc-400 file:mr-3 file:rounded-full file:border-0 file:bg-amber-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-900";
-
-function SlotBox({ title, hint, single, value, values, onClear, onRemove, onFiles }: {
-  title: string; hint: string; single?: boolean; value?: string; values?: string[];
-  onClear?: () => void; onRemove?: (i: number) => void; onFiles: (f: FileList | null) => void;
-}) {
-  const list = single ? (value ? [value] : []) : (values ?? []);
-  return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-      <p className="text-sm font-semibold text-zinc-100">{title}</p>
-      <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>
-      <input type="file" accept="image/*" multiple={!single} onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }}
-        className={`${fileCls} mt-3`} />
-      {list.length > 0 && (
-        <div className="mt-3 grid grid-cols-4 gap-2 md:grid-cols-6">
-          {list.map((u, i) => (
-            <div key={u + i} className="group relative aspect-square overflow-hidden rounded-lg border border-zinc-700">
-              <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
-              <button type="button" onClick={() => single ? onClear?.() : onRemove?.(i)}
-                className="absolute right-1 top-1 rounded-full bg-red-950/90 px-2 py-0.5 text-[11px] text-red-200 opacity-0 group-hover:opacity-100">✕</button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 const HARI = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
@@ -78,22 +31,24 @@ function cloudinaryUrl(url: string) {
   return url.replace("/upload/", "/upload/f_auto,q_auto,w_1600/");
 }
 
-export default function InvitationForm({ themes, initial, defaultTheme }: { themes: ThemeOption[]; initial?: InvitationInitial; defaultTheme?: string }) {
+export default function InvitationForm({ themes, initial, defaultTheme, heading }: {
+  themes: ThemeOption[]; initial?: InvitationInitial; defaultTheme?: string; heading?: string;
+}) {
   const router = useRouter();
   const [theme, setTheme] = useState(initial?.theme ?? defaultTheme ?? themes[0]?.slug ?? "");
 
   // Template statis (RPG Cinta, Peta Perjalanan, ...) → form dinamis sendiri.
   const statik = getStaticTemplate(theme);
   if (statik) {
-    return <StaticTemplateForm themes={themes} initial={initial} templateId={theme} />;
+    return <StaticTemplateForm themes={themes} initial={initial} templateId={theme} heading={heading} />;
   }
 
-  return <EngineForm themes={themes} initial={initial} theme={theme} setTheme={setTheme} />;
+  return <EngineForm themes={themes} initial={initial} theme={theme} setTheme={setTheme} heading={heading} />;
 }
 
-function EngineForm({ themes, initial, theme, setTheme }: {
+function EngineForm({ themes, initial, theme, setTheme, heading }: {
   themes: ThemeOption[]; initial?: InvitationInitial;
-  theme: string; setTheme: (t: string) => void;
+  theme: string; setTheme: (t: string) => void; heading?: string;
 }) {
   const router = useRouter();
   const c = initial?.content ?? {};
@@ -216,7 +171,8 @@ function EngineForm({ themes, initial, theme, setTheme }: {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <PageHeader title={heading ?? (initial ? "Edit Undangan" : "Buat Undangan")} subtitle="Template Klasik" />
       <Section title="Dasar">
         <Field label="Slug (jadi URL undangan)">
           <input className={inputCls} value={slug}
@@ -324,9 +280,8 @@ function EngineForm({ themes, initial, theme, setTheme }: {
 
       {err && <p className="rounded-xl bg-red-950/60 px-4 py-3 text-sm text-red-300">{err}</p>}
 
-      <button disabled={saving || uploading > 0}
-        className="rounded-full bg-amber-300 py-3 text-sm font-semibold text-zinc-900 hover:bg-amber-200 disabled:opacity-50">
-        {saving ? "Menyimpan…" : initial ? "Simpan Perubahan" : "Buat Undangan"}
+      <button disabled={saving || uploading > 0} className={btnPrimary + " w-full py-3"}>
+        {saving ? "Menyimpan…" : initial ? "💾 Simpan Perubahan" : "🚀 Buat Undangan"}
       </button>
     </form>
   );

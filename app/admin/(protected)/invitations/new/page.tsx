@@ -22,10 +22,5 @@ export default async function NewInvitationPage({
   const { template } = await searchParams;
   const valid = list.some((t) => t.slug === template);
 
-  return (
-    <div>
-      <h1 className="mb-6 text-2xl font-semibold text-amber-100">Buat Undangan Baru</h1>
-      <InvitationForm themes={list} defaultTheme={valid ? template : undefined} />
-    </div>
-  );
+  return <InvitationForm themes={list} defaultTheme={valid ? template : undefined} heading="Buat Undangan Baru" />;
 }

@@ -5,64 +5,55 @@ import { createClient } from "@/lib/supabase-client";
 import { getStaticTemplate } from "@/lib/templates";
 import GuestManager from "./GuestManager";
 import type { ThemeOption, InvitationInitial } from "./types";
+import {
+  inputCls, Field, SlotBox, PageHeader, Stepper, IconChevron,
+  btnPrimary, btnGhost, cardCls,
+} from "../ui";
 
-const inputCls = "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-amber-300";
-const labelCls = "block text-xs font-medium text-zinc-400";
-const fileCls = "block w-full text-sm text-zinc-400 file:mr-3 file:rounded-full file:border-0 file:bg-amber-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-900";
+const STEPS = [
+  { label: "Dasar" },
+  { label: "Isi Undangan" },
+  { label: "Foto" },
+  { label: "Tamu & Simpan" },
+];
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className={labelCls}>{label}{/* required ditandai di label */}</span>
-      <div className="mt-1">{children}</div>
-    </label>
-  );
+function cloudinaryUrl(url: string) {
+  return url.replace("/upload/", "/upload/f_auto,q_auto,w_1600/");
 }
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-amber-200/80">{title}</h2>
-      <div className="grid gap-4 md:grid-cols-2">{children}</div>
-    </section>
-  );
-}
-function SlotBox({ title, hint, single, value, values, onClear, onRemove, onFiles }: {
-  title: string; hint: string; single?: boolean; value?: string; values?: string[];
-  onClear?: () => void; onRemove?: (i: number) => void; onFiles: (f: FileList | null) => void;
+
+function Accordion({ title, meta, open, onToggle, children }: {
+  title: string; meta?: string; open: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
-  const list = single ? (value ? [value] : []) : (values ?? []);
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-      <p className="text-sm font-semibold text-zinc-100">{title}</p>
-      <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>
-      <input type="file" accept="image/*" multiple={!single} onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }}
-        className={`${fileCls} mt-3`} />
-      {list.length > 0 && (
-        <div className="mt-3 grid grid-cols-4 gap-2 md:grid-cols-6">
-          {list.map((u, i) => (
-            <div key={u + i} className="group relative aspect-square overflow-hidden rounded-lg border border-zinc-700">
-              <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
-              <button type="button" onClick={() => single ? onClear?.() : onRemove?.(i)}
-                className="absolute right-1 top-1 rounded-full bg-red-950/90 px-2 py-0.5 text-[11px] text-red-200 opacity-0 group-hover:opacity-100">✕</button>
-            </div>
-          ))}
+    <div className={`${cardCls} overflow-hidden`}>
+      <button type="button" onClick={onToggle} aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition hover:bg-white/[0.02]">
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-semibold text-zinc-100">{title}</span>
+          {meta && <span className="mt-0.5 block text-[11px] text-zinc-500">{meta}</span>}
+        </span>
+        <span className={`shrink-0 text-zinc-500 transition-transform ${open ? "rotate-180" : ""}`}>
+          <IconChevron size={16} />
+        </span>
+      </button>
+      {open && (
+        <div className="grid gap-4 border-t border-white/[0.06] px-4 py-4 md:grid-cols-2">
+          {children}
         </div>
       )}
     </div>
   );
 }
 
-function cloudinaryUrl(url: string) {
-  return url.replace("/upload/", "/upload/f_auto,q_auto,w_1600/");
-}
-
-export default function StaticTemplateForm({ themes, initial, templateId }: {
-  themes: ThemeOption[]; initial?: InvitationInitial; templateId: string;
+export default function StaticTemplateForm({ themes, initial, templateId, heading }: {
+  themes: ThemeOption[]; initial?: InvitationInitial; templateId: string; heading?: string;
 }) {
   const router = useRouter();
   const c = initial?.content ?? {};
   const tpl = getStaticTemplate(templateId)!;
 
+  const [step, setStep] = useState(0);
+  const [openSec, setOpenSec] = useState<string | null>(() => tpl.fields[0]?.section ?? null);
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [theme, setTheme] = useState(templateId);
   const [status, setStatus] = useState(initial?.status ?? "draft");
@@ -137,13 +128,37 @@ export default function StaticTemplateForm({ themes, initial, templateId }: {
     setFields((f) => ({ ...f, [key]: v }));
   }
 
+  function cleanSlug() {
+    return slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-");
+  }
+
+  function goStep(i: number) {
+    setStep(i);
+    setErr("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function next() {
+    if (step === 0 && !cleanSlug()) {
+      setErr("Isi slug dulu sebelum lanjut.");
+      return;
+    }
+    goStep(Math.min(step + 1, STEPS.length - 1));
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr("");
-    const s = slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-");
-    if (!s) { setErr("Slug wajib diisi."); return; }
+    const s = cleanSlug();
+    if (!s) { setErr("Slug wajib diisi."); goStep(0); return; }
     const missing = tpl.fields.filter((fd) => fd.required && !fields[fd.key]?.trim());
-    if (missing.length) { setErr("Wajib diisi: " + missing.map((m) => m.label).join(", ")); return; }
+    if (missing.length) {
+      setErr("Wajib diisi: " + missing.map((m) => m.label).join(", "));
+      const sec = sections.find((x) => x.keys.includes(missing[0].key));
+      if (sec) setOpenSec(sec.title);
+      goStep(1);
+      return;
+    }
 
     setSaving(true);
     try {
@@ -177,106 +192,166 @@ export default function StaticTemplateForm({ themes, initial, templateId }: {
   }
   const fieldByKey = Object.fromEntries(tpl.fields.map((fd) => [fd.key, fd]));
 
-  return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
-      <Section title="Dasar">
-        <Field label="Slug (jadi URL undangan)">
-          <input className={inputCls} value={slug}
-            onChange={(e) => setSlug(e.target.value)} onBlur={(e) => checkSlug(e.target.value)}
-            placeholder="bima-sari" />
-          {slugMsg && <p className="mt-1 text-xs text-zinc-400">{slugMsg}</p>}
-        </Field>
-        <Field label="Template">
-          {initial ? (
-            <p className="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200">
-              🎮 {tpl.name} <span className="text-xs text-zinc-500">(terkunci saat edit)</span>
-            </p>
-          ) : (
-            <select className={inputCls} value={theme}
-              onChange={(e) => {
-                window.location.href = window.location.pathname + `?template=${e.target.value}`;
-              }}>
-              {themes.map((t) => <option key={t.slug} value={t.slug}>{t.kind === "static" ? "🎮 " : ""}{t.name}</option>)}
-            </select>
-          )}
-          {!initial && <p className="mt-1 text-xs text-zinc-500">Ganti template akan me-reset isian form.</p>}
-        </Field>
-        <Field label="Status">
-          <select className={inputCls} value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
+  const renderField = (k: string) => {
+    const fd = fieldByKey[k];
+    return (
+      <Field key={k} label={fd.label} required={fd.required}>
+        {fd.type === "textarea" ? (
+          <textarea className={inputCls} rows={2} value={fields[k] ?? ""}
+            placeholder={fd.placeholder} onChange={(e) => setField(k, e.target.value)} />
+        ) : fd.type === "datetime" ? (
+          <input type="datetime-local" className={inputCls} value={fields[k] ?? ""}
+            onChange={(e) => setField(k, e.target.value)} />
+        ) : fd.type === "select" ? (
+          <select className={inputCls} value={fields[k] ?? fd.def ?? ""}
+            onChange={(e) => setField(k, e.target.value)}>
+            {(fd.options ?? []).map((op) => (
+              <option key={op} value={op}>{op}</option>
+            ))}
           </select>
-        </Field>
-      </Section>
+        ) : (
+          <input className={inputCls} value={fields[k] ?? ""}
+            placeholder={fd.placeholder} onChange={(e) => setField(k, e.target.value)} />
+        )}
+      </Field>
+    );
+  };
 
-      {sections.map((sec) => (
-        <Section key={sec.title} title={sec.title}>
-          {sec.keys.map((k) => {
-            const fd = fieldByKey[k];
-            return (
-              <Field key={k} label={fd.label + (fd.required ? " *" : "")}>
-                {fd.type === "textarea" ? (
-                  <textarea className={inputCls} rows={2} value={fields[k] ?? ""}
-                    placeholder={fd.placeholder} onChange={(e) => setField(k, e.target.value)} />
-                ) : fd.type === "datetime" ? (
-                  <input type="datetime-local" className={inputCls} value={fields[k] ?? ""}
-                    onChange={(e) => setField(k, e.target.value)} />
-                ) : fd.type === "select" ? (
-                  <select className={inputCls} value={fields[k] ?? fd.def ?? ""}
-                    onChange={(e) => setField(k, e.target.value)}>
-                    {(fd.options ?? []).map((op) => (
-                      <option key={op} value={op}>{op}</option>
-                    ))}
+  const filledCount = (keys: string[]) => {
+    const n = keys.filter((k) => fields[k]?.trim()).length;
+    return `${n}/${keys.length} terisi`;
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <PageHeader title={heading ?? (initial ? "Edit Undangan" : "Buat Undangan")} subtitle={tpl.name} />
+
+      <div className="mt-4">
+        <Stepper steps={STEPS} current={step} onGo={goStep} />
+      </div>
+
+      <div className="mt-5">
+        {step === 0 && (
+          <div className={`${cardCls} grid gap-4 p-4 md:grid-cols-2 md:p-5`}>
+            <Field label="Slug (jadi URL undangan)" hint={`undangen.my.id/i/${cleanSlug() || "…"}`}>
+              <input className={inputCls} value={slug}
+                onChange={(e) => setSlug(e.target.value)} onBlur={(e) => checkSlug(e.target.value)}
+                placeholder="bima-sari" autoComplete="off" />
+              {slugMsg && <p className="mt-1.5 text-xs text-zinc-400">{slugMsg}</p>}
+            </Field>
+            <Field label="Template">
+              {initial ? (
+                <p className="rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-zinc-200">
+                  {tpl.name} <span className="text-xs text-zinc-500">(terkunci saat edit)</span>
+                </p>
+              ) : (
+                <>
+                  <select className={inputCls} value={theme}
+                    onChange={(e) => { window.location.href = window.location.pathname + `?template=${e.target.value}`; }}>
+                    {themes.map((t) => <option key={t.slug} value={t.slug}>{t.kind === "static" ? "🎮 " : ""}{t.name}</option>)}
                   </select>
-                ) : (
-                  <input className={inputCls} value={fields[k] ?? ""}
-                    placeholder={fd.placeholder} onChange={(e) => setField(k, e.target.value)} />
-                )}
-              </Field>
-            );
-          })}
-        </Section>
-      ))}
-
-      <Section title={`Foto — urutan ${tpl.photoSlots.length} slot`}>
-        <div className="md:col-span-2 flex flex-col gap-5">
-          {tpl.photoSlots.map((s) => (
-            <SlotBox key={s.key} title={s.label} hint={`${s.hint}${s.max > 1 ? ` · maks ${s.max}` : ""}`}
-              single={s.max === 1}
-              value={s.max === 1 ? (photos[s.key] as string) : undefined}
-              values={s.max === 1 ? undefined : (photos[s.key] as string[])}
-              onClear={() => setPhotos((p) => ({ ...p, [s.key]: "" }))}
-              onRemove={(i) => setPhotos((p) => ({ ...p, [s.key]: (p[s.key] as string[]).filter((_, j) => j !== i) }))}
-              onFiles={(f) => onFiles(f, s.key, s.max)} />
-          ))}
-          {uploading > 0 && <p className="text-xs text-amber-200">Mengupload {uploading} foto…</p>}
-          <p className="text-xs text-zinc-500">{totalPhotos()}/30 foto terisi</p>
-        </div>
-      </Section>
-
-      <Section title="Undangan Private 🔒">
-        <div className="md:col-span-2">
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200">
-            <input type="checkbox" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)}
-              className="h-4 w-4 accent-amber-300" />
-            Aktifkan tautan tamu private (anti-forward, per tamu 1 tautan unik)
-          </label>
-        </div>
-        {isPrivate && initial?.id && (
-          <GuestManager invitationId={initial.id} slug={slug || initial.slug}
-            couple={`${fields.c1 ?? ""} & ${fields.c2 ?? ""}`.trim() || "mempelai"} />
+                  <p className="mt-1.5 text-[11px] text-zinc-600">Ganti template akan me-reset isian form.</p>
+                </>
+              )}
+            </Field>
+            <Field label="Status">
+              <select className={inputCls} value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="draft">Draft — belum bisa dibuka tamu</option>
+                <option value="published">Published — live untuk tamu</option>
+              </select>
+            </Field>
+          </div>
         )}
-        {isPrivate && !initial?.id && (
-          <p className="text-xs text-amber-200 md:col-span-2">Simpan undangan dulu, lalu kelola daftar tamu di sini.</p>
+
+        {step === 1 && (
+          <div className="flex flex-col gap-3">
+            {sections.map((sec) => (
+              <Accordion key={sec.title} title={sec.title} meta={filledCount(sec.keys)}
+                open={openSec === sec.title}
+                onToggle={() => setOpenSec(openSec === sec.title ? null : sec.title)}>
+                {sec.keys.map(renderField)}
+              </Accordion>
+            ))}
+          </div>
         )}
-      </Section>
 
-      {err && <p className="rounded-xl bg-red-950/60 px-4 py-3 text-sm text-red-300">{err}</p>}
+        {step === 2 && (
+          <div className={`${cardCls} p-4 md:p-5`}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-zinc-100">Slot foto <span className="font-normal text-zinc-500">· {tpl.photoSlots.length} slot</span></h2>
+              <span className="rounded-full bg-white/[0.05] px-3 py-1 text-xs tabular-nums text-zinc-400">{totalPhotos()}/30</span>
+            </div>
+            <div className="flex flex-col gap-4">
+              {tpl.photoSlots.map((s) => (
+                <SlotBox key={s.key} title={s.label} hint={`${s.hint}${s.max > 1 ? ` · maks ${s.max}` : ""}`}
+                  single={s.max === 1}
+                  value={s.max === 1 ? (photos[s.key] as string) : undefined}
+                  values={s.max === 1 ? undefined : (photos[s.key] as string[])}
+                  onClear={() => setPhotos((p) => ({ ...p, [s.key]: "" }))}
+                  onRemove={(i) => setPhotos((p) => ({ ...p, [s.key]: (p[s.key] as string[]).filter((_, j) => j !== i) }))}
+                  onFiles={(f) => onFiles(f, s.key, s.max)} />
+              ))}
+              {uploading > 0 && <p className="text-xs text-amber-200">Mengupload {uploading} foto…</p>}
+            </div>
+          </div>
+        )}
 
-      <button disabled={saving || uploading > 0}
-        className="rounded-full bg-amber-300 py-3 text-sm font-semibold text-zinc-900 hover:bg-amber-200 disabled:opacity-50">
-        {saving ? "Menyimpan…" : initial ? "Simpan Perubahan" : "Buat Undangan"}
-      </button>
+        {step === 3 && (
+          <div className="flex flex-col gap-4">
+            <div className={`${cardCls} p-4 md:p-5`}>
+              <h2 className="mb-1 text-sm font-semibold text-zinc-100">🔒 Undangan Private</h2>
+              <p className="mb-4 text-xs leading-relaxed text-zinc-500">
+                Tautan tamu unik anti-forward. Tamu tanpa tautan valid melihat halaman “Tautan Tidak Ditemukan”.
+              </p>
+              <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200">
+                <input type="checkbox" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)}
+                  className="h-5 w-5 accent-amber-300" />
+                Aktifkan tautan tamu private
+              </label>
+              {isPrivate && initial?.id && (
+                <div className="mt-4 border-t border-white/[0.06] pt-4">
+                  <GuestManager invitationId={initial.id} slug={slug || initial.slug}
+                    couple={`${fields.c1 ?? ""} & ${fields.c2 ?? ""}`.trim() || "mempelai"} />
+                </div>
+              )}
+              {isPrivate && !initial?.id && (
+                <p className="mt-3 rounded-xl bg-amber-300/10 px-3.5 py-2.5 text-xs text-amber-200">
+                  Simpan undangan dulu, lalu kelola daftar tamu di halaman edit.
+                </p>
+              )}
+            </div>
+
+            <div className={`${cardCls} p-4 md:p-5`}>
+              <h2 className="mb-3 text-sm font-semibold text-zinc-100">Ringkasan</h2>
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm">
+                <dt className="text-zinc-500">Template</dt><dd className="text-right text-zinc-200">{tpl.name}</dd>
+                <dt className="text-zinc-500">URL</dt><dd className="truncate text-right text-zinc-200">/i/{cleanSlug() || "…"}</dd>
+                <dt className="text-zinc-500">Status</dt><dd className="text-right text-zinc-200">{status === "published" ? "Published" : "Draft"}</dd>
+                <dt className="text-zinc-500">Foto</dt><dd className="text-right tabular-nums text-zinc-200">{totalPhotos()}/30</dd>
+                <dt className="text-zinc-500">Private</dt><dd className="text-right text-zinc-200">{isPrivate ? "Aktif" : "Nonaktif"}</dd>
+              </dl>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {err && (
+        <p className="mt-4 rounded-xl border border-red-400/20 bg-red-950/50 px-4 py-3 text-sm text-red-300">{err}</p>
+      )}
+
+      <div className="sticky bottom-[4.75rem] z-20 mt-6 flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#14161c]/95 p-2.5 shadow-2xl shadow-black/50 backdrop-blur md:bottom-6">
+        {step > 0 ? (
+          <button type="button" onClick={() => goStep(step - 1)} className={btnGhost}>← Kembali</button>
+        ) : <span className="hidden sm:block w-[104px]" />}
+        <span className="flex-1 text-center text-xs tabular-nums text-zinc-500">{step + 1} / {STEPS.length}</span>
+        {step < STEPS.length - 1 ? (
+          <button type="button" onClick={next} className={btnPrimary}>Lanjut →</button>
+        ) : (
+          <button type="submit" disabled={saving || uploading > 0} className={btnPrimary}>
+            {saving ? "Menyimpan…" : uploading > 0 ? `Upload ${uploading}…` : initial ? "💾 Simpan Perubahan" : "🚀 Buat Undangan"}
+          </button>
+        )}
+      </div>
     </form>
   );
 }

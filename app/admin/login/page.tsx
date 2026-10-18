@@ -22,21 +22,31 @@ export default function AdminLogin() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6">
-      <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-amber-200/60">Undangen OS</p>
-        <h1 className="mt-2 text-2xl font-semibold text-amber-100">Masuk Admin</h1>
-        <label className="mt-6 block text-xs text-zinc-400">Email</label>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0b0d12] px-5">
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-amber-300/10 blur-3xl" />
+      <form onSubmit={onSubmit}
+        className="relative w-full max-w-sm rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 shadow-2xl shadow-black/50 backdrop-blur md:p-8">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-300 text-xl font-bold text-zinc-950">U</span>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.25em] text-amber-200/60">Undangen OS</p>
+            <h1 className="text-xl font-semibold text-zinc-50">Masuk Admin</h1>
+          </div>
+        </div>
+        <label className="mt-7 block text-xs font-medium text-zinc-400">Email</label>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm outline-none focus:border-amber-300" />
-        <label className="mt-4 block text-xs text-zinc-400">Password</label>
+          autoComplete="email" placeholder="admin@undangen.my.id"
+          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none transition focus:border-amber-300/70 focus:ring-2 focus:ring-amber-300/20" />
+        <label className="mt-4 block text-xs font-medium text-zinc-400">Password</label>
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm outline-none focus:border-amber-300" />
-        {err && <p className="mt-4 rounded-lg bg-red-950/60 px-3 py-2 text-xs text-red-300">{err}</p>}
+          autoComplete="current-password" placeholder="••••••••"
+          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none transition focus:border-amber-300/70 focus:ring-2 focus:ring-amber-300/20" />
+        {err && <p className="mt-4 rounded-xl border border-red-400/20 bg-red-950/50 px-3.5 py-2.5 text-xs text-red-300">{err}</p>}
         <button disabled={loading}
-          className="mt-6 w-full rounded-full bg-amber-300 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-amber-200 disabled:opacity-50">
+          className="mt-6 w-full rounded-full bg-amber-300 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-amber-200 active:scale-[0.99] disabled:opacity-50">
           {loading ? "Masuk…" : "Masuk"}
         </button>
+        <p className="mt-5 text-center text-[11px] text-zinc-600">Undangen · undangan digital interaktif</p>
       </form>
     </main>
   );

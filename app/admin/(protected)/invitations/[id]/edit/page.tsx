@@ -26,10 +26,5 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
     id: data.id, slug: data.slug, theme: data.theme, status: data.status, content: data.content ?? {},
   };
 
-  return (
-    <div>
-      <h1 className="mb-6 text-2xl font-semibold text-amber-100">Edit: {data.title}</h1>
-      <InvitationForm themes={list} initial={initial} />
-    </div>
-  );
+  return <InvitationForm themes={list} initial={initial} heading={`Edit: ${data.title}`} />;
 }
