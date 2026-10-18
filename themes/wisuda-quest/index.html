@@ -154,7 +154,7 @@ var WISUDA = {
 import * as THREE from 'three';
 /* ================= DATA SEMESTER (layout kampus 3D baru) ================= */
 var SEMDEF=[
- {no:1,key:"gerbang",pos:[0,44],blk:[0,52,8],judul:"Masuk Kampus",sub:"Awal Perjalanan",emoji:"🚪",
+ {no:1,key:"gerbang",pos:[0,50],blk:[0,58,8],judul:"Masuk Kampus",sub:"Awal Perjalanan",emoji:"🚪",
   x:"Langkah pertama dimulai di gerbang ini. Seragam baru, teman baru, dan mimpi yang besar — perjalanan 8 semester resmi dimulai!"},
  {no:2,key:"kuliah",pos:[-32,28],blk:[-42,28,10],judul:"Perkuliahan",sub:"Adaptasi & Teman Baru",emoji:"📚",
   x:"Duduk di bangku kuliah, mencatat ilmu, dan beradaptasi dengan dunia kampus. Teman-teman baru menjadi keluarga kedua."},
@@ -341,8 +341,8 @@ function buildGate(){
   });
   grp.add(box(13,2.2,2.4,0xe8e0cf,0,10.6,0));
   var sign=textSprite('UNIVERSITAS',52,'#1b2a4a','#ffd97a',30);
-  sign.position.set(0,15.5,0);grp.add(sign);
-  grp.position.set(0,0,52);scene.add(grp);
+  sign.position.set(0,18.5,0);grp.add(sign);
+  grp.position.set(0,0,58);scene.add(grp);
 }
 /* air mancur plaza */
 var fountainWater;
@@ -582,7 +582,7 @@ SEMDEF.forEach(function(s,i){
   scene.add(mk);markers.push(mk);
 });
 /* ================= STATE & INPUT ================= */
-var S={started:false,px:0,pz:38,tx:null,tz:null,face:0,moving:false,
+var S={started:false,px:0,pz:44,tx:null,tz:null,face:0,moving:false,
   camx:0,camz:38,visited:[false,false,false,false,false,false,false,false],
   near:-1,dlgOpen:false,musicOn:false,t:0};
 var ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
@@ -903,7 +903,7 @@ document.getElementById('btnMulai').onclick=function(){
   setTimeout(function(){if(!S.musicOn)toggleMusic();},400);
 };
 /* kamera awal */
-S.camx=0;S.camz=58;camera.position.set(0,27,58);camera.lookAt(0,2,34);
+S.camx=0;S.camz=78;camera.position.set(0,30,78);camera.lookAt(0,2,44);
 updateHUD();
 requestAnimationFrame(loop);
 </script>
