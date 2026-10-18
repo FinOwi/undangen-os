@@ -2,821 +2,505 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Wisuda Quest 3D — Undangan Sidang RPG</title>
-<meta name="description" content="Undangan sidang & wisuda konsep game RPG 3D: jelajahi kampus medieval, lewati 8 semester, dan rayakan kelulusan.">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Wisuda Quest — 8 Semester, Satu Tujuan</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden;background:#101408;font-family:'Chakra Petch',system-ui,sans-serif;user-select:none;-webkit-user-select:none;color:#fff}
-  #game{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
-  /* ---------- HUD ---------- */
-  .hud{position:fixed;z-index:20;pointer-events:none}
-  #quest{top:calc(10px + env(safe-area-inset-top));left:12px;background:rgba(12,14,10,.78);border:2px solid #f2b90d;border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700;letter-spacing:.4px;pointer-events:auto;box-shadow:0 4px 14px rgba(0,0,0,.4)}
-  #quest small{display:block;font-weight:400;font-size:11px;color:#ffd968;letter-spacing:.2px}
-  #qbar{height:6px;background:#2a2d22;border-radius:3px;margin-top:6px;overflow:hidden;min-width:130px}
-  #qfill{height:100%;width:0%;background:linear-gradient(90deg,#e11d2e,#f2b90d);border-radius:3px;transition:width .5s}
-  #minimap{top:calc(10px + env(safe-area-inset-top));right:12px;border:2px solid #f2b90d;border-radius:10px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.4);background:#1c2417}
-  #mm{width:150px;height:112px;display:block}
-  #hbtns{top:calc(136px + env(safe-area-inset-top));right:12px;display:flex;gap:8px;pointer-events:auto}
-  .rbtn{width:42px;height:42px;border-radius:50%;border:2px solid #f2b90d;background:rgba(12,14,10,.8);color:#ffd968;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-  .rbtn.off{opacity:.45;filter:grayscale(.6)}
-  /* ---------- prompt masuk ---------- */
-  #prompt{left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom));background:rgba(12,14,10,.85);border:2px solid #f2b90d;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:700;display:none;pointer-events:auto;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5);animation:pbob 1.2s ease-in-out infinite}
-  @keyframes pbob{50%{transform:translateX(-50%) translateY(-6px)}}
-  /* ---------- dpad & tombol A ---------- */
-  #dpad{left:14px;bottom:calc(16px + env(safe-area-inset-bottom));width:128px;height:128px;pointer-events:auto;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px}
-  .dbtn{background:rgba(12,14,10,.55);border:2px solid rgba(242,185,13,.75);border-radius:12px;color:#ffd968;font-size:20px;display:flex;align-items:center;justify-content:center;touch-action:none}
-  .dbtn.on{background:rgba(242,185,13,.45)}
-  #abtn{right:18px;bottom:calc(26px + env(safe-area-inset-bottom));width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff5a5a,#c1111f);border:3px solid #f2b90d;color:#fff;font-family:'Press Start 2P',monospace;font-size:20px;pointer-events:auto;cursor:pointer;box-shadow:0 6px 18px rgba(193,17,31,.5);display:none;align-items:center;justify-content:center}
-  /* ---------- toast ---------- */
-  #toasts{left:50%;transform:translateX(-50%);top:calc(76px + env(safe-area-inset-top));display:flex;flex-direction:column;gap:8px;align-items:center;z-index:40}
-  .toast{background:rgba(12,14,10,.9);border:2px solid #f2b90d;color:#ffe9a8;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;animation:tin .35s ease-out;max-width:86vw;text-align:center}
-  @keyframes tin{from{transform:translateY(-14px);opacity:0}}
-  /* ---------- overlay ---------- */
-  .ovl{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(8,10,6,.72);backdrop-filter:blur(3px);padding:18px}
-  .ovl.hide{display:none}
-  .panel{background:#141810;border:3px solid #f2b90d;border-radius:18px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 0 40px rgba(242,185,13,.05);position:relative}
-  .panel h2{font-family:'Press Start 2P',monospace;font-size:15px;color:#ffd968;line-height:1.7;margin-bottom:6px}
-  .panel .sub{color:#e11d2e;font-weight:700;font-size:13px;letter-spacing:2px;margin-bottom:14px}
-  .panel p{font-size:14px;line-height:1.75;color:#e8e4d8;margin-bottom:10px}
-  .xbtn{position:absolute;top:10px;right:12px;background:none;border:none;color:#f2b90d;font-size:24px;cursor:pointer;line-height:1}
-  .btn{display:inline-block;background:linear-gradient(180deg,#f2b90d,#c98f06);color:#231a00;font-weight:700;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-family:'Chakra Petch',sans-serif;cursor:pointer;margin-top:8px;width:100%}
-  .btn.ghost{background:transparent;border:2px solid #f2b90d;color:#ffd968}
-  .kv{background:#0d0f0a;border:1px solid #3a3d2c;border-radius:10px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.6}
-  .kv b{color:#ffd968}
-  .foto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-  .foto-grid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:2px solid #3a3d2c;cursor:pointer}
-  .couple{display:flex;gap:10px;margin:12px 0}
-  .couple .c{flex:1;text-align:center}
-  .couple img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:2px solid #f2b90d}
-  .couple .nm{font-weight:700;color:#ffd968;font-size:14px;margin-top:6px}
-  .couple .ort{font-size:11.5px;color:#b9b49e;line-height:1.5}
-  .cd{display:flex;gap:8px;justify-content:center;margin:12px 0}
-  .cd div{background:#0d0f0a;border:1px solid #f2b90d;border-radius:10px;padding:8px 0;width:64px;text-align:center}
-  .cd b{display:block;font-size:20px;color:#ffd968}
-  .cd span{font-size:10px;color:#b9b49e;letter-spacing:1px}
-  input,select,textarea{width:100%;background:#0d0f0a;border:1px solid #3a3d2c;border-radius:10px;color:#fff;padding:11px 12px;font-size:14px;font-family:'Chakra Petch',sans-serif;margin:6px 0}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:#f2b90d}
-  /* ---------- start ---------- */
-  #start{background:radial-gradient(ellipse at 50% 120%,#3a2b08 0%,#101408 60%);flex-direction:column;text-align:center}
-  #start .logo{font-family:'Press Start 2P',monospace;font-size:clamp(22px,7vw,40px);color:#ffd968;line-height:1.6;text-shadow:0 4px 0 #7a4d00,0 8px 24px rgba(242,185,13,.35);margin-bottom:4px}
-  #start .tag{color:#e11d2e;font-weight:700;letter-spacing:4px;font-size:12px;margin-bottom:18px}
-  #start .names{font-size:clamp(18px,5vw,26px);font-weight:700;color:#fff;margin-bottom:6px}
-  #start .date{color:#b9b49e;font-size:14px;margin-bottom:22px}
-  #startBtn{font-family:'Press Start 2P',monospace;font-size:15px;background:linear-gradient(180deg,#ff5a5a,#c1111f);color:#fff;border:3px solid #f2b90d;border-radius:14px;padding:18px 34px;cursor:pointer;animation:pulse 1.6s infinite;width:auto}
-  @keyframes pulse{50%{transform:scale(1.05);box-shadow:0 0 30px rgba(242,185,13,.5)}}
-  #start .hint{margin-top:20px;font-size:12.5px;color:#8f8a76;line-height:2}
-  #guestHi{color:#ffd968;font-weight:700;margin-bottom:14px;font-size:15px}
-  /* help */
-  #helpList{font-size:13.5px;line-height:2;color:#e8e4d8}
-  #helpList b{color:#ffd968}
-  @media (min-width:760px){ #dpad{display:none} #prompt{bottom:60px} }
-
-#guideTag{position:fixed;left:0;top:0;transform:translate(-50%,-130%);background:rgba(10,12,8,.85);border:1.5px solid #f2b90d;color:#ffe9a8;font:700 12px "Chakra Petch",sans-serif;padding:5px 12px;border-radius:20px;pointer-events:none;white-space:nowrap;z-index:30;display:none}
-#vignette{position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.42) 100%)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#0e1a30;font-family:'Trebuchet MS','Comic Sans MS','Chalkboard SE',sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block}
+/* ---------- HUD ---------- */
+#hud{position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;right:10px;display:none;align-items:center;gap:8px;z-index:20;pointer-events:none}
+#hud .panel{pointer-events:auto;display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#22345c,#16233f);border:3px solid #f5a623;border-radius:18px;padding:7px 14px 7px 8px;box-shadow:0 4px 14px rgba(0,0,0,.45);color:#fff;flex:1;min-width:0}
+#hud .ava{width:44px;height:44px;border-radius:50%;background:#0e1a30;border:2px solid #f5a623;overflow:hidden;flex:none;display:flex;align-items:flex-end;justify-content:center}
+#hud .ava img{width:36px;height:auto}
+#hud .meta{min-width:0;flex:1}
+#hud .meta .lv{font-weight:900;font-size:15px;color:#ffd97a;letter-spacing:.5px;white-space:nowrap}
+#hud .bar{height:9px;background:#0a1322;border-radius:6px;margin-top:5px;overflow:hidden;border:1px solid #ffffff33}
+#hud .bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#f5a623,#ffd97a);border-radius:6px;transition:width .5s}
+#hud .hbtns{display:flex;gap:7px;pointer-events:auto}
+.icobtn{width:46px;height:46px;border-radius:14px;border:3px solid #f5a623;background:linear-gradient(180deg,#2b3f6b,#1a2947);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.4);padding:0;font-family:inherit}
+.icobtn:active{transform:scale(.93)}
+.icobtn img{width:30px;height:30px;object-fit:contain}
+/* ---------- prompt dekati ---------- */
+#prompt{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);z-index:25;background:linear-gradient(180deg,#f5a623,#e08a12);color:#3a2503;font-weight:900;padding:12px 22px;border-radius:999px;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:all .25s;font-size:16px;white-space:nowrap}
+#prompt.on{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;cursor:pointer}
+/* ---------- dialog semester ---------- */
+.sheet{position:fixed;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;background:rgba(5,10,20,.55);backdrop-filter:blur(2px)}
+.sheet.on{display:flex}
+.card{width:min(480px,94vw);max-height:88vh;overflow-y:auto;background:linear-gradient(180deg,#fffdf6,#f7ecd4);border-radius:26px 26px 20px 20px;border:4px solid #1b2a4a;box-shadow:0 20px 60px rgba(0,0,0,.6);padding:0 0 20px;animation:pop .3s}
+@keyframes pop{from{transform:translateY(40px) scale(.96);opacity:0}}
+.card .bld{width:100%;height:170px;object-fit:contain;background:linear-gradient(180deg,#bfe3ff,#e8f6ff);border-radius:22px 22px 0 0;padding:10px}
+.card .shead{display:flex;align-items:center;gap:10px;padding:14px 18px 0}
+.semno{background:#1b2a4a;color:#ffd97a;font-weight:900;border-radius:12px;padding:6px 12px;font-size:14px;border:2px solid #f5a623}
+.card h2{font-size:22px;color:#1b2a4a}
+.card .sub{color:#8a6d1f;font-weight:700;font-size:14px;padding:2px 18px 0}
+.card .story{padding:10px 18px;color:#3d3d3d;font-size:15px;line-height:1.55}
+.card .story img.illus{width:100%;border-radius:14px;margin:6px 0;border:2px solid #e5d3a8}
+.card .xprow{display:flex;align-items:center;gap:8px;padding:4px 18px 0;color:#b07800;font-weight:900}
+.card .xprow img{width:26px}
+.card .btnrow{display:flex;gap:10px;padding:14px 18px 0}
+.btn{flex:1;border:none;border-radius:16px;padding:14px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit}
+.btn.go{background:linear-gradient(180deg,#f5a623,#dd8a0e);color:#3a2503;box-shadow:0 4px 0 #a86408}
+.btn.go:active{transform:translateY(3px);box-shadow:none}
+.btn.back{background:#e8e2d2;color:#5a5a5a}
+/* ---------- start ---------- */
+#start{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#0e1a30 0%,#16294d 60%,#1d3a6b 100%);padding:20px;text-align:center}
+#start .titleart{width:min(430px,92vw);border-radius:18px;border:4px solid #f5a623;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#start h1{color:#ffd97a;font-size:30px;margin:16px 0 4px;letter-spacing:1px;text-shadow:0 3px 0 #00000055}
+#start p{color:#cfe0ff;font-size:15px;max-width:420px;line-height:1.5}
+#start .to{color:#fff;font-weight:900;margin-top:10px;font-size:17px}
+#start .to b{color:#ffd97a}
+#btnMulai{margin-top:18px;background:none;border:none;cursor:pointer;transition:transform .15s}
+#btnMulai:active{transform:scale(.94)}
+#btnMulai img{width:190px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+#start .hint{margin-top:14px;color:#8fa3c8;font-size:13px}
+/* ---------- quest list ---------- */
+#quest .card{border-radius:20px}
+.qrow{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px dashed #d8c89a}
+.qrow:last-child{border:none}
+.qnum{width:38px;height:38px;flex:none;border-radius:50%;background:#1b2a4a;color:#ffd97a;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #f5a623;font-size:16px}
+.qrow.done .qnum{background:#2e9e5b;border-color:#2e9e5b;color:#fff}
+.qrow .qt{flex:1}
+.qrow .qt b{color:#1b2a4a;font-size:15px}
+.qrow .qt span{display:block;color:#8a6d1f;font-size:12px}
+.qcheck{font-size:22px}
+/* ---------- win ---------- */
+#win .card{text-align:center}
+#win .wbad{width:190px;margin:6px auto 0;display:block}
+#win .wchar{width:110px;margin:6px auto;display:block}
+#win h2{color:#1b2a4a;font-size:26px}
+#win .nm{font-size:20px;color:#b07800;font-weight:900;margin:4px 0}
+#win .cd{display:flex;gap:8px;justify-content:center;margin:12px 0}
+#win .cd div{background:#1b2a4a;color:#ffd97a;border-radius:12px;padding:8px 4px;min-width:62px;border:2px solid #f5a623}
+#win .cd b{font-size:22px;display:block}
+#win .cd span{font-size:11px}
+#win .erow{padding:6px 22px;color:#4a4a4a;font-size:14px;line-height:1.6}
+#win .erow b{color:#1b2a4a}
+/* ---------- toast ---------- */
+#toast{position:fixed;top:90px;left:50%;transform:translateX(-50%) scale(.6);z-index:60;opacity:0;pointer-events:none;transition:all .3s}
+#toast.on{opacity:1;transform:translateX(-50%) scale(1)}
+#toast img{width:200px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
+/* ---------- dpad ---------- */
+#dpad{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20;display:none;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:4px;opacity:.85}
+#dpad button{border-radius:14px;border:2px solid #ffffff55;background:#1b2a4acc;color:#fff;font-size:20px;font-family:inherit}
+#dpad button:active{background:#f5a623}
+/* ---------- help ---------- */
+#help .card{padding:20px}
+#help h2{color:#1b2a4a;margin-bottom:10px}
+#help li{color:#4a4a4a;font-size:14px;line-height:1.7;margin-left:18px}
+.ver{position:fixed;bottom:6px;left:10px;color:#ffffff44;font-size:10px;z-index:5}
 </style>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
 <canvas id="game"></canvas>
 
-<div class="hud" id="quest">🎓 LEVEL <span id="qn">0</span>/8<small id="qt">Lewati 8 semester menuju toga</small><div id="qbar"><div id="qfill"></div></div></div>
-<div class="hud" id="minimap"><canvas id="mm" width="300" height="224"></canvas></div>
-<div class="hud" id="hbtns">
-  <button class="rbtn" id="musicBtn" title="Musik">🎵</button>
-  <button class="rbtn" id="helpBtn" title="Bantuan">❓</button>
-</div>
-<div class="hud" id="prompt">⭘ <span id="promptTxt"></span></div>
-<div class="hud" id="dpad">
-  <span></span><button class="dbtn" data-d="up">▲</button><span></span>
-  <button class="dbtn" data-d="left">◀</button><span></span><button class="dbtn" data-d="right">▶</button>
-  <span></span><button class="dbtn" data-d="down">▼</button><span></span>
-</div>
-<button class="hud" id="abtn">A</button>
-<div class="hud" id="toasts"></div>
-
-<div class="ovl" id="start">
-  <div id="guestHi"></div>
-  <div class="logo">WISUDA<br>QUEST</div>
-  <div class="tag">UNDANGAN SIDANG · RPG</div>
-  <div class="names" id="startNames"></div>
-  <div class="date" id="startDate"></div>
-  <button id="startBtn">▶ MULAI</button>
-  <div class="hint">🖱️ Klik / ketuk tanah untuk berjalan<br>⌨️ WASD / panah &nbsp;•&nbsp; 📱 D-pad + tombol A<br>Dekati gedung & tekan A — tiap gedung = 1 semester!</div>
+<div id="hud">
+  <div class="panel">
+    <div class="ava"><img id="hudAva" src="assets/char_idle.png" alt=""></div>
+    <div class="meta">
+      <div class="lv" id="hudLv">LEVEL 0/8</div>
+      <div class="bar"><i id="hudBar"></i></div>
+    </div>
+  </div>
+  <div class="hbtns">
+    <button class="icobtn" id="btnQuest" title="Misi"><img src="assets/btn_misi.png" alt="Misi"></button>
+    <button class="icobtn" id="btnMap" title="Peta"><img src="assets/btn_peta.png" alt="Peta"></button>
+    <button class="icobtn" id="btnMusic" title="Musik">🎵</button>
+    <button class="icobtn" id="btnHelp" title="Bantuan">❓</button>
+  </div>
 </div>
 
-<div class="ovl hide" id="dlg"><div class="panel"><button class="xbtn" id="dlgX">×</button><div id="dlgBody"></div></div></div>
-<div class="ovl hide" id="help"><div class="panel"><button class="xbtn" id="helpX">×</button><h2>BANTUAN</h2><div class="sub">CARA BERMAIN</div><div id="helpList">
-🎯 <b>Misi:</b> kunjungi 8 gedung = 8 semester (0/8 di kiri atas).<br>
-🚶 <b>Jalan:</b> ketuk tanah, pakai D-pad, atau WASD/panah.<br>
-🚪 <b>Masuk:</b> dekati bangunan lalu tekan tombol <b>A</b> / ketuk bangunannya.<br>
-🗺️ <b>Peta mini</b> di kanan atas nunjukin posisimu.<br>
-🎵 Musik bisa dimatikan kapan aja.<br><br>
-Selesaikan 8 semester buat kejutan! 🎉
-</div></div></div>
-<div class="ovl hide" id="win"><div class="panel" style="text-align:center"><h2>🎓 LULUS!</h2><div class="sub">8 SEMESTER TUNTAS</div><p id="winMsg">Selamat! Perjalanan 8 semester selesai. Sang wisudawan resmi menyandang gelar baru. Datang dan rayakan di acara sidang & wisuda!</p><button class="btn" id="winX">RAYAKAN BERSAMA 🎉</button></div></div>
+<div id="prompt">Masuk →</div>
 
+<div id="start">
+  <img class="titleart" src="assets/title.png" alt="Journey to Graduation">
+  <h1>WISUDA QUEST</h1>
+  <p>Ikuti perjalanan 8 semester menuju wisuda. Kunjungi setiap gedung, selesaikan misinya, dan rayakan kelulusan!</p>
+  <div class="to" id="startTo"></div>
+  <button id="btnMulai"><img src="assets/btn_mulai.png" alt="Mulai"></button>
+  <div class="hint">Ketuk peta untuk berjalan • WASD / panah • D-pad di HP</div>
+</div>
 
-<div id="vignette"></div>
-<div id="guideTag"></div>
-<script type="module">
-import * as THREE from 'three';
+<div class="sheet" id="dlg"><div class="card" id="dlgCard"></div></div>
+<div class="sheet" id="quest"><div class="card"><div class="shead" style="padding:16px 18px 6px"><h2 style="flex:1">🗺️ Daftar Misi</h2><button class="icobtn" id="questX" style="width:40px;height:40px">✕</button></div><div id="qlist"></div><div class="btnrow"><button class="btn back" id="questOk">Tutup</button></div></div></div>
 
-/* ================= KONFIG (diisi panel admin) ================= */
+<div class="sheet" id="win"><div class="card" id="winCard"></div></div>
+
+<div class="sheet" id="help"><div class="card">
+  <h2>❓ Cara Main</h2>
+  <ul>
+    <li>🚶 <b>Ketuk peta</b> untuk berjalan ke sana (atau WASD / tombol panah / D-pad).</li>
+    <li>❗ Dekati balon <b>!</b> di tiap gedung lalu ketuk tombol <b>Masuk</b>.</li>
+    <li>🎓 Selesaikan <b>8 semester</b> untuk membuka acara wisuda.</li>
+    <li>🗺️ Tombol <b>Misi</b> = daftar misi, <b>Peta</b> = lihat seluruh kampus.</li>
+  </ul>
+  <div class="btnrow"><button class="btn go" id="helpOk">Siap, Main!</button></div>
+</div></div>
+
+<div id="toast"><img id="toastImg" src="assets/badge_levelup.png" alt=""></div>
+
+<div id="dpad">
+  <span></span><button data-k="up">▲</button><span></span>
+  <button data-k="left">◀</button><span></span><button data-k="right">▶</button>
+  <span></span><button data-k="down">▼</button><span></span>
+</div>
+
+<div class="ver">wisuda-quest v4 • assets OGGraduation</div>
+<script>
+/* ================= CONFIG (diisi panel / default demo) ================= */
 var WISUDA = {
-  NAMA:'Raka Pratama', PANGGILAN:'Raka',
-  JURUSAN:'Teknik Informatika', KAMPUS:'Universitas Sumatera Utara', NIM:'211401001',
-  GELAR:'S.Kom',
-  TGL_ISO:'2027-07-15T09:00:00+07:00', TGL_TAMPIL:'Kamis, 15 Juli 2027',
-  SIDANG_WAKTU:'09.00 – 11.00 WIB', SIDANG_TEMPAT:'Aula FMIPA USU, Medan',
-  SIDANG_MAPS:'https://maps.google.com/?q=Universitas+Sumatera+Utara+Medan',
-  WA:'6281234567890',
-  REK:[{bank:'BCA',no:'8210123456',nama:'Raka Pratama'}],
-  ALAMAT:'Jl. Dr. Mansyur No. 9, Medan',
-  FOTO:{ wisudawan:'', semester:['','','','','','','',''] },
+  NAMA:"Raka Pratama", PANGGILAN:"Raka",
+  JURUSAN:"Teknik Informatika", KAMPUS:"Universitas Sumatera Utara", NIM:"221402001", GELAR:"S.Kom",
+  TGL_ISO:"2027-07-15T09:00:00", TGL_TAMPIL:"Kamis, 15 Juli 2027",
+  SIDANG_WAKTU:"09.00 WIB – selesai", SIDANG_TEMPAT:"Aula Gedung Wisuda, Kampus USU Padang Bulan, Medan",
+  SIDANG_MAPS:"https://maps.google.com/?q=Universitas+Sumatera+Utara",
+  WA:"6281234567890",
+  REK:[{b:"BCA",n:"8210 456 789",a:"Raka Pratama"},{b:"DANA",n:"0812 3456 7890",a:"Raka Pratama"}],
+  ALAMAT:"Jl. Universitas No. 1, Medan",
+  FOTO:{wisudawan:"",semester:["","","","","","","",""]},
   SEMESTER:[
-    {t:'Maba', y:'2021', x:'Ospek, kakak tingkat, dan hari pertama yang bikin deg-degan.'},
-    {t:'Kutu Buku', y:'2021', x:'Nugas sampai perpustakaan tutup. Kopi sachet jadi teman setia.'},
-    {t:'Anak Kantin', y:'2022', x:'Rapat organisasi, nongkrong, dan indomie telor kornet.'},
-    {t:'Begadang', y:'2022', x:'Deadline menumpuk, kode error, tapi akhirnya jalan juga.'},
-    {t:'Setengah Jalan', y:'2023', x:'IPK aman, organisasi jalan, dompet tetap tipis.'},
-    {t:'Pengabdian', y:'2023', x:'Sebulan KKN di desa. Pulang bawa cerita dan teman baru.'},
-    {t:'Revisi', y:'2024', x:'Bimbingan, revisi, bimbingan lagi. Dosen pembimbing luar biasa sabar.'},
-    {t:'Sidang Akhir', y:'2027', x:'Delapan semester bermuara di satu ruangan: meja hijau.'}
+    {t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},
+    {t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""},{t:"",y:"",x:""}
   ]
 };
-function ph(txt,bg,fg){ var s='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+bg+'"/><stop offset="1" stop-color="'+fg+'"/></linearGradient></defs><rect width="600" height="750" fill="url(#g)"/><circle cx="300" cy="300" r="110" fill="rgba(255,255,255,.16)"/><text x="300" y="560" font-family="sans-serif" font-size="44" fill="rgba(255,255,255,.85)" text-anchor="middle">'+txt+'</text></svg>'); return s; }
-var FOTO_WIS = WISUDA.FOTO.wisudawan || ph('Wisudawan','#1c3a5e','#0d1626');
-var SEM_FOTO = WISUDA.FOTO.semester.map(function(g,i){ return g || ph('Semester '+(i+1),'#2e4a68','#101a2a'); });
-
-/* ================= MUSIK (WebAudio synth) ================= */
-var AC=null, musicOn=true, musicTimer=null;
-function ac(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state==='suspended') AC.resume(); return AC; }
-function beep(f,d,type,v,when){ try{ var a=ac(),o=a.createOscillator(),g=a.createGain();
-  o.type=type||'sine'; o.frequency.value=f; var t0=when||a.currentTime;
-  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||.12,t0+.02);
-  g.gain.exponentialRampToValueAtTime(.0001,t0+d);
-  o.connect(g); g.connect(a.destination); o.start(t0); o.stop(t0+d+.05); }catch(e){} }
-function sfx(n){ if(!musicOn) return;
-  if(n==='open') beep(660,.12,'triangle',.1);
-  else if(n==='close') beep(440,.1,'triangle',.08);
-  else if(n==='quest'){ [392,523,659,784,1047,1319].forEach(function(f,i){ beep(f,.2,'triangle',.13,ac().currentTime+i*.08); }); }
-  else if(n==='click') beep(880,.07,'square',.06);
-  else if(n==='win'){ [523,659,784,1047,784,1047,1319].forEach(function(f,i){ beep(f,.25,'triangle',.13,ac().currentTime+i*.12); }); } }
-var MELODY=[523,587,659,784,880,784,659,587,523,587,659,587,523,440,523,0];
-var mi=0;
-function musicTick(){ if(!musicOn) return;
-  var f=MELODY[mi%MELODY.length]; mi++;
-  if(f){ beep(f,.32,'triangle',.05); beep(f/2,.32,'sine',.04); }
-  musicTimer=setTimeout(musicTick, 360); }
-function musicStart(){ if(musicTimer) return; musicTick(); }
-function musicStop(){ musicOn=false; if(musicTimer){ clearTimeout(musicTimer); musicTimer=null; } }
-
-/* ================= THREE SETUP ================= */
-var canvas = document.getElementById('game');
-var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-
-var scene = new THREE.Scene();
-scene.background = new THREE.Color(0x87b5d9);
-scene.fog = new THREE.Fog(0x87b5d9, 90, 240);
-
-var camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.5, 500);
-
-var hemi = new THREE.HemisphereLight(0xbfd9ff, 0x4a7a44, 0.85);
-scene.add(hemi);
-var sun = new THREE.DirectionalLight(0xfff2d8, 1.9);
-sun.position.set(40, 70, 25);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048,2048);
-sun.shadow.camera.left=-70; sun.shadow.camera.right=70;
-sun.shadow.camera.top=70; sun.shadow.camera.bottom=-70;
-sun.shadow.camera.far=220; sun.shadow.bias=-0.0004;
-scene.add(sun); scene.add(sun.target);
-
-addEventListener('resize', function(){
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-});
-
-/* ================= CANVAS TEXTURE HELPERS ================= */
-function ctex(w,h,fn){
-  var c=document.createElement('canvas'); c.width=w; c.height=h;
-  fn(c.getContext('2d'),w,h);
-  var t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace;
-  t.anisotropy=4; return t;
-}
-function stoneTex(){ return ctex(256,256,function(g,w,h){
-  g.fillStyle='#b5ab98'; g.fillRect(0,0,w,h);
-  var bh=32;
-  for(var y=0;y<h;y+=bh){ var off=(y/bh)%2?32:0;
-    for(var x=-32;x<w;x+=64){
-      var v=165+Math.random()*30|0;
-      g.fillStyle='rgb('+v+','+(v-8)+','+(v-22)+')';
-      g.fillRect(x+off+2,y+2,60,bh-4);
-    } }
-  g.strokeStyle='rgba(60,55,45,.35)'; g.lineWidth=2;
-  for(var y2=0;y2<=h;y2+=bh){ g.beginPath(); g.moveTo(0,y2); g.lineTo(w,y2); g.stroke(); }
-});}
-var STONE = stoneTex();
-function grassTex(){ return ctex(256,256,function(g,w,h){
-  g.fillStyle='#4f8a42'; g.fillRect(0,0,w,h);
-  for(var i=0;i<900;i++){ var v=Math.random();
-    g.fillStyle=v<.5?'rgba(60,120,55,.5)':'rgba(110,170,90,.4)';
-    g.fillRect(Math.random()*w,Math.random()*h,3,3+Math.random()*4); }
-});}
-function cobbleTex(){ return ctex(256,256,function(g,w,h){
-  g.fillStyle='#a89e8c'; g.fillRect(0,0,w,h);
-  for(var y=0;y<8;y++) for(var x=0;x<8;x++){
-    var v=150+Math.random()*36|0;
-    g.fillStyle='rgb('+v+','+(v-6)+','+(v-18)+')';
-    g.beginPath(); g.ellipse(x*32+16+(y%2)*16,y*32+16,14,12,0,0,6.283); g.fill(); }
-});}
-function facadeTex(w,h,win){ return ctex(w,h,function(g){
-  g.fillStyle='#b5ab98'; g.fillRect(0,0,w,h);
-  var bh=32;
-  for(var y=0;y<h;y+=bh){ var off=(y/bh)%2?32:0;
-    for(var x=-32;x<w;x+=64){ var v=165+Math.random()*30|0;
-      g.fillStyle='rgb('+v+','+(v-8)+','+(v-22)+')'; g.fillRect(x+off+2,y+2,60,bh-4); } }
-  if(win) for(var i=0;i<win.n;i++){
-    var wx=win.x0+i*win.dx, wy=win.y, ww=win.w, wh=win.h;
-    var grd=g.createLinearGradient(wx,wy,wx+ww,wy);
-    grd.addColorStop(0,'#2b2b3d'); grd.addColorStop(.5,'#ffd98a'); grd.addColorStop(1,'#2b2b3d');
-    g.fillStyle=grd;
-    g.beginPath(); g.moveTo(wx,wy+wh); g.lineTo(wx,wy+wh*0.25);
-    g.quadraticCurveTo(wx,wy,wx+ww/2,wy); g.quadraticCurveTo(wx+ww,wy,wx+ww,wy+wh*0.25);
-    g.lineTo(wx+ww,wy+wh); g.closePath(); g.fill();
-    g.strokeStyle='#5a5348'; g.lineWidth=4; g.stroke();
-    g.strokeStyle='rgba(0,0,0,.4)'; g.lineWidth=2;
-    g.beginPath(); g.moveTo(wx+ww/2,wy); g.lineTo(wx+ww/2,wy+wh); g.stroke();
-  }
-});}
-function signTex(txt,bg,fg){ return ctex(512,96,function(g,w,h){
-  g.fillStyle=bg||'#2b2620'; g.fillRect(0,0,w,h);
-  g.strokeStyle='#f2b90d'; g.lineWidth=6; g.strokeRect(8,8,w-16,h-16);
-  g.fillStyle=fg||'#ffe9a8'; g.font='700 44px "Chakra Petch",sans-serif';
-  g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,w/2,h/2+2);
-});}
-function clockTex(){ return ctex(128,128,function(g){
-  g.fillStyle='#f4ecd8'; g.beginPath(); g.arc(64,64,60,0,6.283); g.fill();
-  g.strokeStyle='#3a342c'; g.lineWidth=8; g.stroke();
-  g.fillStyle='#3a342c'; g.font='700 22px sans-serif'; g.textAlign='center';
-  g.fillText('XII',64,34); g.fillText('VI',64,104); g.fillText('IX',28,70); g.fillText('III',100,70);
-  g.strokeStyle='#3a342c'; g.lineWidth=6;
-  g.beginPath(); g.moveTo(64,64); g.lineTo(64,36); g.stroke();
-  g.lineWidth=4; g.beginPath(); g.moveTo(64,64); g.lineTo(86,72); g.stroke();
-});}
-function exclaimTex(){ return ctex(128,128,function(g){
-  g.fillStyle='#f2b90d'; g.beginPath(); g.arc(64,64,56,0,6.283); g.fill();
-  g.strokeStyle='#7a5a00'; g.lineWidth=6; g.stroke();
-  g.fillStyle='#3a2c00'; g.font='900 84px sans-serif'; g.textAlign='center'; g.fillText('!',64,98);
-});}
-var EXCLAIM = exclaimTex();
-
-var MAT = {
-  stone: new THREE.MeshStandardMaterial({map:STONE, roughness:.95}),
-  stoneDark: new THREE.MeshStandardMaterial({color:0x8a8074, roughness:.95}),
-  wood: new THREE.MeshStandardMaterial({color:0x6b4a2a, roughness:.9}),
-  woodDark: new THREE.MeshStandardMaterial({color:0x3f2a14, roughness:.9}),
-  roofRed: new THREE.MeshStandardMaterial({color:0x8a2e2e, roughness:.85}),
-  roofBlue: new THREE.MeshStandardMaterial({color:0x2e4a68, roughness:.85}),
-  plaster: new THREE.MeshStandardMaterial({color:0xe8dcc0, roughness:.95}),
-  gold: new THREE.MeshStandardMaterial({color:0xf2b90d, roughness:.35, metalness:.7}),
-  door: new THREE.MeshStandardMaterial({color:0x2b1d0d, roughness:.9}),
-  glass: new THREE.MeshStandardMaterial({color:0x9fd4e8, roughness:.15, metalness:.4, emissive:0x3a7a9c, emissiveIntensity:.35}),
-  trunk: new THREE.MeshStandardMaterial({color:0x6b4a2f, roughness:1}),
-  leaf: new THREE.MeshStandardMaterial({color:0x2f6b2f, roughness:1}),
-  leaf2: new THREE.MeshStandardMaterial({color:0x3f8a3c, roughness:1}),
-};
-function box(w,h,d,mat,x,y,z,ry){
-  var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
-  m.position.set(x,y,z); if(ry) m.rotation.y=ry;
-  m.castShadow=true; m.receiveShadow=true; return m;
-}
-function cyl(rt,rb,h,mat,x,y,z,seg){
-  var m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||20),mat);
-  m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; return m;
-}
-function cone(r,h,mat,x,y,z,seg){
-  var m=new THREE.Mesh(new THREE.ConeGeometry(r,h,seg||20),mat);
-  m.position.set(x,y,z); m.castShadow=true; return m;
-}
-function goldBall(r){ var m=new THREE.Mesh(new THREE.SphereGeometry(r,12,12),MAT.gold); m.castShadow=true; return m; }
-function roofPrism(w,hgt,d,mat){
-  var sh=new THREE.Shape(); sh.moveTo(-w/2,0); sh.lineTo(w/2,0); sh.lineTo(0,hgt); sh.closePath();
-  var geo=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:false}); geo.translate(0,0,-d/2);
-  var m=new THREE.Mesh(geo,mat); m.castShadow=true; m.receiveShadow=true; return m;
-}
-function plaque(txt,x,y,z,w){
-  w=w||10;
-  var m=new THREE.Mesh(new THREE.PlaneGeometry(w,w*96/512),
-    new THREE.MeshStandardMaterial({map:signTex(txt), roughness:.8}));
-  m.position.set(x,y,z); return m;
-}
-
-/* ================= DUNIA 3D ================= */
-var world = new THREE.Group(); scene.add(world);
-
-var grassT = grassTex(); grassT.wrapS=grassT.wrapT=THREE.RepeatWrapping; grassT.repeat.set(30,22);
-var ground = new THREE.Mesh(new THREE.PlaneGeometry(420,320),
-  new THREE.MeshStandardMaterial({map:grassT, roughness:1}));
-ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; world.add(ground);
-
-var cobT = cobbleTex(); cobT.wrapS=cobT.wrapT=THREE.RepeatWrapping;
-var court = new THREE.Mesh(new THREE.CircleGeometry(31,48),
-  new THREE.MeshStandardMaterial({map:cobT, roughness:.95}));
-court.rotation.x=-Math.PI/2; court.position.y=0.03; court.receiveShadow=true; world.add(court);
-
-var PATHS=[[[0,41],[-40,24]],[[-40,24],[-48,-14]],[[-48,-14],[-26,-38]],[[-26,-38],[26,-39]],
-  [[26,-39],[48,-14]],[[48,-14],[40,24]],[[40,24],[0,41]],
-  [[0,41],[0,16]],[[0,-35],[0,-12]],[[-44,-2],[-20,0]],[[44,-2],[20,0]]];
-PATHS.forEach(function(p){
-  var dx=p[1][0]-p[0][0], dz=p[1][1]-p[0][1], len=Math.hypot(dx,dz);
-  var t=cobT.clone(); t.needsUpdate=true; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(len/4,1);
-  var m=new THREE.Mesh(new THREE.PlaneGeometry(len,4.6),
-    new THREE.MeshStandardMaterial({map:t, roughness:.95}));
-  m.rotation.x=-Math.PI/2; m.rotation.z=-Math.atan2(dz,dx);
-  m.position.set((p[0][0]+p[1][0])/2, 0.02, (p[0][1]+p[1][1])/2);
-  m.receiveShadow=true; world.add(m);
-});
-
-/* ---------- pembangun gedung ---------- */
-function facadeMat(n){ return new THREE.MeshStandardMaterial({
-  map:facadeTex(512,256,{n:n,x0:40,dx:0,y:90,w:44,h:110}), roughness:.95}); }
-function winPlane(w,h,color){
-  var m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
-    new THREE.MeshStandardMaterial({color:color||0xffd98a, emissive:color||0xffd98a,
-      emissiveIntensity:.55, roughness:.4}));
-  return m;
-}
-function roseTex(){ return ctex(128,128,function(g){
-  g.fillStyle='#2b2b3d'; g.beginPath(); g.arc(64,64,58,0,6.283); g.fill();
-  g.strokeStyle='#8a8074'; g.lineWidth=8; g.stroke();
-  for(var i=0;i<8;i++){ var a=i/8*6.283;
-    g.strokeStyle='#f2b90d'; g.lineWidth=4;
-    g.beginPath(); g.moveTo(64,64); g.lineTo(64+Math.cos(a)*52,64+Math.sin(a)*52); g.stroke(); }
-  g.fillStyle='#e11d2e'; g.beginPath(); g.arc(64,64,12,0,6.283); g.fill();
-});}
-function barsTex(){ return ctex(128,128,function(g){
-  g.fillStyle='#14100c'; g.fillRect(0,0,128,128);
-  g.strokeStyle='rgba(200,200,200,.65)'; g.lineWidth=5;
-  for(var i=1;i<5;i++){ g.beginPath(); g.moveTo(i*26,0); g.lineTo(i*26,128); g.stroke(); }
-  g.beginPath(); g.moveTo(0,64); g.lineTo(128,64); g.stroke();
-});}
-
-function buildGrandHall(){ // ★ pusat: Gedung Kuliah medieval
-  var g=new THREE.Group(), W=34, D=22, H=10;
-  var body=box(W,H,D,new THREE.MeshStandardMaterial({
-    map:facadeTex(1024,320,{n:5,x0:80,dx:172,y:110,w:72,h:150}), roughness:.95}),0,H/2,0);
-  g.add(body);
-  for(var i=0;i<12;i++){ g.add(box(2,1.6,1.2,MAT.stoneDark,-W/2+1.6+i*2.9,H+0.8,-D/2+0.4)); g.add(box(2,1.6,1.2,MAT.stoneDark,-W/2+1.6+i*2.9,H+0.8,D/2-0.4)); }
-  for(i=0;i<8;i++){ g.add(box(1.2,1.6,2,MAT.stoneDark,-W/2+0.4,H+0.8,-D/2+1.6+i*2.9)); g.add(box(1.2,1.6,2,MAT.stoneDark,W/2-0.4,H+0.8,-D/2+1.6+i*2.9)); }
-  for(i=-1;i<=1;i++){ // 3 pintu lengkung
-    var door=box(3.4,5.4,0.6,MAT.door,i*6,2.7,D/2+0.15); g.add(door);
-    g.add(box(4.2,0.5,MAT.gold,i*6,5.6,D/2+0.2));
-  }
-  g.add(box(W+3,0.8,4,MAT.stoneDark,0,0.4,D/2+2)); // tangga
-  g.add(box(W+1.5,0.8,2.6,MAT.stoneDark,0,1.1,D/2+1.2));
-  var tw=7, th=17; // menara jam
-  g.add(box(tw,th,tw,MAT.stone,0,H+th/2,0));
-  var ck=clockTex();
-  [[0,1],[0,-1],[1,0],[-1,0]].forEach(function(s){
-    var f=new THREE.Mesh(new THREE.PlaneGeometry(4.6,4.6),
-      new THREE.MeshStandardMaterial({map:ck, roughness:.6}));
-    if(s[0]===0){ f.position.set(0,H+th-4.5,s[1]*(tw/2+0.06)); if(s[1]<0) f.rotation.y=Math.PI; }
-    else { f.position.set(s[0]*(tw/2+0.06),H+th-4.5,0); f.rotation.y=s[0]*Math.PI/2; }
-    g.add(f);
-  });
-  var sp=cone(tw*0.85,7,MAT.roofRed,0,H+th+3.5,0,4); sp.rotation.y=Math.PI/4; g.add(sp);
-  var orb=goldBall(0.55); orb.position.set(0,H+th+7.4,0); g.add(orb);
-  [-1,1].forEach(function(s){ // turret
-    g.add(cyl(2.7,3,13,MAT.stone,s*(W/2-1.5),6.5,0));
-    g.add(cone(3.6,5.5,MAT.roofRed,s*(W/2-1.5),15.2,0));
-    var orb2=goldBall(0.4); orb2.position.set(s*(W/2-1.5),18.2,0); g.add(orb2);
-    var wpl=winPlane(1.4,2.6); wpl.position.set(s*(W/2-1.5),9,2.85); g.add(wpl);
-  });
-  var pl=plaque('GEDUNG KULIAH',0,8.2,D/2+0.12,13); g.add(pl);
-  return g;
-}
-function buildGate(){
-  var g=new THREE.Group();
-  [-1,1].forEach(function(s){
-    g.add(cyl(2.4,2.7,11,MAT.stone,s*9,5.5,0));
-    g.add(cone(3.2,4.5,MAT.roofRed,s*9,13.2,0));
-    var wpl=winPlane(1.2,2); wpl.position.set(s*9,6,2.55); g.add(wpl);
-    var ban=new THREE.Mesh(new THREE.PlaneGeometry(2.2,4),
-      new THREE.MeshStandardMaterial({color:s<0?0x7a1f1f:0x1c3a5e, side:THREE.DoubleSide, roughness:.9}));
-    ban.position.set(s*9+(s<0?-2.6:2.6),11,0); g.add(ban);
-  });
-  g.add(box(22.5,3,4,MAT.stone,0,11,0));
-  var bars=new THREE.Mesh(new THREE.PlaneGeometry(13,8),
-    new THREE.MeshStandardMaterial({map:barsTex(), transparent:false}));
-  bars.position.set(0,4,0.6); g.add(bars);
-  g.add(plaque('GERBANG KAMPUS',0,11,2.1,11));
-  return g;
-}
-function buildLibrary(){
-  var g=new THREE.Group(), W=23, D=15, H=9;
-  g.add(box(W,H,D,new THREE.MeshStandardMaterial({
-    map:facadeTex(768,300,{n:4,x0:60,dx:170,y:100,w:64,h:130}), roughness:.95}),0,H/2,0));
-  g.add(cyl(3,3.3,15,MAT.stone,W/2-2,7.5,0));
-  g.add(cone(4,5,MAT.roofBlue,W/2-2,17.5,0));
-  var wpl=winPlane(1.4,2.4); wpl.position.set(W/2-2,10,3.1); g.add(wpl);
-  for(var i=0;i<6;i++) g.add(box(2,1.4,1,MAT.stoneDark,-W/2+2+i*3.9,H+0.7,-D/2+0.3));
-  g.add(plaque('PERPUSTAKAAN',-3,7.2,D/2+0.12,11));
-  var door=box(3,4.6,0.6,MAT.door,-3,2.3,D/2+0.15); g.add(door);
-  return g;
-}
-function buildTavern(){
-  var g=new THREE.Group(), W=20, D=14, H=7;
-  g.add(box(W,H,D,MAT.plaster,0,H/2,0));
-  for(var i=0;i<=4;i++) g.add(box(0.7,H,0.3,MAT.woodDark,-W/2+i*(W/4),H/2,D/2+0.05));
-  g.add(box(W,0.8,0.3,MAT.woodDark,0,H-0.6,D/2+0.05));
-  var roof=roofPrism(W+2,5,D+2,new THREE.MeshStandardMaterial({color:0xc9a24a, roughness:1}));
-  roof.position.set(0,H,0); g.add(roof);
-  g.add(box(1.6,3.4,1.6,MAT.stoneDark,W/4,H+3.4,-2));
-  for(i=0;i<3;i++){ var wpl=winPlane(2,2.4); wpl.position.set(-W/2+4+i*6,3.4,D/2+0.08); g.add(wpl); }
-  var door=box(2.6,4.2,0.5,MAT.door,0,2.1,D/2+0.1); g.add(door);
-  g.add(plaque('KANTIN',0,5.6,D/2+0.12,7));
-  return g;
-}
-function buildLab(){
-  var g=new THREE.Group(), W=16, H=14;
-  g.add(box(W,H,W,new THREE.MeshStandardMaterial({
-    map:facadeTex(512,448,{n:3,x0:60,dx:150,y:120,w:60,h:150}), roughness:.95}),0,H/2,0));
-  for(var i=0;i<3;i++){ var wpl=winPlane(2,3.4,0x9fd4e8); wpl.position.set(-W/2+4+i*5,8,W/2+0.08); g.add(wpl); }
-  var dome=new THREE.Mesh(new THREE.SphereGeometry(W/2-1,24,12,0,6.283,0,1.45),MAT.glass);
-  dome.position.set(0,H,0); dome.castShadow=true; g.add(dome);
-  var orb3=goldBall(0.5); orb3.position.set(0,H+W/2-0.4,0); g.add(orb3);
-  g.add(plaque('LAB KOMPUTER',0,11.5,W/2+0.12,9));
-  var door=box(2.8,4.4,0.5,MAT.door,0,2.2,W/2+0.1); g.add(door);
-  return g;
-}
-function buildCabin(){
-  var g=new THREE.Group(), W=14, D=11, H=6;
-  g.add(box(W,H,D,MAT.wood,0,H/2,0));
-  for(var i=1;i<5;i++) g.add(box(W+0.1,0.35,D+0.1,MAT.woodDark,0,i*H/5,0));
-  var roof=roofPrism(W+1.6,4,D+1.6,MAT.woodDark);
-  roof.position.set(0,H,0); g.add(roof);
-  var w1=winPlane(1.8,1.8); w1.position.set(-4,3.2,D/2+0.08); g.add(w1);
-  var w2=winPlane(1.8,1.8); w2.position.set(4,3.2,D/2+0.08); g.add(w2);
-  var door=box(2.4,3.8,0.5,MAT.door,0,1.9,D/2+0.1); g.add(door);
-  g.add(plaque('POSKO KKN',0,H+0.6,D/2+0.12,8));
-  return g;
-}
-function buildDosenTower(){
-  var g=new THREE.Group();
-  g.add(cyl(3.5,4,18,MAT.stone,0,9,0));
-  g.add(cone(4.6,6,MAT.roofBlue,0,21,0));
-  var orb4=goldBall(0.45); orb4.position.set(0,24.4,0); g.add(orb4);
-  var w1=winPlane(1.5,2.6); w1.position.set(0,12,3.65); g.add(w1);
-  var w2=winPlane(1.5,2.2); w2.position.set(0,6,3.8); g.add(w2);
-  var door=box(2.4,3.6,0.5,MAT.door,0,1.8,3.9); g.add(door);
-  g.add(plaque('RUANG DOSEN',0,14.6,3.7,8));
-  return g;
-}
-function buildCathedral(){
-  var g=new THREE.Group(), W=28, D=18, H=10;
-  g.add(box(W,H,D,new THREE.MeshStandardMaterial({
-    map:facadeTex(896,320,{n:4,x0:70,dx:200,y:110,w:70,h:150}), roughness:.95}),0,H/2,0));
-  var rose=new THREE.Mesh(new THREE.CircleGeometry(2.6,24),
-    new THREE.MeshStandardMaterial({map:roseTex(), roughness:.6, emissive:0xffffff, emissiveIntensity:.12}));
-  rose.position.set(0,7.4,D/2+0.1); g.add(rose);
-  var tw=7, th=15;
-  g.add(box(tw,th,tw,MAT.stone,0,H+th/2-1,0));
-  var sp=cone(tw*0.9,10,MAT.roofRed,0,H+th-1+5,0,4); sp.rotation.y=Math.PI/4; g.add(sp);
-  var toga=box(2.6,0.35,2.6,new THREE.MeshStandardMaterial({color:0x1c1c22, roughness:.8}),0,H+th-1+10.4,0);
-  g.add(toga);
-  g.add(box(1.2,0.9,1.2,new THREE.MeshStandardMaterial({color:0x1c1c22}),0,H+th-1+9.9,0));
-  var tas=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,1.8,8),MAT.gold);
-  tas.position.set(1.5,H+th-1+9.6,0); g.add(tas);
-  var orb5=goldBall(0.28); orb5.position.set(1.5,H+th-1+8.6,0); g.add(orb5);
-  var door=box(4.6,6.4,0.7,MAT.door,0,3.2,D/2+0.15); g.add(door);
-  g.add(box(5.4,0.5,0.8,MAT.gold,0,6.6,D/2+0.15));
-  g.add(box(W+3,0.8,3.4,MAT.stoneDark,0,0.4,D/2+1.6));
-  g.add(plaque('AULA SIDANG',0,4.4,D/2+0.12,10));
-  return g;
-}
-
-/* ---------- rakit dunia ---------- */
-var BLD=[
-  {id:'kuliah', name:'Gedung Kuliah', icon:'🏰', x:0,   z:0,   r:19,  type:'mgrand',     sem:5, build:buildGrandHall},
-  {id:'gerbang',name:'Gerbang Kampus',icon:'🚪', x:0,   z:41,  r:10,  type:'mgate',      sem:1, build:buildGate},
-  {id:'perpus', name:'Perpustakaan',   icon:'📚', x:-40, z:24,  r:12,  type:'mlib',       sem:2, build:buildLibrary},
-  {id:'kantin', name:'Kantin',         icon:'🍺', x:40,  z:24,  r:11,  type:'mtavern',    sem:3, build:buildTavern},
-  {id:'lab',    name:'Lab Komputer',   icon:'💻', x:-48, z:-14, r:10,   type:'malchemy',   sem:4, build:buildLab},
-  {id:'kkn',    name:'Posko KKN',      icon:'🏕️', x:48,  z:-14, r:9,   type:'mcabin',     sem:6, build:buildCabin},
-  {id:'dosen',  name:'Ruang Dosen',    icon:'🧙', x:-26, z:-38, r:5,   type:'mtower',     sem:7, build:buildDosenTower},
-  {id:'aula',   name:'Aula Sidang',    icon:'🎓', x:26,  z:-39, r:15,  type:'mcathedral', sem:8, build:buildCathedral},
+/* ================= DATA SEMESTER (dari aset OGGraduation) ================= */
+var SEMDEF=[
+ {no:1,bld:"bld_gerbang",icon:"icon_tas",pos:[40,118],blk:[120,90,62],judul:"Masuk Kampus",sub:"Awal Perjalanan",
+  x:"Langkah pertama dimulai di gerbang ini. Seragam baru, teman baru, dan mimpi yang besar — perjalanan 8 semester resmi dimulai!"},
+ {no:2,bld:"bld_kuliah",icon:"icon_buku",pos:[270,145],blk:[300,80,72],judul:"Perkuliahan",sub:"Adaptasi & Teman Baru",
+  x:"Duduk di bangku kuliah, mencatat ilmu, dan beradaptasi dengan dunia kampus. Teman-teman baru menjadi keluarga kedua."},
+ {no:3,bld:"bld_perpus",icon:"icon_buku",pos:[545,148],blk:[620,80,72],judul:"Mencari Ilmu",sub:"Memperluas Wawasan",
+  x:"Begadang di antara rak-rak buku. Di perpustakaan inilah wawasan diperluas dan rasa ingin tahu dipupuk."},
+ {no:4,bld:"bld_organisasi",icon:"icon_kopi",pos:[140,425],blk:[130,330,72],judul:"Organisasi",sub:"Berkembang & Berproses",
+  x:"Belajar di luar kelas: memimpin rapat, mengelola acara, dan bertumbuh bersama lewat organisasi kemahasiswaan."},
+ {no:5,bld:"bld_lab",icon:"icon_laptop",pos:[385,440],blk:[390,340,72],judul:"Tugas & Proyek",sub:"Mengasah Kemampuan",
+  x:"Praktikum demi praktikum, begadang mengerjakan proyek. Setiap tugas mengasah kemampuan hingga makin tajam."},
+ {no:6,bld:"bld_penelitian",icon:"icon_ide",pos:[595,445],blk:[650,340,72],judul:"Penelitian",sub:"Mencari Jawaban",
+  x:"Meneliti, bertanya, menguji hipotesis. Setiap jawaban yang ditemukan membuka pertanyaan baru yang lebih dalam."},
+ {no:7,bld:"bld_sidang",icon:"icon_skripsi",pos:[140,665],blk:[150,580,72],judul:"Skripsi",sub:"Ujian Kesabaran",
+  x:"Bab demi bab ditulis, revisi demi revisi dilalui. Ujian kesabaran sesungguhnya — hingga naskah dinyatakan layak sidang."},
+ {no:8,bld:"bld_wisuda",icon:"icon_toga",pos:[545,690],blk:[600,600,82],judul:"Wisuda",sub:"Akhir yang Baru",
+  x:"Toga akhirnya dikenakan! Delapan semester perjuangan terbayar lunas. Ini bukan akhir — ini awal yang baru."}
 ];
-BLD.forEach(function(b){
-  var grp=b.build(); grp.position.set(b.x,0,b.z); world.add(grp); b.grp=grp;
-  b.door={x:b.x, z:b.z+b.r+1};
-  var sm=new THREE.Sprite(new THREE.SpriteMaterial({map:EXCLAIM, depthTest:false}));
-  sm.scale.set(2.4,2.4,1); sm.position.set(b.x,14,b.z); world.add(sm); b.mark=sm;
-});
-function collide(x,z){
-  for(var i=0;i<BLD.length;i++){ var b=BLD[i];
-    var dx=x-b.x, dz=z-b.z, d=Math.hypot(dx,dz), min=b.r+1.1;
-    if(d<min&&d>0.001){ x=b.x+dx/d*min; z=b.z+dz/d*min; } }
-  x=Math.max(-78,Math.min(78,x)); z=Math.max(-58,Math.min(58,z));
-  return {x:x,z:z};
-}
-
-/* pohon & lentera */
-function tree(x,z,s){
-  var g=new THREE.Group();
-  g.add(cyl(0.5*s,0.7*s,3*s,MAT.trunk,0,1.5*s,0));
-  g.add(cone(2.6*s,4.5*s,MAT.leaf,0,4.6*s,0,10));
-  g.add(cone(1.9*s,3.4*s,MAT.leaf2,0,6.8*s,0,10));
-  g.position.set(x,0,z); world.add(g);
-}
-var treeSpots=[];
-for(var ti=0;ti<90;ti++){
-  var tx=(Math.random()*2-1)*75, tz=(Math.random()*2-1)*55, ok=true;
-  if(Math.hypot(tx,tz)<36) ok=false;
-  BLD.forEach(function(b){ if(Math.hypot(tx-b.x,tz-b.z)<b.r+6) ok=false; });
-  PATHS.forEach(function(p){
-    var ax=p[0][0],az=p[0][1],bx=p[1][0],bz=p[1][1];
-    var t=((tx-ax)*(bx-ax)+(tz-az)*(bz-az))/((bx-ax)*(bx-ax)+(bz-az)*(bz-az)+0.001);
-    t=Math.max(0,Math.min(1,t));
-    if(Math.hypot(tx-(ax+(bx-ax)*t),tz-(az+(bz-az)*t))<6) ok=false;
+var NPCDEF=[
+ {img:"npc_teman1",x:215,y:400},{img:"npc_teman2",x:265,y:415},
+ {img:"npc_perpus",x:640,y:210},{img:"npc_dosen",x:230,y:640},
+ {img:"npc_penguji",x:290,y:655},{img:"npc_staff",x:350,y:200},
+ {img:"npc_wisudaw",x:660,y:700}
+];
+/* ================= ENGINE ================= */
+var cv=document.getElementById('game'),ctx=cv.getContext('2d');
+var WORLD={w:783,h:874};
+var IM={};
+var ASSETS=["map","title","char_idle","char_jalan","char_lari","char_wisuda","char_senang",
+ "npc_teman1","npc_teman2","npc_perpus","npc_dosen","npc_penguji","npc_staff","npc_wisudaw",
+ "balon_seru","badge_levelup","badge_misi","badge_wisuda",
+ "bld_gerbang","bld_kuliah","bld_perpus","bld_organisasi","bld_lab","bld_penelitian","bld_sidang","bld_wisuda",
+ "icon_tas","icon_buku","icon_kopi","icon_laptop","icon_ide","icon_skripsi","icon_toga","icon_ijazah"];
+function loadAssets(cb){
+  var n=0;
+  ASSETS.forEach(function(a){
+    var im=new Image();
+    im.onload=im.onerror=function(){ if(++n===ASSETS.length) cb(); };
+    im.src="assets/"+a+".png";
+    IM[a]=im;
   });
-  if(ok) treeSpots.push([tx,tz]);
 }
-treeSpots.slice(0,46).forEach(function(p){ tree(p[0],p[1],0.8+Math.random()*0.7); });
-function lantern(x,z){
-  var g=new THREE.Group();
-  g.add(cyl(0.28,0.36,4.4,MAT.stoneDark,0,2.2,0,8));
-  g.add(box(1.5,0.4,1.5,MAT.stoneDark,0,4.5,0));
-  var lamp=new THREE.Mesh(new THREE.BoxGeometry(0.9,1.1,0.9),
-    new THREE.MeshStandardMaterial({color:0xffd98a, emissive:0xffbe5a, emissiveIntensity:1.6}));
-  lamp.position.set(0,5.2,0); g.add(lamp);
-  g.add(box(1.2,0.3,1.2,MAT.stoneDark,0,5.95,0));
-  g.position.set(x,0,z); world.add(g);
+var S={
+  started:false, px:90, py:210, tx:null, ty:null, face:1, moving:false, bob:0,
+  camx:90, camy:210, zoom:1, overview:false,
+  visited:[false,false,false,false,false,false,false,false],
+  near:-1, dlgOpen:false, musicOn:false, t:0
+};
+function resize(){
+  cv.width=Math.floor(innerWidth*devicePixelRatio);
+  cv.height=Math.floor(innerHeight*devicePixelRatio);
 }
-[[6,34],[5,4],[-42,14],[-34,-30],[-14,-34],[14,-34],[34,-30],[42,14],[20,30],[-20,30]].forEach(function(p){ lantern(p[0],p[1]); });
-
-/* ================= KARAKTER ================= */
-function makePerson(shirtC){
-  var g=new THREE.Group();
-  var skin=new THREE.MeshStandardMaterial({color:0xf2c89b, roughness:.8});
-  var shirt=new THREE.MeshStandardMaterial({color:shirtC, roughness:.85});
-  var pants=new THREE.MeshStandardMaterial({color:0x2b3440, roughness:.9});
-  var legL=box(0.55,1.1,0.55,pants,-0.35,0.55,0), legR=box(0.55,1.1,0.55,pants,0.35,0.55,0);
-  var body=box(1.3,1.5,0.8,shirt,0,1.85,0);
-  var armL=box(0.4,1.2,0.4,shirt,-0.9,1.8,0), armR=box(0.4,1.2,0.4,shirt,0.9,1.8,0);
-  var head=new THREE.Mesh(new THREE.SphereGeometry(0.55,16,16),skin);
-  head.position.set(0,3.05,0); head.castShadow=true;
-  g.add(legL,legR,body,armL,armR,head);
-  g.userData={legL:legL,legR:legR,armL:armL,armR:armR,head:head,ph:Math.random()*6};
-  return g;
+addEventListener('resize',resize); resize();
+function targetZoom(){ return Math.max(cv.width/560, cv.height/900); }
+function clampCam(){
+  var vw=cv.width/S.zoom, vh=cv.height/S.zoom;
+  S.camx=Math.max(vw/2-40,Math.min(WORLD.w-vw/2+40,S.camx));
+  S.camy=Math.max(vh/2-40,Math.min(WORLD.h-vh/2+40,S.camy));
+  if(vw>=WORLD.w+80) S.camx=WORLD.w/2;
+  if(vh>=WORLD.h+80) S.camy=WORLD.h/2;
 }
-var player=makePerson(0x2e5aa8);
-var pack=box(0.7,0.9,0.4,new THREE.MeshStandardMaterial({color:0x6b4a2f, roughness:.9}),0,2,-0.55);
-player.add(pack);
-player.position.set(0,0,18); world.add(player);
-var playerDir=0, target=null, moving=false, bobT=0;
-
-var npcs=[];
-[{x:-8,z:8,c:0x3a7d5c},{x:8,z:8,c:0x8a5a2a}].forEach(function(n){
-  var p=makePerson(n.c); p.position.set(n.x,0,n.z); world.add(p);
-  npcs.push({g:p, tx:n.x, tz:n.z, wait:0});
-});
-
-/* panah penunjuk */
-var arrow=new THREE.Group();
-var arrowCone=new THREE.Mesh(new THREE.ConeGeometry(0.9,2.2,4),
-  new THREE.MeshStandardMaterial({color:0xf2b90d, emissive:0xf2b90d, emissiveIntensity:.7, roughness:.4}));
-arrowCone.rotation.x=Math.PI/2; arrow.add(arrowCone); world.add(arrow);
-
-/* ================= INPUT ================= */
+function w2s(x,y){ return [(x-S.camx)*S.zoom+cv.width/2,(y-S.camy)*S.zoom+cv.height/2]; }
+function s2w(x,y){ return [(x-cv.width/2)/S.zoom+S.camx,(y-cv.height/2)/S.zoom+S.camy]; }
+/* ---------- input ---------- */
 var keys={};
 addEventListener('keydown',function(e){
-  var k=e.key.toLowerCase();
-  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
-  keys[k]=true;
-  if(k==='enter'||k===' ') tryEnter();
+  keys[e.key.toLowerCase()]=true;
+  if(["arrowup","arrowdown","arrowleft","arrowright"," "].indexOf(e.key.toLowerCase())>=0) e.preventDefault();
+  if((e.key==='Enter'||e.key===' ')&&S.near>=0&&!S.dlgOpen) openDlg(S.near);
 });
 addEventListener('keyup',function(e){ keys[e.key.toLowerCase()]=false; });
-var ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
-function groundTap(cx,cy){
-  ptr.x=(cx/innerWidth)*2-1; ptr.y=-(cy/innerHeight)*2+1;
-  ray.setFromCamera(ptr,camera);
-  var hit=ray.intersectObject(ground);
-  if(hit.length){ target={x:hit[0].point.x, z:hit[0].point.z}; }
-}
-canvas.addEventListener('pointerdown',function(e){ groundTap(e.clientX,e.clientY); });
-var dpad={up:false,down:false,left:false,right:false};
-document.querySelectorAll('.dbtn').forEach(function(b){
-  var d=b.dataset.d;
-  var on=function(e){ e.preventDefault(); dpad[d]=true; target=null; };
-  var off=function(){ dpad[d]=false; };
+var dpadK={};
+document.querySelectorAll('#dpad button').forEach(function(b){
+  var k=b.getAttribute('data-k');
+  function on(e){ e.preventDefault(); dpadK[k]=true; S.tx=null; }
+  function off(e){ e.preventDefault(); dpadK[k]=false; }
   b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off);
   b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off);
 });
-document.getElementById('abtn').addEventListener('click',function(){ sfx('click'); tryEnter(); });
-
-/* ================= DIALOG & QUEST ================= */
-var visited={}, won=false, nearB=null;
-function $(id){ return document.getElementById(id); }
-function toast(html,ms){
-  var d=document.createElement('div'); d.className='toast'; d.innerHTML=html;
-  $('toasts').appendChild(d);
-  setTimeout(function(){ d.classList.add('out'); setTimeout(function(){ d.remove(); },400); }, ms||2600);
-}
-function salin(t){ try{ navigator.clipboard.writeText(t); toast('📋 Nomor tersalin!'); }catch(e){ toast('📋 '+t); } }
-function cdHTML(){
-  var t=new Date(WISUDA.TGL_ISO).getTime(), n=Date.now(), d=Math.max(0,t-n);
-  var dd=Math.floor(d/864e5), hh=Math.floor(d/36e5)%24, mm=Math.floor(d/6e4)%60, ss=Math.floor(d/1e3)%60;
-  return '<div class="cd"><div><b>'+dd+'</b><span>hari</span></div><div><b>'+hh+'</b><span>jam</span></div><div><b>'+mm+'</b><span>mnt</span></div><div><b>'+ss+'</b><span>dtk</span></div></div>';
-}
-var DLG={
-  sem:function(id){
-    var b=BLD.filter(function(x){return x.id===id;})[0], n=b.sem, s=WISUDA.SEMESTER[n-1];
-    return '<h2>'+b.icon+' '+b.name.toUpperCase()+'</h2><div class="sub">SEMESTER '+n+' · '+s.t.toUpperCase()+'</div>'
-      +'<img src="'+SEM_FOTO[n-1]+'" style="width:100%;border-radius:12px;border:2px solid #f2b90d;margin-bottom:10px" alt="Semester '+n+'">'
-      +'<div class="kv">📅 Angkatan <b>'+s.y+'</b></div><p>'+s.x+'</p>'
-      +'<p style="color:#ffd968;font-weight:700">+100 XP 🎮</p>';
-  },
-  aula:function(){ return '<h2>🎓 AULA SIDANG</h2><div class="sub">SEMESTER 8 · SIDANG AKHIR</div>'
-    +'<div class="couple"><div class="c" style="flex:1"><img src="'+FOTO_WIS+'" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:2px solid #f2b90d"><div class="nm">'+WISUDA.NAMA+'</div><div class="ort">'+WISUDA.JURUSAN+'<br>'+WISUDA.KAMPUS+'<br>NIM '+WISUDA.NIM+'</div></div></div>'
-    +'<div class="kv">📅 <b>'+WISUDA.TGL_TAMPIL+'</b><br>🕘 '+WISUDA.SIDANG_WAKTU+'<br>📍 '+WISUDA.SIDANG_TEMPAT+'</div>'
-    +'<p>Delapan semester bermuara di sini. Datang dan saksikan '+WISUDA.PANGGILAN+' mempertahankan skripsinya di meja hijau!</p>'
-    +cdHTML()
-    +'<a href="'+WISUDA.SIDANG_MAPS+'" target="_blank" rel="noopener"><button class="btn ghost">📍 Buka Google Maps</button></a>'
-    +'<button class="btn" id="rsvpGo">Konfirmasi via WhatsApp</button>'
-    +(function(){ var r=''; WISUDA.REK.forEach(function(k){ r+='<div class="kv">🏦 <b>'+k.bank+'</b><br>💳 '+k.no+'<br>👤 '+k.nama+'<br><button class="btn ghost" style="margin-top:8px;padding:8px" onclick="salin(\''+k.no+'\')">Salin Nomor</button></div>'; }); return r?'<p style="margin-top:10px">Tanda kasih untuk wisudawan:</p>'+r:''; })()
-    +(WISUDA.ALAMAT?'<div class="kv">📦 Kirim fisik ke:<br>'+WISUDA.ALAMAT+'</div>':''); }
-};
-window.salin=salin;
-function openDlg(id){
-  sfx('open');
-  $('dlgBody').innerHTML = id==='aula' ? DLG.aula() : DLG.sem(id);
-  $('dlg').classList.remove('hide');
-  var go=$('rsvpGo');
-  if(go) go.onclick=function(){
-    var txt='Halo '+WISUDA.PANGGILAN+'! Saya *KONFIRMASI HADIR* di acara sidang/wisuda '+WISUDA.TGL_TAMPIL+'.%0A%0ANama: %0AJumlah:  orang';
-    window.open('https://wa.me/'+WISUDA.WA+'?text='+txt,'_blank');
-  };
-  if(!visited[id]){
-    visited[id]=1;
-    var b=BLD.filter(function(x){return x.id===id;})[0];
-    b.mark.visible=false;
-    var n=Object.keys(visited).length;
-    $('qn').textContent=n;
-    $('qfill').style.width=(n/8*100)+'%';
-    sfx('quest');
-    toast('⬆️ <b>LEVEL UP!</b> Semester '+b.sem+' · '+b.name+' ('+n+'/8)');
-    $('qt').textContent = n>=8 ? 'LULUS! 🎓' : 'Semester '+(n+1)+' menanti…';
-    if(n===8 && !won){ won=true; setTimeout(function(){ $('win').classList.remove('hide'); sfx('win'); },900); }
+cv.addEventListener('pointerdown',function(e){
+  if(!S.started||S.dlgOpen||S.overview) return;
+  var r=cv.getBoundingClientRect();
+  var wpt=s2w((e.clientX-r.left)*devicePixelRatio,(e.clientY-r.top)*devicePixelRatio);
+  S.tx=Math.max(20,Math.min(WORLD.w-20,wpt[0]));
+  S.ty=Math.max(20,Math.min(WORLD.h-20,wpt[1]));
+});
+/* ---------- update ---------- */
+function collide(nx,ny){
+  for(var i=0;i<SEMDEF.length;i++){
+    var b=SEMDEF[i].blk,dx=nx-b[0],dy=ny-b[1],r=b[2];
+    var d=Math.hypot(dx,dy);
+    if(d<r+14&&d>0.01){ nx=b[0]+dx/d*(r+14); ny=b[1]+dy/d*(r+14); }
   }
+  return [Math.max(16,Math.min(WORLD.w-16,nx)),Math.max(16,Math.min(WORLD.h-16,ny))];
 }
-function closeDlg(){ $('dlg').classList.add('hide'); sfx('close'); }
-function tryEnter(){ if(nearB && $('dlg').classList.contains('hide')) openDlg(nearB.id); }
-$('dlgX').onclick=closeDlg;
-$('winX').onclick=function(){ $('win').classList.add('hide'); };
-$('helpBtn').onclick=function(){ $('help').classList.remove('hide'); sfx('open'); };
-$('helpX').onclick=function(){ $('help').classList.add('hide'); sfx('close'); };
-$('musicBtn').onclick=function(){
-  musicOn=!musicOn;
-  $('musicBtn').textContent=musicOn?'🎵':'🔇';
-  if(musicOn) musicStart(); else if(musicTimer){ clearTimeout(musicTimer); musicTimer=null; }
-};
-
-/* ================= MINIMAP ================= */
-var mm=$('mm').getContext('2d');
-function drawMM(){
-  var s=300/170;
-  mm.clearRect(0,0,300,224);
-  mm.fillStyle='rgba(10,20,10,.85)'; mm.fillRect(0,0,300,224);
-  mm.fillStyle='#3f7a34'; mm.beginPath(); mm.arc(150,112,66,0,6.283); mm.fill();
-  mm.fillStyle='#9a9080'; mm.beginPath(); mm.arc(150,112,20,0,6.283); mm.fill();
-  BLD.forEach(function(b){
-    var x=(b.x+85)*s, y=(b.z+60)*s*0.75+28;
-    mm.fillStyle=visited[b.id]?'#f2b90d':'#5a5348';
-    mm.beginPath(); mm.arc(x,y,5,0,6.283); mm.fill();
-    mm.fillStyle='#fff'; mm.font='8px sans-serif'; mm.textAlign='center';
-    mm.fillText(b.icon,x,y-8);
-  });
-  var px=(player.position.x+85)*s, py=(player.position.z+60)*s*0.75+28;
-  mm.fillStyle='#ff5a5a';
-  mm.beginPath(); mm.moveTo(px,py-8); mm.lineTo(px-6,py+5); mm.lineTo(px+6,py+5); mm.closePath(); mm.fill();
-}
-
-/* ================= LOOP ================= */
-var camT={x:0,z:18};
-var guideTag=$('guideTag');
-var projV=new THREE.Vector3();
-function nearestTarget(){
-  var best=null, bd=1e9;
-  BLD.forEach(function(b){
-    if(visited[b.id]) return;
-    var d=Math.hypot(player.position.x-b.door.x,player.position.z-b.door.z);
-    if(d<bd){ bd=d; best=b; }
-  });
-  return {b:best,d:bd};
-}
-var clock=new THREE.Clock();
-function frame(){
-  requestAnimationFrame(frame);
-  var dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
-  var kvx=0,kvz=0,spd=11;
-  if(keys['w']||keys['arrowup']||dpad.up) kvz-=1;
-  if(keys['s']||keys['arrowdown']||dpad.down) kvz+=1;
-  if(keys['a']||keys['arrowleft']||dpad.left) kvx-=1;
-  if(keys['d']||keys['arrowright']||dpad.right) kvx+=1;
-  var vx=0,vz=0;
-  if(kvx||kvz){ target=null; vx=kvx; vz=kvz; }
-  else if(target){
-    var dx=target.x-player.position.x, dz=target.z-player.position.z, d=Math.hypot(dx,dz);
-    if(d<0.8){ target=null; }
-    else { vx=dx/d; vz=dz/d; spd=Math.min(11,d*3); }
-  }
-  if(vx||vz){
-    var l=Math.hypot(vx,vz); vx/=l; vz/=l;
-    var nx=player.position.x+vx*spd*dt, nz=player.position.z+vz*spd*dt;
-    var c=collide(nx,nz); player.position.x=c.x; player.position.z=c.z;
-    playerDir=Math.atan2(vx,vz); moving=true;
-  } else moving=false;
-  player.rotation.y+=(playerDir-player.rotation.y)*0.2;
-  var u=player.userData;
-  if(moving){ bobT+=dt*11;
-    u.legL.rotation.x=Math.sin(bobT)*0.7; u.legR.rotation.x=-Math.sin(bobT)*0.7;
-    u.armL.rotation.x=-Math.sin(bobT)*0.55; u.armR.rotation.x=Math.sin(bobT)*0.55;
-    player.position.y=Math.abs(Math.sin(bobT))*0.12;
-  } else {
-    u.legL.rotation.x*=0.8; u.legR.rotation.x*=0.8; u.armL.rotation.x*=0.8; u.armR.rotation.x*=0.8;
-    player.position.y=Math.sin(t*2+u.ph)*0.05;
-  }
-  npcs.forEach(function(n){
-    if(n.wait>0){ n.wait-=dt; return; }
-    var dx=n.tx-n.g.position.x, dz=n.tz-n.g.position.z, d=Math.hypot(dx,dz);
-    if(d<0.6){ n.wait=1+Math.random()*3;
-      n.tx=-30+Math.random()*60; n.tz=-20+Math.random()*40;
-      var cc=collide(n.tx,n.tz); n.tx=cc.x; n.tz=cc.z;
-    } else {
-      n.g.position.x+=dx/d*3*dt; n.g.position.z+=dz/d*3*dt;
-      n.g.rotation.y=Math.atan2(dx,dz);
-      var nu=n.g.userData, bt=t*9+nu.ph;
-      nu.legL.rotation.x=Math.sin(bt)*0.6; nu.legR.rotation.x=-Math.sin(bt)*0.6;
+function update(dt){
+  S.t+=dt;
+  var vx=0,vy=0,spd=230;
+  if(keys['w']||keys['arrowup']||dpadK.up)vy-=1;
+  if(keys['s']||keys['arrowdown']||dpadK.down)vy+=1;
+  if(keys['a']||keys['arrowleft']||dpadK.left)vx-=1;
+  if(keys['d']||keys['arrowright']||dpadK.right)vx+=1;
+  if(vx||vy){
+    S.tx=null;
+    var l=Math.hypot(vx,vy),p=collide(S.px+vx/l*spd*dt,S.py+vy/l*spd*dt);
+    S.px=p[0];S.py=p[1];S.moving=true;S.bob+=dt*11;
+    if(vx)S.face=vx>0?1:-1;
+  } else if(S.tx!==null){
+    var dx=S.tx-S.px,dy=S.ty-S.py,d=Math.hypot(dx,dy);
+    if(d<6){S.tx=null;S.moving=false;}
+    else{
+      var st=Math.min(d,spd*dt),p2=collide(S.px+dx/d*st,S.py+dy/d*st);
+      S.px=p2[0];S.py=p2[1];S.moving=true;S.bob+=dt*11;
+      if(dx)S.face=dx>0?1:-1;
     }
-  });
-  BLD.forEach(function(b){ if(b.mark.visible) b.mark.position.y=14+Math.sin(t*3+b.sem)*0.6; });
-  var nt=nearestTarget();
-  if(nt.b){
-    var ang=Math.atan2(nt.b.x-player.position.x,nt.b.z-player.position.z);
-    arrow.visible=true;
-    arrow.position.set(player.position.x+Math.sin(ang)*2.6,5.4+Math.sin(t*4)*0.3,player.position.z+Math.cos(ang)*2.6);
-    arrow.rotation.y=ang;
-    projV.set(player.position.x,7.5,player.position.z).project(camera);
-    if(projV.z<1){
-      guideTag.style.display='block';
-      guideTag.style.left=((projV.x*0.5+0.5)*innerWidth)+'px';
-      guideTag.style.top=((-projV.y*0.5+0.5)*innerHeight)+'px';
-      guideTag.textContent=nt.b.icon+' '+nt.b.name+' · '+Math.round(nt.d*10/10)+'m';
-    } else guideTag.style.display='none';
-  } else { arrow.visible=false; guideTag.style.display='none'; }
-  nearB=null;
-  BLD.forEach(function(b){
-    var d=Math.hypot(player.position.x-b.door.x,player.position.z-b.door.z);
-    if(d<10) nearB=b;
-  });
-  var pr=$('prompt');
-  if(nearB && $('dlg').classList.contains('hide')){
-    pr.style.display='block';
-    $('promptTxt').textContent=nearB.icon+' Masuk '+nearB.name+' (Sem '+nearB.sem+')';
-  } else pr.style.display='none';
-  camT.x+=(player.position.x-camT.x)*0.06;
-  camT.z+=(player.position.z-camT.z)*0.06;
-  camera.position.set(camT.x,30,camT.z+21);
-  camera.lookAt(camT.x,1.5,camT.z-3);
-  sun.position.set(camT.x+40,70,camT.z+25);
-  sun.target.position.set(camT.x,0,camT.z);
-  drawMM();
-  renderer.render(scene,camera);
+  } else S.moving=false;
+  // kamera
+  var tz=S.overview?Math.min(cv.width/(WORLD.w+60),cv.height/(WORLD.h+60)):targetZoom();
+  S.zoom+=(tz-S.zoom)*Math.min(1,dt*5);
+  var gx=S.overview?WORLD.w/2:S.px, gy=S.overview?WORLD.h/2:S.py;
+  S.camx+=(gx-S.camx)*Math.min(1,dt*6);
+  S.camy+=(gy-S.camy)*Math.min(1,dt*6);
+  clampCam();
+  // dekat checkpoint?
+  S.near=-1;
+  if(!S.dlgOpen){
+    for(var i=0;i<SEMDEF.length;i++){
+      var c=SEMDEF[i];
+      if(Math.hypot(S.px-c.pos[0],S.py-c.pos[1])<70){S.near=i;break;}
+    }
+  }
+  var pr=document.getElementById('prompt');
+  if(S.near>=0&&!S.dlgOpen){
+    pr.textContent=(S.visited[S.near]?"Lihat lagi: ":"Masuk: ")+SEMDEF[S.near].judul+" →";
+    pr.classList.add('on');
+  } else pr.classList.remove('on');
 }
-
-/* ================= INIT ================= */
-(function(){
-  var to=location.search.match(/[?&]to=([^&]+)/);
-  if(to){ try{ $('guestHi').innerHTML='👋 Halo <b>'+decodeURIComponent(to[1]).replace(/</g,'&lt;')+'</b>!'; }catch(e){} }
-  $('startNames').textContent=WISUDA.NAMA;
-  $('startDate').textContent=WISUDA.JURUSAN+' · '+WISUDA.KAMPUS;
-  $('startBtn').onclick=function(){
-    sfx('click'); ac(); musicStart();
-    $('start').classList.add('hide');
-    toast('🏰 Selamat datang di kampus tua!<br><small>Lewati 8 semester menuju toga</small>',3200);
-    setTimeout(function(){ if(Object.keys(visited).length===0) toast('💡 Dekati gedung berlabel, lalu tekan <b>A</b>',3000); },3400);
+/* ---------- render ---------- */
+function drawSpr(img,x,y,h,flip,bobY){
+  var r=w2s(x,y),s=S.zoom*(h/img.height);
+  var w=img.width*s,hh=h*S.zoom,by=bobY||0;
+  ctx.save();
+  ctx.translate(r[0],r[1]+by*S.zoom);
+  if(flip)ctx.scale(-1,1);
+  ctx.drawImage(img,-w/2,-hh,w,hh);
+  ctx.restore();
+}
+function render(){
+  ctx.fillStyle="#0e1a30";ctx.fillRect(0,0,cv.width,cv.height);
+  if(!IM.map||!IM.map.width)return;
+  // peta
+  var p0=w2s(0,0);
+  ctx.drawImage(IM.map,p0[0],p0[1],WORLD.w*S.zoom,WORLD.h*S.zoom);
+  // NPC
+  NPCDEF.forEach(function(n,i){
+    if(!IM[n.img])return;
+    var wy=Math.sin(S.t*2+i*1.7)*3;
+    drawSpr(IM[n.img],n.x,n.y,62,Math.sin(S.t+i)>0,wy);
+  });
+  // checkpoint markers
+  SEMDEF.forEach(function(c,i){
+    if(S.visited[i]||!IM.balon_seru)return;
+    var by=Math.sin(S.t*4+i)*6*S.zoom;
+    var r=w2s(c.pos[0],c.pos[1]-58);
+    var s=S.zoom*0.55,iw=IM.balon_seru.width*s,ih=IM.balon_seru.height*s;
+    ctx.drawImage(IM.balon_seru,r[0]-iw/2,r[1]-ih/2+by,iw,ih);
+  });
+  // pemain
+  var img=S.moving?IM.char_jalan:IM.char_idle;
+  if(img)drawSpr(img,S.px,S.py,72,S.face<0,S.moving?Math.abs(Math.sin(S.bob))*5:Math.sin(S.t*2)*2);
+  // tap target
+  if(S.tx!==null){
+    var r2=w2s(S.tx,S.ty),rr=(8+3*Math.sin(S.t*8))*S.zoom;
+    ctx.strokeStyle="#ffd97a";ctx.lineWidth=3*S.zoom;ctx.beginPath();ctx.arc(r2[0],r2[1],rr,0,7);ctx.stroke();
+  }
+}
+/* ---------- loop ---------- */
+var last=0;
+function loop(ts){
+  var dt=Math.min(0.05,(ts-last)/1000||0.016);last=ts;
+  if(S.started&&!S.dlgOpen)update(dt);
+  else S.t+=dt;
+  render();
+  requestAnimationFrame(loop);
+}
+/* ---------- dialog ---------- */
+function semData(i){
+  var c=WISUDA.SEMESTER[i]||{},d=SEMDEF[i];
+  return {
+    no:d.no,bld:d.bld,icon:d.icon,
+    judul:c.t||d.judul, sub:d.sub, x:c.x||d.x, y:c.y||"",
+    foto:(WISUDA.FOTO.semester||[])[i]||""
   };
-  frame();
+}
+function openDlg(i){
+  S.dlgOpen=true;S.tx=null;
+  var d=semData(i),done=S.visited[i];
+  var h='<img class="bld" src="assets/'+d.bld+'.png" alt="">';
+  h+='<div class="shead"><span class="semno">SEMESTER '+d.no+'</span><h2>'+esc(d.judul)+'</h2></div>';
+  h+='<div class="sub">'+esc(d.sub)+(d.y?' • '+esc(d.y):'')+'</div>';
+  h+='<div class="story">'+esc(d.x)+'</div>';
+  if(d.foto)h+='<div style="padding:0 18px"><img class="illus" src="'+esc(d.foto)+'" style="width:100%;border-radius:14px;border:2px solid #e5d3a8"></div>';
+  h+='<div class="xprow"><img src="assets/'+d.icon+'.png">+'+(100*d.no)+' XP</div>';
+  h+='<div class="btnrow"><button class="btn back" id="dlgBack">Kembali</button><button class="btn go" id="dlgGo">'+(done?"Tutup":"Selesaikan Misi ✓")+'</button></div>';
+  document.getElementById('dlgCard').innerHTML=h;
+  document.getElementById('dlg').classList.add('on');
+  document.getElementById('dlgBack').onclick=closeDlg;
+  document.getElementById('dlgGo').onclick=function(){
+    if(!S.visited[i]){
+      S.visited[i]=true;
+      toast('assets/badge_levelup.png');
+      fanfare();
+      updateHUD();
+      if(i===7){ setTimeout(openWin,900); }
+    }
+    closeDlg();
+  };
+}
+function closeDlg(){ document.getElementById('dlg').classList.remove('on'); S.dlgOpen=false; }
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+document.getElementById('prompt').onclick=function(){ if(S.near>=0)openDlg(S.near); };
+/* ---------- HUD / quest ---------- */
+function updateHUD(){
+  var n=S.visited.filter(Boolean).length;
+  document.getElementById('hudLv').textContent="LEVEL "+n+"/8";
+  document.getElementById('hudBar').style.width=(n/8*100)+"%";
+  if(n===8&&IM.char_wisuda)document.getElementById('hudAva').src="assets/char_wisuda.png";
+}
+function openQuest(){
+  var h="";
+  for(var i=0;i<8;i++){
+    var d=semData(i),dn=S.visited[i];
+    h+='<div class="qrow'+(dn?' done':'')+'"><div class="qnum">'+(dn?'✓':d.no)+'</div><div class="qt"><b>Semester '+d.no+': '+esc(d.judul)+'</b><span>'+esc(d.sub)+'</span></div><div class="qcheck">'+(dn?'🎓':'🔒')+'</div></div>';
+  }
+  document.getElementById('qlist').innerHTML=h;
+  document.getElementById('quest').classList.add('on');S.dlgOpen=true;
+}
+function closeQuest(){document.getElementById('quest').classList.remove('on');S.dlgOpen=false;}
+document.getElementById('btnQuest').onclick=openQuest;
+document.getElementById('questX').onclick=closeQuest;
+document.getElementById('questOk').onclick=closeQuest;
+document.getElementById('btnMap').onclick=function(){S.overview=!S.overview;};
+document.getElementById('btnHelp').onclick=function(){document.getElementById('help').classList.add('on');S.dlgOpen=true;};
+document.getElementById('helpOk').onclick=function(){document.getElementById('help').classList.remove('on');S.dlgOpen=false;};
+/* ---------- toast ---------- */
+var toastT=null;
+function toast(img){
+  document.getElementById('toastImg').src=img;
+  var t=document.getElementById('toast');
+  t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},1600);
+}
+/* ---------- win ---------- */
+function pad(n){return (n<10?"0":"")+n;}
+function tickCD(){
+  var el=document.getElementById('cdwin');if(!el)return;
+  var diff=new Date(WISUDA.TGL_ISO).getTime()-Date.now();
+  if(diff<0)diff=0;
+  var d=Math.floor(diff/864e5),h=Math.floor(diff/36e5)%24,m=Math.floor(diff/6e4)%60,s=Math.floor(diff/1e3)%60;
+  el.innerHTML='<div><b>'+d+'</b><span>Hari</span></div><div><b>'+pad(h)+'</b><span>Jam</span></div><div><b>'+pad(m)+'</b><span>Menit</span></div><div><b>'+pad(s)+'</b><span>Detik</span></div>';
+}
+setInterval(tickCD,1000);
+function openWin(){
+  S.dlgOpen=true;
+  var fw=WISUDA.FOTO.wisudawan;
+  var h='<img class="wbad" src="assets/badge_wisuda.png" alt="Wisuda!">';
+  h+=fw?'<img class="illus" src="'+esc(fw)+'" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:4px solid #f5a623;margin:8px auto;display:block">':'<img class="wchar" src="assets/char_wisuda.png" alt="">';
+  h+='<h2>🎓 LULUS!</h2><div class="nm">'+esc(WISUDA.NAMA)+', '+esc(WISUDA.GELAR)+'</div>';
+  h+='<div class="erow">'+esc(WISUDA.JURUSAN)+' • '+esc(WISUDA.KAMPUS)+'<br>NIM '+esc(WISUDA.NIM)+'</div>';
+  h+='<div class="cd" id="cdwin"></div>';
+  h+='<div class="erow"><b>📅 '+esc(WISUDA.TGL_TAMPIL)+'</b><br>⏰ '+esc(WISUDA.SIDANG_WAKTU)+'<br>📍 '+esc(WISUDA.SIDANG_TEMPAT)+'</div>';
+  h+='<div class="btnrow"><a class="btn go" style="text-decoration:none;text-align:center" target="_blank" href="'+esc(WISUDA.SIDANG_MAPS)+'">📍 Lihat Lokasi</a></div>';
+  var wa=WISUDA.WA.replace(/\D/g,"");
+  var msg=encodeURIComponent("Halo "+WISUDA.PANGGILAN+"! Selamat atas wisudanya 🎓 Saya akan hadir di acara wisuda.");
+  h+='<div class="btnrow"><a class="btn go" style="text-decoration:none;text-align:center;background:linear-gradient(180deg,#2e9e5b,#22703f);color:#fff;box-shadow:0 4px 0 #174f2c" target="_blank" href="https://wa.me/'+wa+'?text='+msg+'">💬 Konfirmasi via WA</a></div>';
+  if(WISUDA.REK&&WISUDA.REK.length){
+    h+='<div class="erow" style="margin-top:8px"><b>🎁 Tanda Kasih</b><br>'+WISUDA.REK.map(function(r){return esc(r.b)+' — <b>'+esc(r.n)+'</b> a.n. '+esc(r.a);}).join('<br>')+'</div>';
+  }
+  h+='<div class="erow">🏠 '+esc(WISUDA.ALAMAT)+'</div>';
+  h+='<div class="btnrow"><button class="btn back" id="winBack">Jelajahi Lagi</button></div>';
+  document.getElementById('winCard').innerHTML=h;
+  document.getElementById('win').classList.add('on');
+  tickCD();
+  document.getElementById('winBack').onclick=function(){document.getElementById('win').classList.remove('on');S.dlgOpen=false;};
+  toast('assets/badge_wisuda.png');
+  fanfare(true);
+}
+/* ---------- musik ---------- */
+var AC=null,mTimer=null,step=0;
+var MEL=[0,4,7,12,7,4, 0,4,7,12,16,12, 14,12,11,12,7,4, 2,4,7,4,2,0];
+function note(f,t0,d,type,g){
+  var o=AC.createOscillator(),gn=AC.createGain();
+  o.type=type||'triangle';o.frequency.value=f;
+  gn.gain.setValueAtTime(0.0001,t0);gn.gain.linearRampToValueAtTime(g||0.12,t0+0.02);
+  gn.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+  o.connect(gn);gn.connect(AC.destination);o.start(t0);o.stop(t0+d+0.05);
+}
+function musicTick(){
+  if(!S.musicOn)return;
+  var t0=AC.currentTime+0.05,base=261.63;
+  var n=MEL[step%MEL.length];
+  note(base*Math.pow(2,n/12),t0,0.22,'triangle',0.10);
+  if(step%4===0)note(base/2,t0,0.3,'sine',0.08);
+  if(step%8===4)note(base*2,t0,0.15,'square',0.03);
+  step++;
+}
+function fanfare(big){
+  if(!AC)return;
+  var t0=AC.currentTime+0.02,seq=big?[0,4,7,12,16,19,24]:[0,4,7,12];
+  seq.forEach(function(n,i){note(523.25*Math.pow(2,n/12),t0+i*0.11,0.3,'triangle',0.14);});
+}
+function toggleMusic(){
+  if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+  if(!AC)return;
+  S.musicOn=!S.musicOn;
+  document.getElementById('btnMusic').textContent=S.musicOn?"🎵":"🔇";
+  document.getElementById('btnMusic').style.opacity=S.musicOn?"1":"0.5";
+  if(S.musicOn&&AC.state==='suspended')AC.resume();
+}
+document.getElementById('btnMusic').onclick=toggleMusic;
+/* ---------- start ---------- */
+(function(){
+  var qp=new URLSearchParams(location.search).get('to');
+  if(qp)document.getElementById('startTo').innerHTML='Halo, <b>'+esc(qp)+'</b>! 👋';
+  if(innerWidth<760)document.getElementById('dpad').style.display='grid';
 })();
+document.getElementById('btnMulai').onclick=function(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('hud').style.display='flex';
+  S.started=true;
+  toast('assets/badge_misi.png');
+  setTimeout(function(){ if(!S.musicOn)toggleMusic(); },400);
+  setTimeout(function(){ if(S.near<0)toast('assets/balon_seru.png'); },2200);
+};
+/* ---------- go ---------- */
+loadAssets(function(){ requestAnimationFrame(loop); });
+updateHUD();
 </script>
 </body>
 </html>
