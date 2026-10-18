@@ -96,15 +96,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0e1a30;font-family:
 
 <div id="hud">
   <div class="panel">
-    <div class="ava"><img id="hudAva" src="assets/char_idle.png" alt=""></div>
+    <div class="ava"><img id="hudAva" src="/tema/wisuda-quest/assets/char_idle.png" alt=""></div>
     <div class="meta">
       <div class="lv" id="hudLv">LEVEL 0/8</div>
       <div class="bar"><i id="hudBar"></i></div>
     </div>
   </div>
   <div class="hbtns">
-    <button class="icobtn" id="btnQuest" title="Misi"><img src="assets/btn_misi.png" alt="Misi"></button>
-    <button class="icobtn" id="btnMap" title="Peta"><img src="assets/btn_peta.png" alt="Peta"></button>
+    <button class="icobtn" id="btnQuest" title="Misi"><img src="/tema/wisuda-quest/assets/btn_misi.png" alt="Misi"></button>
+    <button class="icobtn" id="btnMap" title="Peta"><img src="/tema/wisuda-quest/assets/btn_peta.png" alt="Peta"></button>
     <button class="icobtn" id="btnMusic" title="Musik">🎵</button>
     <button class="icobtn" id="btnHelp" title="Bantuan">❓</button>
   </div>
@@ -113,11 +113,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0e1a30;font-family:
 <div id="prompt">Masuk →</div>
 
 <div id="start">
-  <img class="titleart" src="assets/title.png" alt="Journey to Graduation">
+  <img class="titleart" src="/tema/wisuda-quest/assets/title.png" alt="Journey to Graduation">
   <h1>WISUDA QUEST</h1>
   <p>Ikuti perjalanan 8 semester menuju wisuda. Kunjungi setiap gedung, selesaikan misinya, dan rayakan kelulusan!</p>
   <div class="to" id="startTo"></div>
-  <button id="btnMulai"><img src="assets/btn_mulai.png" alt="Mulai"></button>
+  <button id="btnMulai"><img src="/tema/wisuda-quest/assets/btn_mulai.png" alt="Mulai"></button>
   <div class="hint">Ketuk peta untuk berjalan • WASD / panah • D-pad di HP</div>
 </div>
 
@@ -137,7 +137,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0e1a30;font-family:
   <div class="btnrow"><button class="btn go" id="helpOk">Siap, Main!</button></div>
 </div></div>
 
-<div id="toast"><img id="toastImg" src="assets/badge_levelup.png" alt=""></div>
+<div id="toast"><img id="toastImg" src="/tema/wisuda-quest/assets/badge_levelup.png" alt=""></div>
 
 <div id="dpad">
   <span></span><button data-k="up">▲</button><span></span>
@@ -202,7 +202,7 @@ function loadAssets(cb){
   ASSETS.forEach(function(a){
     var im=new Image();
     im.onload=im.onerror=function(){ if(++n===ASSETS.length) cb(); };
-    im.src="assets/"+a+".png";
+    im.src="/tema/wisuda-quest/assets/"+a+".png";
     IM[a]=im;
   });
 }
@@ -361,12 +361,12 @@ function semData(i){
 function openDlg(i){
   S.dlgOpen=true;S.tx=null;
   var d=semData(i),done=S.visited[i];
-  var h='<img class="bld" src="assets/'+d.bld+'.png" alt="">';
+  var h='<img class="bld" src="/tema/wisuda-quest/assets/'+d.bld+'.png" alt="">';
   h+='<div class="shead"><span class="semno">SEMESTER '+d.no+'</span><h2>'+esc(d.judul)+'</h2></div>';
   h+='<div class="sub">'+esc(d.sub)+(d.y?' • '+esc(d.y):'')+'</div>';
   h+='<div class="story">'+esc(d.x)+'</div>';
   if(d.foto)h+='<div style="padding:0 18px"><img class="illus" src="'+esc(d.foto)+'" style="width:100%;border-radius:14px;border:2px solid #e5d3a8"></div>';
-  h+='<div class="xprow"><img src="assets/'+d.icon+'.png">+'+(100*d.no)+' XP</div>';
+  h+='<div class="xprow"><img src="/tema/wisuda-quest/assets/'+d.icon+'.png">+'+(100*d.no)+' XP</div>';
   h+='<div class="btnrow"><button class="btn back" id="dlgBack">Kembali</button><button class="btn go" id="dlgGo">'+(done?"Tutup":"Selesaikan Misi ✓")+'</button></div>';
   document.getElementById('dlgCard').innerHTML=h;
   document.getElementById('dlg').classList.add('on');
@@ -374,7 +374,7 @@ function openDlg(i){
   document.getElementById('dlgGo').onclick=function(){
     if(!S.visited[i]){
       S.visited[i]=true;
-      toast('assets/badge_levelup.png');
+      toast('/tema/wisuda-quest/assets/badge_levelup.png');
       fanfare();
       updateHUD();
       if(i===7){ setTimeout(openWin,900); }
@@ -390,7 +390,7 @@ function updateHUD(){
   var n=S.visited.filter(Boolean).length;
   document.getElementById('hudLv').textContent="LEVEL "+n+"/8";
   document.getElementById('hudBar').style.width=(n/8*100)+"%";
-  if(n===8&&IM.char_wisuda)document.getElementById('hudAva').src="assets/char_wisuda.png";
+  if(n===8&&IM.char_wisuda)document.getElementById('hudAva').src="/tema/wisuda-quest/assets/char_wisuda.png";
 }
 function openQuest(){
   var h="";
@@ -429,8 +429,8 @@ setInterval(tickCD,1000);
 function openWin(){
   S.dlgOpen=true;
   var fw=WISUDA.FOTO.wisudawan;
-  var h='<img class="wbad" src="assets/badge_wisuda.png" alt="Wisuda!">';
-  h+=fw?'<img class="illus" src="'+esc(fw)+'" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:4px solid #f5a623;margin:8px auto;display:block">':'<img class="wchar" src="assets/char_wisuda.png" alt="">';
+  var h='<img class="wbad" src="/tema/wisuda-quest/assets/badge_wisuda.png" alt="Wisuda!">';
+  h+=fw?'<img class="illus" src="'+esc(fw)+'" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:4px solid #f5a623;margin:8px auto;display:block">':'<img class="wchar" src="/tema/wisuda-quest/assets/char_wisuda.png" alt="">';
   h+='<h2>🎓 LULUS!</h2><div class="nm">'+esc(WISUDA.NAMA)+', '+esc(WISUDA.GELAR)+'</div>';
   h+='<div class="erow">'+esc(WISUDA.JURUSAN)+' • '+esc(WISUDA.KAMPUS)+'<br>NIM '+esc(WISUDA.NIM)+'</div>';
   h+='<div class="cd" id="cdwin"></div>';
@@ -448,7 +448,7 @@ function openWin(){
   document.getElementById('win').classList.add('on');
   tickCD();
   document.getElementById('winBack').onclick=function(){document.getElementById('win').classList.remove('on');S.dlgOpen=false;};
-  toast('assets/badge_wisuda.png');
+  toast('/tema/wisuda-quest/assets/badge_wisuda.png');
   fanfare(true);
 }
 /* ---------- musik ---------- */
@@ -494,9 +494,9 @@ document.getElementById('btnMulai').onclick=function(){
   document.getElementById('start').style.display='none';
   document.getElementById('hud').style.display='flex';
   S.started=true;
-  toast('assets/badge_misi.png');
+  toast('/tema/wisuda-quest/assets/badge_misi.png');
   setTimeout(function(){ if(!S.musicOn)toggleMusic(); },400);
-  setTimeout(function(){ if(S.near<0)toast('assets/balon_seru.png'); },2200);
+  setTimeout(function(){ if(S.near<0)toast('/tema/wisuda-quest/assets/balon_seru.png'); },2200);
 };
 /* ---------- go ---------- */
 loadAssets(function(){ requestAnimationFrame(loop); });
