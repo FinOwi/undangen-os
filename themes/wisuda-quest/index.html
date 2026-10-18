@@ -1052,9 +1052,34 @@ function note(f,t0,d,type,g){
   gn.gain.exponentialRampToValueAtTime(0.0001,t0+d);
   o.connect(gn);gn.connect(AC.destination);o.start(t0);o.stop(t0+d+0.05);
 }
-var MUSIKURL=(typeof WISUDA!=="undefined"&&WISUDA.MUSIK)||"",musEl=null;
+var MUSIKURL=(typeof WISUDA!=="undefined"&&WISUDA.MUSIK)||"";
+var musEl=null,ytP=null,ytWant=false;
+function ytId(u){var m=String(u||"").match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);return m?m[1]:null;}
+function bgCustom(){return !!(ytId(MUSIKURL)||MUSIKURL);}
+function ytBoot(){
+  ytWant=true;
+  if(ytP||window._ytB)return;window._ytB=true;
+  var d=document.createElement("div");d.id="ytH";
+  d.style.cssText="position:fixed;width:4px;height:4px;left:-20px;top:0;opacity:.01;pointer-events:none;z-index:-1;";
+  document.body.appendChild(d);
+  var t=document.createElement("script");t.src="https://www.youtube.com/iframe_api";document.head.appendChild(t);
+}
+window.onYouTubeIframeAPIReady=function(){
+  var id=ytId(MUSIKURL);if(!id||ytP)return;
+  ytP=new YT.Player("ytH",{width:4,height:4,videoId:id,
+    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,loop:1,playlist:id},
+    events:{onReady:function(){if(ytWant){try{ytP.playVideo();}catch(e){}}},
+      onStateChange:function(e){if(e.data===1)ytWant=true;else if(e.data===0&&ytWant){try{ytP.playVideo();}catch(e){}}}}});
+};
+function bgPlay(){
+  var id=ytId(MUSIKURL);
+  if(id){ytWant=true;if(ytP){try{ytP.playVideo();}catch(e){}}else ytBoot();return true;}
+  if(MUSIKURL){if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}musEl.play().catch(function(){});return true;}
+  return false;
+}
+function bgStop(){ytWant=false;if(ytP){try{ytP.pauseVideo();}catch(e){}}if(musEl)musEl.pause();}
 function musicTick(){
-  if(!S.musicOn||!AC||musEl)return;
+  if(!S.musicOn||!AC||bgCustom())return;
   var t0=AC.currentTime+0.05,base=261.63;
   var n=MEL[step%MEL.length];
   note(base*Math.pow(2,n/12),t0,0.22,'triangle',0.09);
@@ -1072,12 +1097,8 @@ function toggleMusic(){
   if(!AC)return;
   S.musicOn=!S.musicOn;
   document.getElementById('btnMusic').textContent=S.musicOn?"🎵":"🔇";
-  if(S.musicOn){
-    if(MUSIKURL){
-      if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}
-      musEl.play().catch(function(){});
-    }else if(AC.state==='suspended')AC.resume();
-  }else if(musEl)musEl.pause();
+  if(S.musicOn){ if(!bgPlay()&&AC.state==='suspended')AC.resume(); }
+  else bgStop();
 }
 document.getElementById('btnMusic').onclick=toggleMusic;
 setInterval(musicTick,240);

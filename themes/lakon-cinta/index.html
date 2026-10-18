@@ -495,9 +495,34 @@ function gong(){
     o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+4.6);
   });
 }
-var MUSIKURL=(typeof LAKON!=="undefined"&&LAKON.MUSIK)||"",musEl=null;
+var MUSIKURL=(typeof LAKON!=="undefined"&&LAKON.MUSIK)||"";
+var musEl=null,ytP=null,ytWant=false;
+function ytId(u){var m=String(u||"").match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);return m?m[1]:null;}
+function bgCustom(){return !!(ytId(MUSIKURL)||MUSIKURL);}
+function ytBoot(){
+  ytWant=true;
+  if(ytP||window._ytB)return;window._ytB=true;
+  var d=document.createElement("div");d.id="ytH";
+  d.style.cssText="position:fixed;width:4px;height:4px;left:-20px;top:0;opacity:.01;pointer-events:none;z-index:-1;";
+  document.body.appendChild(d);
+  var t=document.createElement("script");t.src="https://www.youtube.com/iframe_api";document.head.appendChild(t);
+}
+window.onYouTubeIframeAPIReady=function(){
+  var id=ytId(MUSIKURL);if(!id||ytP)return;
+  ytP=new YT.Player("ytH",{width:4,height:4,videoId:id,
+    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,loop:1,playlist:id},
+    events:{onReady:function(){if(ytWant){try{ytP.playVideo();}catch(e){}}},
+      onStateChange:function(e){if(e.data===1)ytWant=true;else if(e.data===0&&ytWant){try{ytP.playVideo();}catch(e){}}}}});
+};
+function bgPlay(){
+  var id=ytId(MUSIKURL);
+  if(id){ytWant=true;if(ytP){try{ytP.playVideo();}catch(e){}}else ytBoot();return true;}
+  if(MUSIKURL){if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}musEl.play().catch(function(){});return true;}
+  return false;
+}
+function bgStop(){ytWant=false;if(ytP){try{ytP.pauseVideo();}catch(e){}}if(musEl)musEl.pause();}
 function melody(){
-  if(!musicOn||musEl) return;
+  if(!musicOn||bgCustom()) return;
   deg += [-2,-1,-1,1,1,2][Math.floor(Math.random()*6)];
   deg = Math.max(0, Math.min(SCALE.length-1, deg));
   pluck(SCALE[deg]);
@@ -508,15 +533,8 @@ function setMusic(on){
   musicOn = on;
   document.getElementById("musicBtn").classList.toggle("off", !on);
   document.getElementById("musicBtn").textContent = on ? "🎵" : "🔇";
-  if(on){
-    if(MUSIKURL){
-      if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}
-      musEl.play().catch(function(){});
-    }else{ ac(); melody(); }
-  }else{
-    if(musEl)musEl.pause();
-    if(melTimer){ clearTimeout(melTimer); melTimer = null; }
-  }
+  if(on){ if(!bgPlay()){ ac(); melody(); } }
+  else{ bgStop(); if(melTimer){ clearTimeout(melTimer); melTimer = null; } }
 }
 document.getElementById("musicBtn").onclick = function(){ setMusic(!musicOn); };
 document.getElementById("topBtn").onclick = function(){ window.scrollTo({top:0, behavior:"smooth"}); };

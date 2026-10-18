@@ -30,9 +30,9 @@ export interface StaticTemplateDef {
 // Field musik custom — dipakai semua template statis (kosong = musik bawaan tema)
 const MUSIK_FIELD: FieldDef = {
   key: "music_url",
-  label: "🎵 Link musik latar (MP3)",
+  label: "🎵 Link musik latar (MP3 / YouTube)",
   type: "text",
-  placeholder: "https://…/musik.mp3 — kosongkan untuk musik bawaan",
+  placeholder: "Link MP3 atau YouTube — kosongkan untuk musik bawaan",
   section: "Musik",
 };
 

@@ -148,7 +148,42 @@ $('#sheet').hidden=false;unlock(A.length-1);$('#shx').focus()}
 $('#lm').onclick=openSheet;$('#sheet').addEventListener('click',function(ev){if(ev.target===this||ev.target.id==='shx')this.hidden=true});
 /* tema siang/malam, musik */
 $('#th').onclick=function(){var r=document.documentElement,c=r.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.dataset.theme=c==='dark'?'light':'dark'};
-var au=null;if(D.music){au=new Audio(D.music);au.loop=true;$('#mus').hidden=false;$('#mus').onclick=function(){au.paused?au.play():au.pause()}}
+var MUSIKURL=D.music||"";
+var musEl=null,ytP=null,ytWant=false;
+function ytId(u){var m=String(u||"").match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);return m?m[1]:null;}
+function bgCustom(){return !!(ytId(MUSIKURL)||MUSIKURL);}
+function ytBoot(){
+  ytWant=true;
+  if(ytP||window._ytB)return;window._ytB=true;
+  var d=document.createElement("div");d.id="ytH";
+  d.style.cssText="position:fixed;width:4px;height:4px;left:-20px;top:0;opacity:.01;pointer-events:none;z-index:-1;";
+  document.body.appendChild(d);
+  var t=document.createElement("script");t.src="https://www.youtube.com/iframe_api";document.head.appendChild(t);
+}
+window.onYouTubeIframeAPIReady=function(){
+  var id=ytId(MUSIKURL);if(!id||ytP)return;
+  ytP=new YT.Player("ytH",{width:4,height:4,videoId:id,
+    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,loop:1,playlist:id},
+    events:{onReady:function(){if(ytWant){try{ytP.playVideo();}catch(e){}}},
+      onStateChange:function(e){if(e.data===1)ytWant=true;else if(e.data===0&&ytWant){try{ytP.playVideo();}catch(e){}}}}});
+};
+function bgPlay(){
+  var id=ytId(MUSIKURL);
+  if(id){ytWant=true;if(ytP){try{ytP.playVideo();}catch(e){}}else ytBoot();return true;}
+  if(MUSIKURL){if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}musEl.play().catch(function(){});return true;}
+  return false;
+}
+function bgStop(){ytWant=false;if(ytP){try{ytP.pauseVideo();}catch(e){}}if(musEl)musEl.pause();}
+var au=null,petaYt=false;
+if(MUSIKURL&&!ytId(MUSIKURL)){au=new Audio(MUSIKURL);au.loop=true;}
+if(MUSIKURL){$('#mus').hidden=false;$('#mus').onclick=function(){
+  var id=ytId(MUSIKURL);
+  if(id){
+    petaYt=!petaYt;ytWant=petaYt;
+    if(ytP){try{if(petaYt)ytP.playVideo();else ytP.pauseVideo();}catch(e){}}
+    else if(petaYt)ytBoot();
+  }else if(au){au.paused?au.play():au.pause();}
+}}
 /* rute */
 var main=$('#main'),rp=$('#rp'),car=$('#car'),pts=[],L=0,mTop=0;
 var OR=[function(){return '<circle cy="-14" r="12" fill="#3f9b5f"/><rect x="-2" y="-4" width="4" height="12" fill="#8a5a3c"/>'},function(){return '<rect x="-11" y="-30" width="22" height="38" rx="2" fill="var(--muted)"/><path d="M-6-24h4v4h-4zM2-24h4v4H2zM-6-14h4v4h-4zM2-14h4v4H2z" fill="var(--bg)"/>'},function(){return '<path d="M-22 8L-4-22 6-6 12-14 24 8Z" fill="var(--accent)" opacity=".8"/>'},function(){return '<path d="M-14 8V-8L0-20l14 12V8Z" fill="var(--route)" opacity=".85"/><rect x="-3" y="-2" width="6" height="10" fill="var(--bg)"/>'}];
