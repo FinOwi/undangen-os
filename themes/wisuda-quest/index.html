@@ -582,7 +582,7 @@ SEMDEF.forEach(function(s,i){
   scene.add(mk);markers.push(mk);
 });
 /* ================= STATE & INPUT ================= */
-var S={started:false,px:0,pz:44,tx:null,tz:null,face:0,moving:false,
+var S={started:false,px:0,pz:22,tx:null,tz:null,face:0,moving:false,
   camx:0,camz:38,visited:[false,false,false,false,false,false,false,false],
   near:-1,dlgOpen:false,musicOn:false,t:0};
 var ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
@@ -903,7 +903,7 @@ document.getElementById('btnMulai').onclick=function(){
   setTimeout(function(){if(!S.musicOn)toggleMusic();},400);
 };
 /* kamera awal */
-S.camx=0;S.camz=78;camera.position.set(0,30,78);camera.lookAt(0,2,44);
+S.camx=0;S.camz=48;camera.position.set(0,30,48);camera.lookAt(0,2,16);
 updateHUD();
 requestAnimationFrame(loop);
 </script>
