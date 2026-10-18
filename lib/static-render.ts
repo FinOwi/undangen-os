@@ -228,6 +228,43 @@ export async function renderStaticTheme(
     const next = html.replace(/var LAKON = \{[\s\S]*?\n\};/, "var LAKON = " + JSON.stringify(lakon) + ";");
     if (next === html) throw new Error("blok LAKON tidak ditemukan di tema lakon-cinta");
     html = next;
+  } else if (templateId === "pendakian-cinta") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { bank: string; no: string; nama: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ bank: c.gift1_bank ?? "", no: c.gift1_num ?? "", nama: c.gift1_an || `a.n. ${c.pria_full ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ bank: c.gift2_bank ?? "", no: c.gift2_num ?? "", nama: c.gift2_an || `a.n. ${c.wanita_full ?? ""}` });
+    const POS = [1, 2, 3, 4].map((i) => ({
+      t: c[`pos${i}_t`] ?? "",
+      mdpl: c[`pos${i}_mdpl`] ?? "",
+      x: c[`pos${i}_x`] ?? "",
+      img: pad(c[`pos${i}_img`], 5),
+    }));
+    const cfg = {
+      PRIA: c.pria ?? "",
+      WANITA: c.wanita ?? "",
+      NAMA_PRIA: c.pria_full ?? "",
+      NAMA_WANITA: c.wanita_full ?? "",
+      ORTU_P: c.ortu_p ?? "",
+      ORTU_W: c.ortu_w ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      AKAD_WAKTU: c.akad_waktu ?? "",
+      AKAD_TEMPAT: c.akad_tempat ?? "",
+      AKAD_MAPS: c.akad_maps ?? "",
+      RESEPSI_WAKTU: c.resepsi_waktu ?? "",
+      RESEPSI_TEMPAT: c.resepsi_tempat ?? "",
+      RESEPSI_MAPS: c.resepsi_maps ?? "",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
+      POS,
+    };
+    const next = html.replace(/var DAKI = \{[\s\S]*?\n\};/, "var DAKI = " + JSON.stringify(cfg) + ";");
+    if (next === html) throw new Error("blok DAKI tidak ditemukan di tema pendakian-cinta");
+    html = next;
   } else {
     throw new Error("template statis tidak dikenal: " + templateId);
   }

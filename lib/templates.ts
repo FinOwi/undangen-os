@@ -230,6 +230,50 @@ const LAKON_SLOTS: PhotoSlotDef[] = [
   { key: "galeri", label: "🖼️ 7–12. Galeri Kenangan", hint: "6 foto · Tetenger", max: 6 },
 ];
 
+const DAKI_FIELDS: FieldDef[] = [
+  { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: "Arka", required: true, section: "Mempelai" },
+  { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: "Arka Pradana", required: true, section: "Mempelai" },
+  { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: "Naya", required: true, section: "Mempelai" },
+  { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: "Naya Kirana", required: true, section: "Mempelai" },
+  { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+  { key: "akad_waktu", label: "Jam akad", type: "text", placeholder: "08.00 \u2013 10.00 WIB", section: "Acara" },
+  { key: "akad_tempat", label: "Tempat akad", type: "text", placeholder: "Aula Pendopo Agung, Yogyakarta", section: "Acara" },
+  { key: "akad_maps", label: "Link maps akad", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "resepsi_waktu", label: "Jam resepsi", type: "text", placeholder: "11.00 \u2013 13.00 WIB", section: "Acara" },
+  { key: "resepsi_tempat", label: "Tempat resepsi", type: "text", placeholder: "Gedung Serbaguna Cinta, Yogyakarta", section: "Acara" },
+  { key: "resepsi_maps", label: "Link maps resepsi", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "pos1_t", label: "Pos 1 \u2014 judul", type: "text", def: "Langkah Pertama", section: "Pos 1" },
+  { key: "pos1_mdpl", label: "Pos 1 \u2014 ketinggian", type: "text", def: "1.450", section: "Pos 1" },
+  { key: "pos1_x", label: "Pos 1 \u2014 kata-kata", type: "textarea", def: "Semua pendakian besar dimulai dari satu langkah kecil. Di sinilah kami memutuskan untuk berjalan beriringan.", section: "Pos 1" },
+  { key: "pos2_t", label: "Pos 2 \u2014 judul", type: "text", def: "Seperjalanan", section: "Pos 2" },
+  { key: "pos2_mdpl", label: "Pos 2 \u2014 ketinggian", type: "text", def: "1.980", section: "Pos 2" },
+  { key: "pos2_x", label: "Pos 2 \u2014 kata-kata", type: "textarea", def: "Jalur menanjak, napas memburu, tapi tawa tak pernah berhenti. Lelah itu ringan kalau dipikul berdua.", section: "Pos 2" },
+  { key: "pos3_t", label: "Pos 3 \u2014 judul", type: "text", def: "Badai & Tawa", section: "Pos 3" },
+  { key: "pos3_mdpl", label: "Pos 3 \u2014 ketinggian", type: "text", def: "2.520", section: "Pos 3" },
+  { key: "pos3_x", label: "Pos 3 \u2014 kata-kata", type: "textarea", def: "Pernah ada badai yang hampir membuat kami turun. Tapi justru di tengah hujan itulah kami memilih saling menguatkan.", section: "Pos 3" },
+  { key: "pos4_t", label: "Pos 4 \u2014 judul", type: "text", def: "Selangkah Lagi", section: "Pos 4" },
+  { key: "pos4_mdpl", label: "Pos 4 \u2014 ketinggian", type: "text", def: "2.950", section: "Pos 4" },
+  { key: "pos4_x", label: "Pos 4 \u2014 kata-kata", type: "textarea", def: "Puncak sudah terlihat. Terima kasih sudah mendaki sejauh ini \u2014 sekarang giliran kami mengundangmu ke puncak.", section: "Pos 4" },
+  { key: "wa", label: "No. WhatsApp RSVP (628\u2026)", type: "text", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
+];
+DAKI_FIELDS.push(MUSIK_FIELD);
+
+const DAKI_SLOTS: PhotoSlotDef[] = [
+  { key: "pos1_img", label: "\u{1F4F7} 1\u20135. Galeri Pos 1", hint: "maks 5 foto \u00b7 Langkah Pertama", max: 5 },
+  { key: "pos2_img", label: "\u{1F4F7} 6\u201310. Galeri Pos 2", hint: "maks 5 foto \u00b7 Seperjalanan", max: 5 },
+  { key: "pos3_img", label: "\u{1F4F7} 11\u201315. Galeri Pos 3", hint: "maks 5 foto \u00b7 Badai & Tawa", max: 5 },
+  { key: "pos4_img", label: "\u{1F4F7} 16\u201320. Galeri Pos 4", hint: "maks 5 foto \u00b7 Selangkah Lagi", max: 5 },
+];
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -265,6 +309,13 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     file: "lakon-cinta/index.html",
     fields: LAKON_FIELDS,
     photoSlots: LAKON_SLOTS,
+  },
+  {
+    id: "pendakian-cinta",
+    name: "Pendakian Cinta — game 2D",
+    file: "pendakian-cinta/index.html",
+    fields: DAKI_FIELDS,
+    photoSlots: DAKI_SLOTS,
   },
 ];
 
