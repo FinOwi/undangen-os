@@ -310,6 +310,78 @@ const BIRU_SLOTS: PhotoSlotDef[] = [
   { key: "galeri", label: "\u{1F5BC}\uFE0F 4\u20139. Galeri Kenangan", hint: "6 foto \u00b7 section galeri", max: 6 },
 ];
 
+const JABU_FIELDS: FieldDef[] = [
+  { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: "Pranta", required: true, section: "Mempelai" },
+  { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: "Pranta Ginting", required: true, section: "Mempelai" },
+  { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: "Sania", required: true, section: "Mempelai" },
+  { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: "Sania br. Sembiring", required: true, section: "Mempelai" },
+  { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+  { key: "akad_t", label: "Acara 1 \u2014 judul", type: "text", def: "Pemberkatan", section: "Acara" },
+  { key: "akad_jam", label: "Acara 1 \u2014 jam", type: "text", placeholder: "09.00 \u2013 11.00 WIB", section: "Acara" },
+  { key: "akad_tempat", label: "Acara 1 \u2014 tempat", type: "text", placeholder: "Jambur/Gedung \u2026, Medan", section: "Acara" },
+  { key: "akad_maps", label: "Acara 1 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "resepsi_t", label: "Acara 2 \u2014 judul", type: "text", def: "Resepsi & Adat", section: "Acara" },
+  { key: "resepsi_jam", label: "Acara 2 \u2014 jam", type: "text", placeholder: "12.00 \u2013 selesai", section: "Acara" },
+  { key: "resepsi_tempat", label: "Acara 2 \u2014 tempat", type: "text", placeholder: "Jambur/Gedung \u2026, Medan", section: "Acara" },
+  { key: "resepsi_maps", label: "Acara 2 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "ayat", label: "Ayat / kutipan", type: "textarea", def: "Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.", section: "Ayat" },
+  { key: "ayat_src", label: "Sumber ayat", type: "text", def: "Matius 19 : 6", section: "Ayat" },
+  { key: "wa", label: "No. WhatsApp RSVP (628\u2026)", type: "text", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
+];
+JABU_FIELDS.push(MUSIK_FIELD);
+
+const JABU_SLOTS: PhotoSlotDef[] = [
+  { key: "foto_pria", label: "\u{1F935} 1. Foto Mempelai Pria", hint: "Kartu mempelai \u00b7 bingkai lengkung", max: 1 },
+  { key: "foto_wanita", label: "\u{1F470} 2. Foto Mempelai Wanita", hint: "Kartu mempelai \u00b7 bingkai lengkung", max: 1 },
+  { key: "foto_pasangan", label: "\u{1F491} 3. Foto Pasangan", hint: "Hero \u00b7 bingkai lengkung + bunga", max: 1 },
+  { key: "galeri", label: "\u{1F5BC}\uFE0F 4\u20139. Galeri Kenangan", hint: "6 foto \u00b7 section galeri", max: 6 },
+];
+
+const BOLON_FIELDS: FieldDef[] = [
+  { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: "Hotma", required: true, section: "Mempelai" },
+  { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: "Hotma Simanjuntak", required: true, section: "Mempelai" },
+  { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: "Ruth", required: true, section: "Mempelai" },
+  { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: "Ruth br. Manurung", required: true, section: "Mempelai" },
+  { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+  { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+  { key: "akad_t", label: "Acara 1 \u2014 judul", type: "text", def: "Pemberkatan", section: "Acara" },
+  { key: "akad_jam", label: "Acara 1 \u2014 jam", type: "text", placeholder: "09.00 \u2013 11.00 WIB", section: "Acara" },
+  { key: "akad_tempat", label: "Acara 1 \u2014 tempat", type: "text", placeholder: "Balai/Gedung \u2026, Medan", section: "Acara" },
+  { key: "akad_maps", label: "Acara 1 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "resepsi_t", label: "Acara 2 \u2014 judul", type: "text", def: "Resepsi & Adat", section: "Acara" },
+  { key: "resepsi_jam", label: "Acara 2 \u2014 jam", type: "text", placeholder: "12.00 \u2013 selesai", section: "Acara" },
+  { key: "resepsi_tempat", label: "Acara 2 \u2014 tempat", type: "text", placeholder: "Balai/Gedung \u2026, Medan", section: "Acara" },
+  { key: "resepsi_maps", label: "Acara 2 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+  { key: "ayat", label: "Ayat / kutipan", type: "textarea", def: "Sebab ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam. Bangsamulah bangsaku dan Allahmulah Allahku.", section: "Ayat" },
+  { key: "ayat_src", label: "Sumber ayat", type: "text", def: "Ruth 1 : 16", section: "Ayat" },
+  { key: "wa", label: "No. WhatsApp RSVP (628\u2026)", type: "text", required: true, section: "Kontak & Gift" },
+  { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+  { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+  { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+  { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
+];
+BOLON_FIELDS.push(MUSIK_FIELD);
+
+const BOLON_SLOTS: PhotoSlotDef[] = [
+  { key: "foto_pria", label: "\u{1F935} 1. Foto Mempelai Pria", hint: "Kartu mempelai \u00b7 bingkai lengkung", max: 1 },
+  { key: "foto_wanita", label: "\u{1F470} 2. Foto Mempelai Wanita", hint: "Kartu mempelai \u00b7 bingkai lengkung", max: 1 },
+  { key: "foto_pasangan", label: "\u{1F491} 3. Foto Pasangan", hint: "Hero \u00b7 bingkai lengkung + bunga", max: 1 },
+  { key: "galeri", label: "\u{1F5BC}\uFE0F 4\u20139. Galeri Kenangan", hint: "6 foto \u00b7 section galeri", max: 6 },
+];
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -352,6 +424,20 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     file: "pendakian-cinta/index.html",
     fields: DAKI_FIELDS,
     photoSlots: DAKI_SLOTS,
+  },
+  {
+    id: "rumah-bolon",
+    name: "Rumah Bolon — Batak Toba",
+    file: "rumah-bolon/index.html",
+    fields: BOLON_FIELDS,
+    photoSlots: BOLON_SLOTS,
+  },
+  {
+    id: "siwaluh-jabu",
+    name: "Siwaluh Jabu — Karo",
+    file: "siwaluh-jabu/index.html",
+    fields: JABU_FIELDS,
+    photoSlots: JABU_SLOTS,
   },
   {
     id: "pendopo-biru",
