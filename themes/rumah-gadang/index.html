@@ -124,6 +124,21 @@ footer .gun{width:150px;margin:0 auto 10px;display:block;mix-blend-mode:multiply
 footer p{font-size:13px;color:var(--mut);line-height:1.8}
 footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blue);font-weight:600;margin-top:6px}
 
+
+/* ---------- adegan zoom Rumah Gadang ---------- */
+#sceneZoom{position:fixed;inset:0;z-index:55;background:#f7ecd9;opacity:0;pointer-events:none;overflow:hidden;transition:opacity .8s ease}
+#sceneZoom.show{opacity:1;pointer-events:auto}
+#sceneZoom.bye{opacity:0}
+.scene-in{position:absolute;inset:0;background-image:radial-gradient(ellipse at 50% 40%,rgba(253,248,238,.88) 0%,rgba(253,248,238,.28) 55%,rgba(253,248,238,0) 80%),url("/tema/rumah-gadang/assets/toile.jpg");background-size:auto,400px}
+#sceneZoom.show .scene-in{animation:zoomOut 2.9s cubic-bezier(.25,.7,.25,1) both}
+@keyframes zoomOut{from{transform:scale(1.32)}to{transform:scale(1)}}
+.scene-band{position:absolute;top:0;left:0;right:0;height:28px;z-index:4;opacity:.9;background-repeat:repeat-x;background-size:34px 26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='36' viewBox='0 0 48 36'%3E%3Crect width='48' height='5' fill='%237a1f1f'/%3E%3Cpath d='M6 5 L42 5 L24 33 Z' fill='%237a1f1f'/%3E%3C/svg%3E")}
+.scene-gadang{position:absolute;left:50%;bottom:30px;width:min(560px,120%);transform:translateX(-50%);mix-blend-mode:multiply;z-index:2}
+#sceneZoom.show .scene-gadang{animation:riseIn 2.3s cubic-bezier(.2,.7,.2,1) .25s both}
+@keyframes riseIn{from{opacity:0;transform:translateX(-50%) translateY(52px) scale(1.06)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+.scene-bed{position:absolute;left:50%;bottom:-10px;width:min(620px,114%);transform:translateX(-50%);mix-blend-mode:multiply;z-index:3}
+#sceneZoom.show .scene-bed{animation:bedIn 1.9s ease-out .9s both}
+@keyframes bedIn{from{opacity:0;transform:translateX(-50%) translateY(34px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 /* ---------- panel lengkung hero ---------- */
 .hero-arch{position:absolute;inset:2px 0 0;z-index:-1;background:rgba(253,248,238,.88);border:1.5px solid rgba(122,31,31,.45);border-radius:230px 230px 20px 20px;overflow:hidden}
 .hero-arch img{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:97%;opacity:.12;mix-blend-mode:multiply}
@@ -180,6 +195,12 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
     </div>
   </div>
 </div>
+
+<div id="sceneZoom"><div class="scene-in">
+  <div class="scene-band"></div>
+  <img class="scene-gadang" src="/tema/rumah-gadang/assets/gadang.jpg" alt="">
+  <img class="scene-bed" src="/tema/rumah-gadang/assets/rose-swag.jpg" alt="">
+</div></div>
 
 <main id="main" style="visibility:hidden">
   <section id="heroSec">
@@ -490,7 +511,9 @@ $("btnOpen").addEventListener("click",function(){
   $("foot").style.visibility="visible";
   $("cover").classList.add("open");
   $("btnMusic").style.display="block";
-  setTimeout(function(){$("heroSec").classList.add("go");},450);
+  $("sceneZoom").classList.add("show");
+  setTimeout(function(){$("sceneZoom").classList.add("bye");$("heroSec").classList.add("go");},2850);
+  setTimeout(function(){$("sceneZoom").style.display="none";},3750);
   setMusic(true);
   startPetals();
   setTimeout(function(){
