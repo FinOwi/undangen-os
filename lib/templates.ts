@@ -455,6 +455,8 @@ const KART_FIELDS = makeArtFields({ pria: "Pranta", priaFull: "Pranta Ginting", 
 KART_FIELDS.push(MUSIK_FIELD);
 const BART_FIELDS = makeArtFields({ pria: "Hotma", priaFull: "Hotma Simanjuntak", wanita: "Ruth", wanitaFull: "Ruth br. Manurung", akadDef: "Pemberkatan", resepsiDef: "Resepsi & Adat", tempat: "Balai \u2026, Medan", ayat: "Sebab ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam. Bangsamulah bangsaku dan Allahmulah Allahku.", ayatSrc: "Ruth 1 : 16" });
 BART_FIELDS.push(MUSIK_FIELD);
+const MALAM_FIELDS = makeArtFields({ pria: "Arya", priaFull: "Arya Langit Pradana", wanita: "Nadia", wanitaFull: "Nadia Bintang Kirana", akadDef: "Akad Nikah", resepsiDef: "Resepsi", tempat: "The Sky Hall \u2026, Jakarta Selatan", ayat: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.", ayatSrc: "QS. Ar-R\u016bm : 21" });
+MALAM_FIELDS.push(MUSIK_FIELD);
 
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
@@ -539,6 +541,13 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     name: "Siwaluh Jabu Art — Karo sinematik",
     file: "siwaluh-jabu-art/index.html",
     fields: KART_FIELDS,
+    photoSlots: GADANG_SLOTS,
+  },
+  {
+    id: "malam-berbintang",
+    name: "Malam Berbintang — malam elegan interaktif",
+    file: "malam-berbintang/index.html",
+    fields: MALAM_FIELDS,
     photoSlots: GADANG_SLOTS,
   },
   {
