@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rumah Gadang — Undangan Pernikahan Minangkabau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#faf3e7; --bg2:#f1e0c8; --card:#fffdf8;
@@ -170,6 +170,43 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
 #lbX{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:18px;cursor:pointer}
 #toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(16px);z-index:90;background:rgba(51,21,15,.94);color:#fff;font-size:13px;border-radius:12px;padding:10px 18px;opacity:0;pointer-events:none;transition:all .25s;max-width:86vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ================= v5: master sinematik ================= */
+#cover{background:#f7ecd9 url("/tema/rumah-gadang/assets/toile.jpg") repeat;background-size:400px;transition:opacity .7s ease,transform .7s ease}
+#cover::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 32%,rgba(253,248,238,.93) 0%,rgba(253,248,238,.5) 52%,rgba(253,248,238,0) 80%),radial-gradient(ellipse at 50% 90%,rgba(253,248,238,.88) 0%,rgba(253,248,238,0) 62%);pointer-events:none}
+#cover.gone{opacity:0;transform:scale(1.05);pointer-events:none}
+.door{display:none}
+#coverCard{display:block;padding:0;overflow-y:auto}
+.cov-scroll{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:32px 22px 200px;position:relative}
+.cov-card{background:rgba(253,248,238,.95);border-radius:20px;box-shadow:0 24px 50px rgba(90,30,20,.22),0 4px 14px rgba(90,30,20,.12);padding:16px 16px 20px;width:min(400px,100%);text-align:center;border:1px solid rgba(122,31,31,.14)}
+.cov-card #covPhoto{margin:0 auto 8px;max-width:none}
+.cov-card #covPhoto img{aspect-ratio:4/3;border-radius:12px;border:none;box-shadow:0 8px 20px rgba(90,30,20,.18)}
+.cov-card #covPhoto .covph{aspect-ratio:4/3;border-radius:12px}
+.cov-card .cov-names{font-size:35px}
+.cov-to{margin-top:26px;background:transparent;box-shadow:none;border:none;padding:0;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none}
+#btnOpen{margin-top:16px;box-shadow:0 12px 26px rgba(122,31,31,.35)}
+.cov-gadang-fade{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);width:min(600px,118%);opacity:.38;mix-blend-mode:multiply;pointer-events:none;z-index:1}
+.cov-bed{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:min(660px,120%);mix-blend-mode:multiply;pointer-events:none;z-index:2}
+.edge{position:absolute;top:0;bottom:0;width:13px;z-index:4;opacity:.5;background-repeat:repeat-y;background-size:13px 22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='22' viewBox='0 0 13 22'%3E%3Cpath d='M1 2 L12 11 L1 20 Z' fill='%237a1f1f'/%3E%3C/svg%3E")}
+.edge.l{left:0}.edge.r{right:0;transform:scaleX(-1)}
+.pageframe{position:fixed;inset:9px;border:1.5px solid rgba(122,31,31,.4);border-radius:20px;z-index:38;pointer-events:none}
+.pageframe::before,.pageframe::after{content:"";position:absolute;top:16px;bottom:16px;width:11px;opacity:.4;background-repeat:repeat-y;background-size:11px 20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='22' viewBox='0 0 13 22'%3E%3Cpath d='M1 2 L12 11 L1 20 Z' fill='%237a1f1f'/%3E%3C/svg%3E")}
+.pageframe::before{left:3px}
+.pageframe::after{right:3px;transform:scaleX(-1)}
+.scene-in{background-image:url("/tema/rumah-gadang/assets/landscape.jpg");background-size:cover;background-position:center 30%}
+.script-gon{width:72px;margin:2px auto 0;display:block;mix-blend-mode:multiply}
+.script-head{font-family:'Pinyon Script',cursive;font-size:45px;color:var(--blue);line-height:1.15;margin-top:2px}
+.ccard h3{font-family:'Pinyon Script',cursive;font-size:43px;font-weight:400;line-height:1.2;color:var(--blue)}
+.ccard::before{opacity:.13}
+#cdSec{padding-left:14px;padding-right:14px}
+.cd-block{background:linear-gradient(165deg,#8c2b23,#5e150f);border-radius:22px;padding:36px 20px 32px;color:#fdf6ea;box-shadow:0 24px 44px rgba(94,21,15,.35);max-width:470px;margin:0 auto;text-align:center}
+.cd-script{font-family:'Pinyon Script',cursive;font-size:48px;color:#f3d9a4;line-height:1}
+.cd-block .cdown div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);box-shadow:none}
+.cd-block .cdown b{color:#fff}
+.cd-block .cdown span{color:#f3d9a4}
+.cd-verse{margin-top:24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16.5px;line-height:1.65;color:#f7e8d4}
+.cd-verse .src{margin-top:10px;font-family:'Jost',sans-serif;font-style:normal;font-size:11px;letter-spacing:2.5px;color:#d9a441;font-weight:600}
+.hero-bed{width:110%;max-width:580px;margin:12px -5% -30px;display:block;mix-blend-mode:multiply}
 </style>
 </head>
 <body>
@@ -177,32 +214,31 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
 
 <!-- GERBANG PENDOPO -->
 <div id="cover">
-  <div class="door left"></div>
-  <div class="door right"></div>
   <div id="coverCard">
-    <div class="cov-in">
-      <div class="cov-band top"></div>
-      <div id="covPhoto"></div>
-      <p class="kick">The Wedding Of</p>
-      <h1 class="cov-names" id="covNames"></h1>
-      <p class="cov-date" id="covDate"></p>
+    <div class="cov-scroll">
+      <div class="cov-card">
+        <div id="covPhoto"></div>
+        <p class="kick">The Wedding Of</p>
+        <h1 class="cov-names" id="covNames"></h1>
+        <p class="cov-date" id="covDate"></p>
+      </div>
       <div class="cov-to" id="covTo">Kepada Bapak/Ibu/Saudara/i<br><b>Tamu Undangan</b><br>di tempat</div>
-      <button id="btnOpen">🕊️ Buka Undangan</button>
-      <img class="cov-gadang" src="/tema/rumah-gadang/assets/gadang.jpg" alt="">
-      <img class="cov-rose bl" src="/tema/rumah-gadang/assets/rose-corner.jpg" alt="">
-      <img class="cov-rose br" src="/tema/rumah-gadang/assets/rose-corner.jpg" alt="">
-      <div class="cov-band bot"></div>
+      <button id="btnOpen">✉️ Buka Undangan</button>
     </div>
   </div>
+  <img class="cov-gadang-fade" src="/tema/rumah-gadang/assets/gadang.jpg" alt="">
+  <img class="cov-bed" src="/tema/rumah-gadang/assets/flower-bed.jpg" alt="">
+  <div class="edge l"></div><div class="edge r"></div>
 </div>
 
 <div id="sceneZoom"><div class="scene-in">
   <div class="scene-band"></div>
   <img class="scene-gadang" src="/tema/rumah-gadang/assets/gadang.jpg" alt="">
-  <img class="scene-bed" src="/tema/rumah-gadang/assets/rose-swag.jpg" alt="">
+  <img class="scene-bed" src="/tema/rumah-gadang/assets/flower-bed.jpg" alt="">
 </div></div>
 
 <main id="main" style="visibility:hidden">
+  <div class="pageframe"></div>
   <section id="heroSec">
     <div class="hero-arch"><img src="/tema/rumah-gadang/assets/gadang.jpg" alt=""></div>
     <img class="gun-sm hin" style="--d:.05s" src="/tema/rumah-gadang/assets/gonjong.jpg" alt="">
@@ -214,31 +250,27 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
     <div class="bfly b1"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
     <div class="bfly b2" style="scale:.78"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
     <div class="bfly b3" style="scale:.6"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
+    <img class="hero-bed hin" style="--d:1s" src="/tema/rumah-gadang/assets/flower-bed.jpg" alt="">
   </section>
 
   <section id="coupleSec">
     <p class="kick rv">Mempelai</p>
-    <h2 class="sec rv">Dua Hati, Satu Tujuan</h2>
+    <img class="script-gon rv" src="/tema/rumah-gadang/assets/gonjong.jpg" alt="">
+    <p class="script-head rv">We Are Getting Married!</p>
     <p class="sub rv">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyempurnakan separuh agama dalam ikatan suci pernikahan.</p>
     <div id="coupleWrap"></div>
   </section>
 
-  <section id="verseSec">
-    <div class="verse-box rv">
-      <p id="verseTxt"></p>
-      <div class="src" id="verseSrc"></div>
-    </div>
-    <img class="swag rv" src="/tema/rumah-gadang/assets/rose-swag.jpg" alt="" style="transform:scaleY(-1)">
-  </section>
-
   <section id="cdSec">
-    <p class="kick rv">Menghitung Hari</p>
-    <h2 class="sec rv">Menuju Hari Bahagia</h2>
-    <div class="cdown rv">
-      <div><b id="cdD">0</b><span>HARI</span></div>
-      <div><b id="cdH">0</b><span>JAM</span></div>
-      <div><b id="cdM">0</b><span>MENIT</span></div>
-      <div><b id="cdS">0</b><span>DETIK</span></div>
+    <div class="cd-block rv">
+      <p class="cd-script">Count Down</p>
+      <div class="cdown">
+        <div><b id="cdD">0</b><span>HARI</span></div>
+        <div><b id="cdH">0</b><span>JAM</span></div>
+        <div><b id="cdM">0</b><span>MENIT</span></div>
+        <div><b id="cdS">0</b><span>DETIK</span></div>
+      </div>
+      <div class="cd-verse"><p id="verseTxt"></p><div class="src" id="verseSrc"></div></div>
     </div>
   </section>
 
@@ -509,7 +541,7 @@ document.body.style.overflow="hidden";
 $("btnOpen").addEventListener("click",function(){
   $("main").style.visibility="visible";
   $("foot").style.visibility="visible";
-  $("cover").classList.add("open");
+  $("cover").classList.add("open","gone");
   $("btnMusic").style.display="block";
   $("sceneZoom").classList.add("show");
   setTimeout(function(){$("sceneZoom").classList.add("bye");$("heroSec").classList.add("go");},2850);
