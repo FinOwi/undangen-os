@@ -425,6 +425,126 @@ export async function renderStaticTheme(
     const next = html.replace(/var GADANG = \{[\s\S]*?\n\};/, "var GADANG = " + JSON.stringify(gadang) + ";");
     if (next === html) throw new Error("blok GADANG tidak ditemukan di tema rumah-gadang");
     html = next;
+  } else if (templateId === "pendopo-biru-art") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { b: string; n: string; a: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ b: c.gift1_bank ?? "", n: c.gift1_num ?? "", a: c.gift1_an || `a.n. ${c.pria_full ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ b: c.gift2_bank ?? "", n: c.gift2_num ?? "", a: c.gift2_an || `a.n. ${c.wanita_full ?? ""}` });
+    const gadang = {
+      PRIA: c.pria ?? "",
+      WANITA: c.wanita ?? "",
+      NAMA_PRIA: c.pria_full ?? "",
+      NAMA_WANITA: c.wanita_full ?? "",
+      ORTU_P: c.ortu_p ?? "",
+      ORTU_W: c.ortu_w ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      AKAD_T: c.akad_t ?? "Akad Nikah",
+      AKAD_JAM: c.akad_jam ?? "",
+      AKAD_TEMPAT: c.akad_tempat ?? "",
+      AKAD_MAPS: c.akad_maps ?? "https://maps.google.com",
+      RESEPSI_T: c.resepsi_t ?? "Resepsi",
+      RESEPSI_JAM: c.resepsi_jam ?? "",
+      RESEPSI_TEMPAT: c.resepsi_tempat ?? "",
+      RESEPSI_MAPS: c.resepsi_maps ?? "https://maps.google.com",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
+      AYAT: c.ayat ?? "",
+      AYAT_SRC: c.ayat_src ?? "",
+      FOTO: {
+        pria: c.foto_pria ?? "",
+        wanita: c.foto_wanita ?? "",
+        pasangan: c.foto_pasangan ?? "",
+        galeri: pad(c.galeri, 6),
+      },
+    };
+    const next = html.replace(/var JART = \{[\s\S]*?\n\};/, "var JART = " + JSON.stringify(gadang) + ";");
+    if (next === html) throw new Error("blok JART tidak ditemukan di tema pendopo-biru-art");
+    html = next;
+  } else if (templateId === "siwaluh-jabu-art") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { b: string; n: string; a: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ b: c.gift1_bank ?? "", n: c.gift1_num ?? "", a: c.gift1_an || `a.n. ${c.pria_full ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ b: c.gift2_bank ?? "", n: c.gift2_num ?? "", a: c.gift2_an || `a.n. ${c.wanita_full ?? ""}` });
+    const gadang = {
+      PRIA: c.pria ?? "",
+      WANITA: c.wanita ?? "",
+      NAMA_PRIA: c.pria_full ?? "",
+      NAMA_WANITA: c.wanita_full ?? "",
+      ORTU_P: c.ortu_p ?? "",
+      ORTU_W: c.ortu_w ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      AKAD_T: c.akad_t ?? "Pemberkatan",
+      AKAD_JAM: c.akad_jam ?? "",
+      AKAD_TEMPAT: c.akad_tempat ?? "",
+      AKAD_MAPS: c.akad_maps ?? "https://maps.google.com",
+      RESEPSI_T: c.resepsi_t ?? "Resepsi & Adat",
+      RESEPSI_JAM: c.resepsi_jam ?? "",
+      RESEPSI_TEMPAT: c.resepsi_tempat ?? "",
+      RESEPSI_MAPS: c.resepsi_maps ?? "https://maps.google.com",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
+      AYAT: c.ayat ?? "",
+      AYAT_SRC: c.ayat_src ?? "",
+      FOTO: {
+        pria: c.foto_pria ?? "",
+        wanita: c.foto_wanita ?? "",
+        pasangan: c.foto_pasangan ?? "",
+        galeri: pad(c.galeri, 6),
+      },
+    };
+    const next = html.replace(/var KART = \{[\s\S]*?\n\};/, "var KART = " + JSON.stringify(gadang) + ";");
+    if (next === html) throw new Error("blok KART tidak ditemukan di tema siwaluh-jabu-art");
+    html = next;
+  } else if (templateId === "rumah-bolon-art") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { b: string; n: string; a: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ b: c.gift1_bank ?? "", n: c.gift1_num ?? "", a: c.gift1_an || `a.n. ${c.pria_full ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ b: c.gift2_bank ?? "", n: c.gift2_num ?? "", a: c.gift2_an || `a.n. ${c.wanita_full ?? ""}` });
+    const gadang = {
+      PRIA: c.pria ?? "",
+      WANITA: c.wanita ?? "",
+      NAMA_PRIA: c.pria_full ?? "",
+      NAMA_WANITA: c.wanita_full ?? "",
+      ORTU_P: c.ortu_p ?? "",
+      ORTU_W: c.ortu_w ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      AKAD_T: c.akad_t ?? "Pemberkatan",
+      AKAD_JAM: c.akad_jam ?? "",
+      AKAD_TEMPAT: c.akad_tempat ?? "",
+      AKAD_MAPS: c.akad_maps ?? "https://maps.google.com",
+      RESEPSI_T: c.resepsi_t ?? "Resepsi & Adat",
+      RESEPSI_JAM: c.resepsi_jam ?? "",
+      RESEPSI_TEMPAT: c.resepsi_tempat ?? "",
+      RESEPSI_MAPS: c.resepsi_maps ?? "https://maps.google.com",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
+      AYAT: c.ayat ?? "",
+      AYAT_SRC: c.ayat_src ?? "",
+      FOTO: {
+        pria: c.foto_pria ?? "",
+        wanita: c.foto_wanita ?? "",
+        pasangan: c.foto_pasangan ?? "",
+        galeri: pad(c.galeri, 6),
+      },
+    };
+    const next = html.replace(/var BART = \{[\s\S]*?\n\};/, "var BART = " + JSON.stringify(gadang) + ";");
+    if (next === html) throw new Error("blok BART tidak ditemukan di tema rumah-bolon-art");
+    html = next;
   } else {
     throw new Error("template statis tidak dikenal: " + templateId);
   }

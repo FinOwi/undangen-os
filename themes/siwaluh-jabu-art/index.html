@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siwaluh Jabu Art — Undangan Pernikahan Karo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf3e7; --bg2:#f1e0c8; --card:#fffdf8;
+  --blue:#8f1d10; --blue2:#b03a1e; --sky:#e3b48f;
+  --gold:#b8860b; --gold2:#c49b3a; --ink:#2a1710; --mut:#7d5a4a;
+  --pink:#c95d4e;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;color:var(--ink);background:
+  linear-gradient(180deg,var(--bg) 0%,var(--bg2) 55%,var(--bg) 100%);
+  min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.5;
+  background-image:url("/tema/siwaluh-jabu-art/assets/toile.jpg");background-size:400px}
+.serif{font-family:'Cormorant Garamond',serif}
+main{max-width:560px;margin:0 auto;padding:0 18px 40px}
+section{padding:44px 0 8px;text-align:center;position:relative}
+.kick{font-size:11px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;font-weight:600}
+h2.sec{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--blue);margin:8px 0 6px}
+.sub{font-size:14px;color:var(--mut);line-height:1.7;max-width:420px;margin:0 auto}
+.swag{display:block;width:min(340px,84%);margin:26px auto 0;opacity:.95;mix-blend-mode:multiply}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.rv.on{opacity:1;transform:none}
+/* ---------- gerbang / cover ---------- */
+#cover{position:fixed;inset:0;z-index:60;overflow:hidden;background:linear-gradient(180deg,#fdf6ea,#f0dfc8)}
+.door{position:absolute;top:0;bottom:0;width:50.5%;z-index:2;transition:transform 1.4s cubic-bezier(.7,0,.2,1);
+  background:linear-gradient(180deg,#f8ecd8,#eed9ba);overflow:hidden}
+.door.left{left:0;border-right:2px solid rgba(185,138,30,.45)}
+.door.right{right:0;border-left:2px solid rgba(185,138,30,.45)}
+.door::before{content:"";position:absolute;inset:0;opacity:.6;
+  background-image:url("/tema/siwaluh-jabu-art/assets/toile.jpg");background-size:400px}
+.door .pendopo{position:absolute;top:13%;width:190%;max-width:none;opacity:.9;mix-blend-mode:multiply}
+.door.left .pendopo{right:-100%}
+.door.right .pendopo{left:-100%}
+.door .fc{position:absolute;width:62%;opacity:.95;mix-blend-mode:multiply}
+.door.left .fc{top:0;left:0}
+.door.right .fc{top:0;right:0;transform:scaleX(-1)}
+#cover.open .door.left{transform:translateX(-102%)}
+#cover.open .door.right{transform:translateX(102%)}
+#coverCard{position:absolute;inset:0;z-index:3;display:flex;align-items:flex-start;justify-content:center;padding:26px 16px 44px;overflow-y:auto;transition:opacity .5s ease,transform .5s ease}
+#cover.open #coverCard{opacity:0;transform:scale(.94);pointer-events:none}
+.cov-in{text-align:center;max-width:430px;width:100%;background:#fdf8ee;border:2px solid #7a1f1f;box-shadow:inset 0 0 0 4px #fdf8ee,inset 0 0 0 6px #c49b3a,0 24px 60px rgba(51,21,15,.35);padding:22px 18px 6px;border-radius:6px;position:relative}
+.cov-band{position:absolute;left:12px;right:12px;height:11px;opacity:.55;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='20' viewBox='0 0 48 40'%3E%3Cg fill='none' stroke='%238f1d10' stroke-opacity='0.9'%3E%3Cpath d='M24 5 L43 33 L5 33 Z'/%3E%3C/g%3E%3C/svg%3E");background-size:22px 11px;background-repeat:repeat-x;background-position:center}
+.cov-band.top{top:7px}.cov-band.bot{bottom:7px;transform:scaleY(-1)}
+#covPhoto{margin:4px auto 2px;max-width:248px}
+#covPhoto img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:4px;border:1.5px solid #7a1f1f;display:block}
+#covPhoto .covph{aspect-ratio:4/3;border-radius:4px;border:1.5px dashed rgba(143,29,16,.4);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:#a0765a;font-size:12.5px;background:rgba(143,29,16,.04)}
+.cov-gadang{width:92%;margin:12px auto -2px;display:block;mix-blend-mode:multiply}
+.cov-rose{position:absolute;width:32%;mix-blend-mode:multiply;z-index:3;pointer-events:none}
+.cov-rose.bl{left:0;bottom:0;transform:scaleY(-1)}
+.cov-rose.br{right:0;bottom:0;transform:scale(-1)}
+.cov-in .pendopo-sm{width:120px;margin:0 auto 6px;display:block;mix-blend-mode:multiply}
+.cov-in .kick{margin-bottom:2px}
+.cov-names{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:var(--blue);line-height:1.12;margin:6px 0 2px}
+.cov-date{font-size:13px;letter-spacing:3px;color:var(--gold);font-weight:600;text-transform:uppercase}
+.cov-to{margin:14px auto 0;background:rgba(255,255,255,.75);border:1px solid rgba(143,29,16,.16);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--mut);line-height:1.65;backdrop-filter:blur(4px)}
+.cov-to b{color:var(--ink);font-size:15px}
+#btnOpen{margin-top:14px;border:0;cursor:pointer;font-family:'Jost',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;
+  color:#fff;background:linear-gradient(180deg,var(--blue2),var(--blue));border-radius:999px;padding:14px 34px;
+  box-shadow:0 10px 24px rgba(143,29,16,.35)}
+#btnOpen:active{transform:scale(.96)}
+/* ---------- hero ---------- */
+.gun-sm{width:112px;margin:0 auto 4px;display:block;mix-blend-mode:multiply}
+.hero-photo{width:min(300px,78vw);margin:18px auto 0;position:relative}
+.hero-photo .ph{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:160px 160px 16px 16px;border:3px solid #fff;box-shadow:0 18px 40px rgba(143,29,16,.25);display:block;background:#eeddc4}
+.hero-photo .fc{position:absolute;width:52%;z-index:2;pointer-events:none;mix-blend-mode:multiply}
+.hero-photo .fc.tl{top:-46px;left:-54px}
+.hero-photo .fc.br{bottom:-42px;right:-54px;transform:scale(-1)}
+.hero-names{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:600;color:var(--blue);line-height:1.1;margin-top:26px}
+.hero-amp{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:30px}
+.hero-date{margin-top:8px;font-size:13px;letter-spacing:3px;color:var(--mut);text-transform:uppercase;font-weight:500}
+/* ---------- couple ---------- */
+.ccard{background:var(--card);border:1px solid rgba(143,29,16,.12);border-radius:20px;padding:26px 20px;margin:16px auto 0;max-width:420px;box-shadow:0 12px 30px rgba(143,29,16,.08);position:relative;overflow:hidden}
+.ccard::before{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none;
+  background-image:url("/tema/siwaluh-jabu-art/assets/toile.jpg");background-size:300px}
+.ccard .ph{width:170px;height:210px;object-fit:cover;border-radius:100px 100px 12px 12px;border:3px solid #fff;box-shadow:0 10px 24px rgba(143,29,16,.2);margin:0 auto;display:block;background:#eeddc4}
+.ccard h3{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--blue);margin-top:14px;font-weight:600}
+.ccard .ortu{font-size:13px;color:var(--mut);line-height:1.7;margin-top:4px}
+.ph-empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:#a0765a;font-size:12px;width:170px;height:210px;border-radius:100px 100px 12px 12px;background:linear-gradient(160deg,#f3dfba,#e8c9a0);margin:0 auto;border:3px solid #fff;box-shadow:0 10px 24px rgba(143,29,16,.15)}
+.ph-empty span{font-size:34px}
+/* ---------- ayat ---------- */
+.verse-box{background:rgba(255,255,255,.8);border:1px solid rgba(185,138,30,.35);border-radius:18px;padding:26px 22px;max-width:440px;margin:16px auto 0;position:relative}
+.verse-box p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.65;color:var(--ink)}
+.verse-box .src{margin-top:12px;font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:600}
+/* ---------- countdown ---------- */
+.cdown{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.cdown div{background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff;border-radius:14px;min-width:70px;padding:14px 6px;box-shadow:0 10px 20px rgba(143,29,16,.25)}
+.cdown b{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1}
+.cdown span{font-size:10px;letter-spacing:2px;opacity:.85}
+/* ---------- galeri ---------- */
+.ggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:440px;margin:18px auto 0}
+.ggrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;cursor:pointer;border:2px solid #fff;box-shadow:0 8px 18px rgba(143,29,16,.12);background:#eeddc4}
+.ggrid .gph{aspect-ratio:1;border-radius:14px;background:linear-gradient(160deg,#f3dfba,#e8c9a0);display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #fff}
+/* ---------- acara ---------- */
+.evcard{background:var(--card);border:1px solid rgba(143,29,16,.12);border-radius:20px;padding:24px 20px;max-width:440px;margin:16px auto 0;box-shadow:0 12px 30px rgba(143,29,16,.08)}
+.evcard img.pd{width:130px;margin:0 auto 8px;display:block;mix-blend-mode:multiply}
+.evcard h3{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blue);font-weight:600}
+.evcard .jam{font-size:15px;font-weight:600;color:var(--gold);margin-top:6px;letter-spacing:1px}
+.evcard .tmp{font-size:13.5px;color:var(--mut);line-height:1.65;margin-top:4px}
+.maps{display:inline-block;margin-top:12px;text-decoration:none;font-size:13px;font-weight:600;color:var(--blue);border:1.5px solid var(--sky);border-radius:999px;padding:9px 20px;background:#fdf3e3}
+.maps:active{transform:scale(.96)}
+/* ---------- rsvp & gift ---------- */
+.rsvp-row{display:flex;gap:10px;max-width:440px;margin:16px auto 0}
+.rsvp{flex:1;border:0;border-radius:14px;padding:15px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif}
+.rsvp.yes{background:#25D366;color:#fff;box-shadow:0 10px 20px rgba(37,211,102,.3)}
+.rsvp.no{background:#fff;color:var(--ink);border:1.5px solid rgba(143,29,16,.25)}
+.rsvp:active{transform:scale(.97)}
+.wish-btn{display:block;width:100%;max-width:440px;margin:10px auto 0;border:1.5px solid rgba(143,29,16,.25);background:#fff;color:var(--blue);border-radius:14px;padding:14px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif}
+.giftrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid rgba(143,29,16,.12);border-radius:14px;padding:14px 16px;max-width:440px;margin:10px auto 0;text-align:left}
+.giftrow .t{font-size:13.5px;line-height:1.6}
+.giftrow .t b{color:var(--blue)}
+.copier{border:1.5px solid rgba(185,138,30,.55);background:rgba(217,182,74,.14);color:var(--gold);border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:'Jost',sans-serif}
+/* ---------- footer ---------- */
+footer{text-align:center;padding:56px 18px 30px}
+footer .gun{width:150px;margin:0 auto 10px;display:block;mix-blend-mode:multiply}
+footer p{font-size:13px;color:var(--mut);line-height:1.8}
+footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blue);font-weight:600;margin-top:6px}
+
+
+/* ---------- adegan zoom rumah adat ---------- */
+#sceneZoom{position:fixed;inset:0;z-index:55;background:#f7ecd9;opacity:0;pointer-events:none;overflow:hidden;transition:opacity .8s ease}
+#sceneZoom.show{opacity:1;pointer-events:auto}
+#sceneZoom.bye{opacity:0}
+.scene-in{position:absolute;inset:0;background-image:radial-gradient(ellipse at 50% 40%,rgba(253,248,238,.88) 0%,rgba(253,248,238,.28) 55%,rgba(253,248,238,0) 80%),url("/tema/siwaluh-jabu-art/assets/toile.jpg");background-size:auto,400px}
+#sceneZoom.show .scene-in{animation:zoomOut 2.9s cubic-bezier(.25,.7,.25,1) both}
+@keyframes zoomOut{from{transform:scale(1.32)}to{transform:scale(1)}}
+.scene-band{position:absolute;top:0;left:0;right:0;height:28px;z-index:4;opacity:.9;background-repeat:repeat-x;background-size:34px 26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='36' viewBox='0 0 48 36'%3E%3Crect width='48' height='5' fill='%238f1d10'/%3E%3Cpath d='M6 5 L42 5 L24 33 Z' fill='%238f1d10'/%3E%3C/svg%3E")}
+.scene-gadang{position:absolute;left:50%;bottom:30px;width:min(560px,120%);transform:translateX(-50%);mix-blend-mode:multiply;z-index:2}
+#sceneZoom.show .scene-gadang{animation:riseIn 2.3s cubic-bezier(.2,.7,.2,1) .25s both}
+@keyframes riseIn{from{opacity:0;transform:translateX(-50%) translateY(52px) scale(1.06)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+.scene-bed{position:absolute;left:50%;bottom:-10px;width:min(620px,114%);transform:translateX(-50%);mix-blend-mode:multiply;z-index:3}
+#sceneZoom.show .scene-bed{animation:bedIn 1.9s ease-out .9s both}
+@keyframes bedIn{from{opacity:0;transform:translateX(-50%) translateY(34px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* ---------- panel lengkung hero ---------- */
+.hero-arch{position:absolute;inset:2px 0 0;z-index:-1;background:rgba(253,248,238,.88);border:1.5px solid rgba(143,29,16,.45);border-radius:230px 230px 20px 20px;overflow:hidden}
+.hero-arch img{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:97%;opacity:.12;mix-blend-mode:multiply}
+/* ---------- entrance berurutan ---------- */
+.hin{opacity:0;transform:translateY(26px);transition:opacity .9s ease var(--d,0s),transform .9s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+#heroPhoto.hin{transform:none}
+#heroSec.go .hin{opacity:1;transform:none}
+/* ---------- kupu-kupu ---------- */
+.bfly{position:absolute;width:44px;height:36px;z-index:5;pointer-events:none;opacity:0}
+#heroSec.go .bfly{opacity:1;transition:opacity 1.2s ease 1.1s}
+.bfly .w{position:absolute;top:1px;width:21px;height:30px;border-radius:70% 70% 60% 60%;background:radial-gradient(circle at 62% 30%,#eec39a 0 16%,transparent 42%),radial-gradient(circle at 65% 40%,#cf6a55,#8c2b23 74%);box-shadow:inset 0 0 0 1.5px rgba(143,29,16,.3)}
+.bfly .w.l{left:1px;transform-origin:right center;animation:flapL .3s ease-in-out infinite alternate}
+.bfly .w.r{right:1px;transform-origin:left center;animation:flapR .3s ease-in-out infinite alternate}
+.bfly .bd{position:absolute;left:50%;top:4px;width:4px;height:27px;margin-left:-1.75px;border-radius:3px;background:#5e150f}
+@keyframes flapL{from{transform:rotateY(10deg)}to{transform:rotateY(64deg)}}
+@keyframes flapR{from{transform:rotateY(-10deg)}to{transform:rotateY(-64deg)}}
+.b1{top:70px;left:3%;animation:fly1 15s ease-in-out infinite}
+.b2{top:180px;right:4%;animation:fly2 20s ease-in-out infinite}
+.b3{top:330px;left:7%;animation:fly3 18s ease-in-out infinite}
+@keyframes fly1{0%,100%{margin:0 0 0 0}25%{margin:24px 0 0 118px}50%{margin:-12px 0 0 44px}75%{margin:14px 0 0 148px}}
+@keyframes fly2{0%,100%{margin:0 0 0 0}30%{margin:30px 0 0 -128px}55%{margin:-16px 0 0 -52px}80%{margin:10px 0 0 -150px}}
+@keyframes fly3{0%,100%{margin:0 0 0 0}35%{margin:-24px 0 0 130px}65%{margin:16px 0 0 60px}85%{margin:-8px 0 0 150px}}
+/* ---------- misc ---------- */
+#petals{position:fixed;inset:0;z-index:5;pointer-events:none}
+#btnMusic{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(143,29,16,.25);background:rgba(255,255,255,.9);font-size:20px;cursor:pointer;box-shadow:0 8px 20px rgba(143,29,16,.2)}
+#lb{position:fixed;inset:0;z-index:80;background:rgba(30,10,8,.94);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#lb.open{opacity:1;pointer-events:auto}
+#lb img{max-width:94vw;max-height:88vh;border-radius:12px}
+#lbX{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:18px;cursor:pointer}
+#toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(16px);z-index:90;background:rgba(51,21,15,.94);color:#fff;font-size:13px;border-radius:12px;padding:10px 18px;opacity:0;pointer-events:none;transition:all .25s;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ================= v5: master sinematik ================= */
+#cover{background:#f7ecd9 url("/tema/siwaluh-jabu-art/assets/toile.jpg") repeat;background-size:400px;transition:opacity .7s ease,transform .7s ease}
+#cover::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 32%,rgba(253,248,238,.93) 0%,rgba(253,248,238,.5) 52%,rgba(253,248,238,0) 80%),radial-gradient(ellipse at 50% 90%,rgba(253,248,238,.88) 0%,rgba(253,248,238,0) 62%);pointer-events:none}
+#cover.gone{opacity:0;transform:scale(1.05);pointer-events:none}
+.door{display:none}
+#coverCard{display:block;padding:0;overflow-y:auto}
+.cov-scroll{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:32px 22px 200px;position:relative}
+.cov-card{background:rgba(253,248,238,.95);border-radius:20px;box-shadow:0 24px 50px rgba(90,30,20,.22),0 4px 14px rgba(90,30,20,.12);padding:16px 16px 20px;width:min(400px,100%);text-align:center;border:1px solid rgba(143,29,16,.14)}
+.cov-card #covPhoto{margin:0 auto 8px;max-width:none}
+.cov-card #covPhoto img{aspect-ratio:4/3;border-radius:12px;border:none;box-shadow:0 8px 20px rgba(90,30,20,.18)}
+.cov-card #covPhoto .covph{aspect-ratio:4/3;border-radius:12px}
+.cov-card .cov-names{font-size:35px}
+.cov-to{margin-top:26px;background:transparent;box-shadow:none;border:none;padding:0;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none}
+#btnOpen{margin-top:16px;box-shadow:0 12px 26px rgba(143,29,16,.35)}
+.cov-gadang-fade{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);width:min(600px,118%);opacity:.38;mix-blend-mode:multiply;pointer-events:none;z-index:1}
+.cov-bed{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:min(660px,120%);mix-blend-mode:multiply;pointer-events:none;z-index:2}
+.edge{position:absolute;top:0;bottom:0;width:13px;z-index:4;opacity:.5;background-repeat:repeat-y;background-size:13px 22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='22' viewBox='0 0 13 22'%3E%3Cpath d='M1 2 L12 11 L1 20 Z' fill='%238f1d10'/%3E%3C/svg%3E")}
+.edge.l{left:0}.edge.r{right:0;transform:scaleX(-1)}
+.pageframe{position:fixed;inset:9px;border:1.5px solid rgba(143,29,16,.4);border-radius:20px;z-index:38;pointer-events:none}
+.pageframe::before,.pageframe::after{content:"";position:absolute;top:16px;bottom:16px;width:11px;opacity:.4;background-repeat:repeat-y;background-size:11px 20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='22' viewBox='0 0 13 22'%3E%3Cpath d='M1 2 L12 11 L1 20 Z' fill='%238f1d10'/%3E%3C/svg%3E")}
+.pageframe::before{left:3px}
+.pageframe::after{right:3px;transform:scaleX(-1)}
+.scene-in{background-image:url("/tema/siwaluh-jabu-art/assets/landscape.jpg");background-size:cover;background-position:center 30%}
+.script-gon{width:72px;margin:2px auto 0;display:block;mix-blend-mode:multiply}
+.script-head{font-family:'Pinyon Script',cursive;font-size:45px;color:var(--blue);line-height:1.15;margin-top:2px}
+.ccard h3{font-family:'Pinyon Script',cursive;font-size:43px;font-weight:400;line-height:1.2;color:var(--blue)}
+.ccard::before{opacity:.13}
+#cdSec{padding-left:14px;padding-right:14px}
+.cd-block{background:linear-gradient(165deg,#b03a1e,#6e130a);border-radius:22px;padding:36px 20px 32px;color:#fdf6ea;box-shadow:0 24px 44px rgba(110,19,10,.35);max-width:470px;margin:0 auto;text-align:center}
+.cd-script{font-family:'Pinyon Script',cursive;font-size:48px;color:#f3d9a4;line-height:1}
+.cd-block .cdown div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);box-shadow:none}
+.cd-block .cdown b{color:#fff}
+.cd-block .cdown span{color:#f3d9a4}
+.cd-verse{margin-top:24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16.5px;line-height:1.65;color:#f7e8d4}
+.cd-verse .src{margin-top:10px;font-family:'Jost',sans-serif;font-style:normal;font-size:11px;letter-spacing:2.5px;color:#d9a441;font-weight:600}
+.hero-bed{width:110%;max-width:580px;margin:12px -5% -30px;display:block;mix-blend-mode:multiply}
+</style>
+</head>
+<body>
+<canvas id="petals"></canvas>
+
+<!-- GERBANG PENDOPO -->
+<div id="cover">
+  <div id="coverCard">
+    <div class="cov-scroll">
+      <div class="cov-card">
+        <div id="covPhoto"></div>
+        <p class="kick">The Wedding Of</p>
+        <h1 class="cov-names" id="covNames"></h1>
+        <p class="cov-date" id="covDate"></p>
+      </div>
+      <div class="cov-to" id="covTo">Kepada Bapak/Ibu/Saudara/i<br><b>Tamu Undangan</b><br>di tempat</div>
+      <button id="btnOpen">✉️ Buka Undangan</button>
+    </div>
+  </div>
+  <img class="cov-gadang-fade" src="/tema/siwaluh-jabu-art/assets/house.jpg" alt="">
+  <img class="cov-bed" src="/tema/siwaluh-jabu-art/assets/flower-bed.jpg" alt="">
+  <div class="edge l"></div><div class="edge r"></div>
+</div>
+
+<div id="sceneZoom"><div class="scene-in">
+  <div class="scene-band"></div>
+  <img class="scene-gadang" src="/tema/siwaluh-jabu-art/assets/house.jpg" alt="">
+  <img class="scene-bed" src="/tema/siwaluh-jabu-art/assets/flower-bed.jpg" alt="">
+</div></div>
+
+<main id="main" style="visibility:hidden">
+  <div class="pageframe"></div>
+  <section id="heroSec">
+    <div class="hero-arch"><img src="/tema/siwaluh-jabu-art/assets/house.jpg" alt=""></div>
+    <img class="gun-sm hin" style="--d:.05s" src="/tema/siwaluh-jabu-art/assets/emblem.jpg" alt="">
+    <p class="kick hin" style="--d:.18s">The Wedding Of</p>
+    <div class="hero-photo hin" id="heroPhoto" style="--d:.32s"></div>
+    <h1 class="hero-names hin" id="heroNames" style="--d:.55s"></h1>
+    <p class="hero-date hin" id="heroDate" style="--d:.7s"></p>
+    <img class="swag hin" style="--d:.85s" src="/tema/siwaluh-jabu-art/assets/swag.jpg" alt="">
+    <div class="bfly b1"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
+    <div class="bfly b2" style="scale:.78"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
+    <div class="bfly b3" style="scale:.6"><i class="w l"></i><i class="w r"></i><i class="bd"></i></div>
+    <img class="hero-bed hin" style="--d:1s" src="/tema/siwaluh-jabu-art/assets/flower-bed.jpg" alt="">
+  </section>
+
+  <section id="coupleSec">
+    <p class="kick rv">Mempelai</p>
+    <img class="script-gon rv" src="/tema/siwaluh-jabu-art/assets/emblem.jpg" alt="">
+    <p class="script-head rv">We Are Getting Married!</p>
+    <p class="sub rv">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyempurnakan separuh agama dalam ikatan suci pernikahan.</p>
+    <div id="coupleWrap"></div>
+  </section>
+
+  <section id="cdSec">
+    <div class="cd-block rv">
+      <p class="cd-script">Count Down</p>
+      <div class="cdown">
+        <div><b id="cdD">0</b><span>HARI</span></div>
+        <div><b id="cdH">0</b><span>JAM</span></div>
+        <div><b id="cdM">0</b><span>MENIT</span></div>
+        <div><b id="cdS">0</b><span>DETIK</span></div>
+      </div>
+      <div class="cd-verse"><p id="verseTxt"></p><div class="src" id="verseSrc"></div></div>
+    </div>
+  </section>
+
+  <section id="galSec">
+    <p class="kick rv">Galeri</p>
+    <h2 class="sec rv">Momen Bahagia</h2>
+    <div class="ggrid rv" id="galGrid"></div>
+  </section>
+
+  <section id="evSec">
+    <p class="kick rv">Waktu & Tempat</p>
+    <h2 class="sec rv">Rangkaian Acara</h2>
+    <div id="evWrap"></div>
+  </section>
+
+  <section id="rsvpSec">
+    <p class="kick rv">RSVP</p>
+    <h2 class="sec rv">Konfirmasi Kehadiran</h2>
+    <p class="sub rv">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
+    <div class="rsvp-row rv">
+      <button class="rsvp yes" id="rsvpY">✅ Saya Hadir</button>
+      <button class="rsvp no" id="rsvpN">❌ Berhalangan</button>
+    </div>
+    <button class="wish-btn rv" id="wishB">💌 Kirim Ucapan & Doa</button>
+  </section>
+
+  <section id="giftSec">
+    <p class="kick rv">Tanda Kasih</p>
+    <h2 class="sec rv">Amplop Digital</h2>
+    <p class="sub rv">Doa restu adalah hadiah terindah. Namun jika berkenan memberi tanda kasih, kami sediakan dengan terima kasih.</p>
+    <div id="giftWrap"></div>
+  </section>
+</main>
+
+<footer id="foot" style="visibility:hidden">
+  <img class="gun" src="/tema/siwaluh-jabu-art/assets/emblem.jpg" alt="">
+  <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami beserta keluarga<br>apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.<br><br>Hormat kami yang berbahagia,</p>
+  <p class="fn" id="footNames"></p>
+  <p style="margin-top:14px;font-size:11px;letter-spacing:2px">RUMAH KART · UNDANGEN.MY.ID</p>
+</footer>
+
+<button id="btnMusic" class="hidden" style="display:none">🎵</button>
+<div id="lb"><img id="lbImg" alt=""><button id="lbX">✕</button></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ================= KONFIG (diisi panel) ================= */
+var KART = {
+  PRIA:"Pranta", WANITA:"Sania",
+  NAMA_PRIA:"Pranta Ginting", NAMA_WANITA:"Sania br. Sembiring",
+  ORTU_P:"Putra Bapak Perangin Ginting & Ibu Rulina br. Tarigan",
+  ORTU_W:"Putri Bapak Kumpul Sembiring & Ibu Setia br. Karo-Karo",
+  TGL_ISO:"2027-10-16T09:00:00", TGL_TAMPIL:"Sabtu, 16 Oktober 2027",
+  AKAD_T:"Pemberkatan", AKAD_JAM:"09.00 – 11.00 WIB",
+  AKAD_TEMPAT:"GBKP Runggun Medan, Jl. Sei Batanghari, Medan",
+  AKAD_MAPS:"https://maps.google.com/?q=GBKP+Medan",
+  RESEPSI_T:"Resepsi & Adat", RESEPSI_JAM:"12.00 – selesai",
+  RESEPSI_TEMPAT:"Jambur Tuah Lopoh, Jl. Jamin Ginting, Medan",
+  RESEPSI_MAPS:"https://maps.google.com/?q=Jambur+Medan",
+  WA:"6288279406268",
+  REK:[{b:"BCA",n:"8210778899",a:"Pranta Ginting"},{b:"Mandiri",n:"1050099887766",a:"Sania br. Sembiring"}],
+  ALAMAT:"Jl. Jamin Ginting No. 88, Medan — a.n. Pranta & Sania",
+  MUSIK:"",
+  AYAT:"Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.",
+  AYAT_SRC:"Matius 19 : 6",
+  FOTO:{pria:"", wanita:"", pasangan:"", galeri:["","","","","",""]}
+};
+/* ================= helpers ================= */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+var TO=new URLSearchParams(location.search).get("to")||"";
+function toast(m,ms){var t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show");},ms||2200);}
+</script>
+<script>
+"use strict";
+/* ================= MUSIK: MP3 / YouTube / synth music-box ================= */
+var MUSIKURL=KART.MUSIK||"";
+var musEl=null,ytP=null,ytWant=false,musicOn=false;
+function ytId(u){var m=String(u||"").match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);return m?m[1]:null;}
+function ytBoot(){
+  ytWant=true;
+  if(ytP||window._ytB)return;window._ytB=true;
+  var d=document.createElement("div");d.id="ytH";
+  d.style.cssText="position:fixed;width:4px;height:4px;left:-20px;top:0;opacity:.01;pointer-events:none;z-index:-1;";
+  document.body.appendChild(d);
+  var t=document.createElement("script");t.src="https://www.youtube.com/iframe_api";document.head.appendChild(t);
+}
+window.onYouTubeIframeAPIReady=function(){
+  var id=ytId(MUSIKURL);if(!id||ytP)return;
+  ytP=new YT.Player("ytH",{width:4,height:4,videoId:id,
+    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,loop:1,playlist:id},
+    events:{onReady:function(){if(ytWant&&musicOn){try{ytP.playVideo();}catch(e){}}},
+      onStateChange:function(e){if(e.data===0&&ytWant&&musicOn){try{ytP.playVideo();}catch(e){}}}}});
+};
+var _ac=null,synthTimer=null,synthStep=0;
+var SCALE=[196.00,220.00,261.63,293.66,329.63,392.00,440.00,523.25,587.33];
+var MEL=[4,4,-1,2,4,5,4,2, 0,2,4,-1,4,5,7,5, 4,2,0,2,4,-1,2,0, -1,0,2,-1,0,-1,-1,-1];
+function tone(f,t0,dur,vol,type){
+  var o=_ac.createOscillator(),g=_ac.createGain();
+  o.type=type||"sine";o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(vol,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g);g.connect(_ac.destination);
+  o.start(t0);o.stop(t0+dur+0.05);
+}
+function synthStart(){
+  try{
+    _ac=_ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(_ac.state==="suspended")_ac.resume();
+    if(synthTimer)return;
+    synthTimer=setInterval(function(){
+      var t0=_ac.currentTime+0.05;
+      var idx=MEL[synthStep%MEL.length];
+      if(idx>=0)tone(SCALE[idx],t0,1.4,0.055);
+      if(synthStep%8===0)tone(SCALE[0]/2,t0,2.6,0.04,"triangle");
+      if(synthStep%8===4)tone(SCALE[3]/2,t0,2.6,0.035,"triangle");
+      synthStep++;
+    },340);
+  }catch(e){}
+}
+function synthStop(){if(synthTimer){clearInterval(synthTimer);synthTimer=null;}}
+function bgPlay(){
+  var id=ytId(MUSIKURL);
+  if(id){ytWant=true;if(ytP){try{ytP.playVideo();}catch(e){}}else ytBoot();return true;}
+  if(MUSIKURL){if(!musEl){musEl=new Audio(MUSIKURL);musEl.loop=true;}musEl.play().catch(function(){});return true;}
+  return false;
+}
+function setMusic(on){
+  musicOn=on;
+  $("btnMusic").textContent=on?"🔇":"🎵";
+  if(on){if(!bgPlay())synthStart();}
+  else{
+    ytWant=false;
+    if(ytP){try{ytP.pauseVideo();}catch(e){}}
+    if(musEl)musEl.pause();
+    synthStop();
+  }
+}
+$("btnMusic").addEventListener("click",function(){setMusic(!musicOn);});
+
+/* ================= ISI KONTEN ================= */
+function photoOr(ph,label){
+  if(ph)return '<img class="ph" src="'+esc(ph)+'" alt="">';
+  return '<div class="ph-empty"><span>🏔️</span>'+esc(label)+'</div>';
+}
+(function fill(){
+  $("covNames").innerHTML=esc(KART.PRIA)+' <span class="hero-amp">&</span> '+esc(KART.WANITA);
+  $("covDate").textContent=KART.TGL_TAMPIL;
+  var cp=$("covPhoto");
+  if(KART.FOTO.pasangan){cp.innerHTML='<img src="'+esc(KART.FOTO.pasangan)+'" alt="">';}
+  else{cp.innerHTML='<div class="covph"><span style="font-size:30px">🏔️</span>Foto Pasangan</div>';}
+  if(TO)$("covTo").innerHTML='Kepada Bapak/Ibu/Saudara/i<br><b>'+esc(TO)+'</b><br>di tempat';
+  // hero
+  var hp=$("heroPhoto");
+  if(KART.FOTO.pasangan){
+    hp.innerHTML='<img class="ph" src="'+esc(KART.FOTO.pasangan)+'" alt="">'+
+      '<img class="fc tl" src="/tema/siwaluh-jabu-art/assets/corner.jpg" alt="">'+
+      '<img class="fc br" src="/tema/siwaluh-jabu-art/assets/corner.jpg" alt="">';
+  }else{
+    hp.innerHTML='<div class="ph" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#a0765a;font-size:13px"><span style="font-size:44px">🏔️</span>Foto pasangan</div>'+
+      '<img class="fc tl" src="/tema/siwaluh-jabu-art/assets/corner.jpg" alt="">'+
+      '<img class="fc br" src="/tema/siwaluh-jabu-art/assets/corner.jpg" alt="">';
+  }
+  $("heroNames").innerHTML=esc(KART.NAMA_PRIA)+'<br><span class="hero-amp">&</span> '+esc(KART.NAMA_WANITA);
+  $("heroDate").textContent=KART.TGL_TAMPIL;
+  $("footNames").textContent=KART.PRIA+" & "+KART.WANITA;
+  // couple
+  $("coupleWrap").innerHTML=
+    '<div class="ccard rv">'+photoOr(KART.FOTO.pria,"Foto mempelai pria")+'<h3>'+esc(KART.NAMA_PRIA)+'</h3><p class="ortu">'+esc(KART.ORTU_P)+'</p></div>'+
+    '<div class="ccard rv">'+photoOr(KART.FOTO.wanita,"Foto mempelai wanita")+'<h3>'+esc(KART.NAMA_WANITA)+'</h3><p class="ortu">'+esc(KART.ORTU_W)+'</p></div>';
+  // ayat
+  $("verseTxt").textContent="\u201C"+KART.AYAT+"\u201D";
+  $("verseSrc").textContent=KART.AYAT_SRC;
+  // galeri
+  var gal=(KART.FOTO.galeri||[]).filter(Boolean);
+  var gg=$("galGrid");
+  if(gal.length){
+    gg.innerHTML=gal.map(function(f){return '<img src="'+esc(f)+'" loading="lazy" alt="">';}).join("");
+    gg.querySelectorAll("img").forEach(function(im){im.onclick=function(){$("lbImg").src=im.src;$("lb").classList.add("open");};});
+  }else{
+    gg.innerHTML='<div class="gph">🌹</div><div class="gph">🏔️</div><div class="gph">❤️</div><div class="gph">🌹</div>';
+  }
+  // acara
+  function ev(t,jam,tmp,maps){
+    return '<div class="evcard rv"><img class="pd" src="/tema/siwaluh-jabu-art/assets/house.jpg" alt=""><h3>'+esc(t)+'</h3><p class="jam">'+esc(jam)+'</p><p class="tmp">'+esc(KART.TGL_TAMPIL)+'<br>'+esc(tmp)+'</p>'+(maps?'<a class="maps" target="_blank" rel="noopener" href="'+esc(maps)+'">📍 Buka Google Maps</a>':"")+'</div>';
+  }
+  $("evWrap").innerHTML=ev(KART.AKAD_T,KART.AKAD_JAM,KART.AKAD_TEMPAT,KART.AKAD_MAPS)+ev(KART.RESEPSI_T,KART.RESEPSI_JAM,KART.RESEPSI_TEMPAT,KART.RESEPSI_MAPS);
+  // gift
+  var gh="";
+  (KART.REK||[]).forEach(function(r){
+    gh+='<div class="giftrow rv"><div class="t"><b>'+esc(r.b)+'</b><br>'+esc(r.n)+'<br><span style="color:var(--mut)">a.n. '+esc(r.a)+'</span></div><button class="copier" data-n="'+esc(r.n)+'">Salin</button></div>';
+  });
+  if(KART.ALAMAT){
+    gh+='<div class="giftrow rv"><div class="t"><b>📦 Kirim Fisik</b><br>'+esc(KART.ALAMAT)+'</div><button class="copier" data-n="'+esc(KART.ALAMAT)+'">Salin</button></div>';
+  }
+  $("giftWrap").innerHTML=gh;
+  $("giftWrap").querySelectorAll(".copier").forEach(function(b){
+    b.onclick=function(){copyTxt(b.getAttribute("data-n"),b);};
+  });
+})();
+function copyTxt(t,btn){
+  function done(){var o=btn.textContent;btn.textContent="✓ Tersalin!";setTimeout(function(){btn.textContent=o;},1500);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(function(){fb();});}
+  else fb();
+  function fb(){var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){}document.body.removeChild(ta);}
+}
+/* countdown */
+function cdTick(){
+  var t=new Date(KART.TGL_ISO).getTime()-Date.now();if(t<0)t=0;
+  $("cdD").textContent=Math.floor(t/864e5);
+  $("cdH").textContent=Math.floor(t/36e5)%24;
+  $("cdM").textContent=Math.floor(t/6e4)%60;
+  $("cdS").textContent=Math.floor(t/1e3)%60;
+}
+cdTick();setInterval(cdTick,1000);
+/* RSVP & ucapan */
+function rsvp(ok){
+  var g=TO||"Tamu Undangan";
+  var txt="Halo "+KART.PRIA+" & "+KART.WANITA+"! Saya "+g+" — konfirmasi kehadiran: "+(ok?"HADIR":"BERHALANGAN")+". Terima kasih atas undangannya! 🙏";
+  window.open("https://wa.me/"+KART.WA+"?text="+encodeURIComponent(txt),"_blank");
+}
+$("rsvpY").onclick=function(){rsvp(true);};
+$("rsvpN").onclick=function(){rsvp(false);};
+$("wishB").onclick=function(){
+  var g=TO?("Saya "+TO+", "):"";
+  var txt="Halo "+KART.PRIA+" & "+KART.WANITA+"! "+g+"selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. 💙🤲";
+  window.open("https://wa.me/"+KART.WA+"?text="+encodeURIComponent(txt),"_blank");
+};
+$("lbX").onclick=function(){$("lb").classList.remove("open");};
+$("lb").addEventListener("click",function(e){if(e.target.id==="lb")$("lb").classList.remove("open");});
+/* reveal */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target);}});
+},{threshold:0.12});
+document.querySelectorAll(".rv").forEach(function(el){io.observe(el);});
+/* ================= KELOPAK JATUH ================= */
+var pctx=$("petals").getContext("2d"),PT=[],petalsOn=false;
+function pResize(){
+  $("petals").width=innerWidth;$("petals").height=innerHeight;
+}
+window.addEventListener("resize",pResize);pResize();
+var PCOLORS=["#d98a4a","#ffffff","#e8b04b","#c1442e"];
+function startPetals(){
+  if(petalsOn)return;petalsOn=true;
+  for(var i=0;i<26;i++){
+    PT.push({x:Math.random()*innerWidth,y:Math.random()*-innerHeight,s:5+Math.random()*8,
+      vy:0.5+Math.random()*0.9,vx:-0.4+Math.random()*0.8,rot:Math.random()*6.28,vr:-0.02+Math.random()*0.04,
+      c:PCOLORS[i%PCOLORS.length]});
+  }
+  (function draw(){
+    pctx.clearRect(0,0,innerWidth,innerHeight);
+    PT.forEach(function(p){
+      p.y+=p.vy;p.x+=p.vx+Math.sin(p.y*0.01)*0.4;p.rot+=p.vr;
+      if(p.y>innerHeight+20){p.y=-20;p.x=Math.random()*innerWidth;}
+      pctx.save();pctx.translate(p.x,p.y);pctx.rotate(p.rot);
+      pctx.fillStyle=p.c;pctx.globalAlpha=0.75;
+      pctx.beginPath();pctx.ellipse(0,0,p.s,p.s*0.55,0,0,7);pctx.fill();
+      pctx.restore();
+    });
+    pctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  })();
+}
+/* ================= GERBANG ================= */
+document.body.style.overflow="hidden";
+$("btnOpen").addEventListener("click",function(){
+  $("main").style.visibility="visible";
+  $("foot").style.visibility="visible";
+  $("cover").classList.add("open","gone");
+  $("btnMusic").style.display="block";
+  $("sceneZoom").classList.add("show");
+  setTimeout(function(){$("sceneZoom").classList.add("bye");$("heroSec").classList.add("go");},2850);
+  setTimeout(function(){$("sceneZoom").style.display="none";},3750);
+  setMusic(true);
+  startPetals();
+  setTimeout(function(){
+    $("cover").style.display="none";
+    document.body.style.overflow="";
+    window.scrollTo(0,0);
+  },1500);
+});
+</script>
+</body>
+</html>

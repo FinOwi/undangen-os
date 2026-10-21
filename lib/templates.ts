@@ -418,6 +418,44 @@ const GADANG_SLOTS: PhotoSlotDef[] = [
   { key: "galeri", label: "\u{1F5BC}\uFE0F 4\u20139. Galeri Kenangan", hint: "6 foto \u00b7 section galeri", max: 6 },
 ];
 
+
+function makeArtFields(o: { pria: string; priaFull: string; wanita: string; wanitaFull: string; akadDef: string; resepsiDef: string; tempat: string; ayat: string; ayatSrc: string }): FieldDef[] {
+  return [
+    { key: "pria", label: "Nama panggilan mempelai pria", type: "text", placeholder: o.pria, required: true, section: "Mempelai" },
+    { key: "pria_full", label: "Nama lengkap mempelai pria", type: "text", placeholder: o.priaFull, required: true, section: "Mempelai" },
+    { key: "wanita", label: "Nama panggilan mempelai wanita", type: "text", placeholder: o.wanita, required: true, section: "Mempelai" },
+    { key: "wanita_full", label: "Nama lengkap mempelai wanita", type: "text", placeholder: o.wanitaFull, required: true, section: "Mempelai" },
+    { key: "ortu_p", label: "Orang tua mempelai pria", type: "text", placeholder: "Putra Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+    { key: "ortu_w", label: "Orang tua mempelai wanita", type: "text", placeholder: "Putri Bapak \u2026 & Ibu \u2026", section: "Mempelai" },
+    { key: "dt", label: "Tanggal & jam acara", type: "datetime", required: true, section: "Acara" },
+    { key: "akad_t", label: "Acara 1 \u2014 judul", type: "text", def: o.akadDef, section: "Acara" },
+    { key: "akad_jam", label: "Acara 1 \u2014 jam", type: "text", placeholder: "08.00 \u2013 10.00 WIB", section: "Acara" },
+    { key: "akad_tempat", label: "Acara 1 \u2014 tempat", type: "text", placeholder: o.tempat, section: "Acara" },
+    { key: "akad_maps", label: "Acara 1 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+    { key: "resepsi_t", label: "Acara 2 \u2014 judul", type: "text", def: o.resepsiDef, section: "Acara" },
+    { key: "resepsi_jam", label: "Acara 2 \u2014 jam", type: "text", placeholder: "11.00 \u2013 15.00 WIB", section: "Acara" },
+    { key: "resepsi_tempat", label: "Acara 2 \u2014 tempat", type: "text", placeholder: o.tempat, section: "Acara" },
+    { key: "resepsi_maps", label: "Acara 2 \u2014 link maps", type: "text", placeholder: "https://maps.google.com/?q=\u2026", section: "Acara" },
+    { key: "ayat", label: "Ayat / kutipan", type: "textarea", def: o.ayat, section: "Ayat" },
+    { key: "ayat_src", label: "Sumber ayat", type: "text", def: o.ayatSrc, section: "Ayat" },
+    { key: "wa", label: "No. WhatsApp RSVP (628\u2026)", type: "text", required: true, section: "Kontak & Gift" },
+    { key: "gift1_bank", label: "Bank gift 1", type: "text", section: "Kontak & Gift" },
+    { key: "gift1_num", label: "No. rekening gift 1", type: "text", section: "Kontak & Gift" },
+    { key: "gift1_an", label: "a.n. gift 1", type: "text", placeholder: "otomatis = nama lengkap", section: "Kontak & Gift" },
+    { key: "gift2_bank", label: "Bank gift 2 (opsional)", type: "text", section: "Kontak & Gift" },
+    { key: "gift2_num", label: "No. rekening gift 2", type: "text", section: "Kontak & Gift" },
+    { key: "gift2_an", label: "a.n. gift 2", type: "text", section: "Kontak & Gift" },
+    { key: "alamat", label: "Alamat kirim fisik", type: "text", placeholder: "Jl. \u2026", section: "Kontak & Gift" },
+  ];
+}
+
+const JART_FIELDS = makeArtFields({ pria: "Damar", priaFull: "Damar Wicaksono", wanita: "Laras", wanitaFull: "Laras Ayu Ningrum", akadDef: "Akad Nikah", resepsiDef: "Resepsi", tempat: "Pendopo \u2026, Yogyakarta", ayat: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.", ayatSrc: "QS. Ar-R\u016bm : 21" });
+JART_FIELDS.push(MUSIK_FIELD);
+const KART_FIELDS = makeArtFields({ pria: "Pranta", priaFull: "Pranta Ginting", wanita: "Sania", wanitaFull: "Sania br. Sembiring", akadDef: "Pemberkatan", resepsiDef: "Resepsi & Adat", tempat: "Jambur \u2026, Medan", ayat: "Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.", ayatSrc: "Matius 19 : 6" });
+KART_FIELDS.push(MUSIK_FIELD);
+const BART_FIELDS = makeArtFields({ pria: "Hotma", priaFull: "Hotma Simanjuntak", wanita: "Ruth", wanitaFull: "Ruth br. Manurung", akadDef: "Pemberkatan", resepsiDef: "Resepsi & Adat", tempat: "Balai \u2026, Medan", ayat: "Sebab ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam. Bangsamulah bangsaku dan Allahmulah Allahku.", ayatSrc: "Ruth 1 : 16" });
+BART_FIELDS.push(MUSIK_FIELD);
+
 export const STATIC_TEMPLATES: StaticTemplateDef[] = [
   {
     id: "rpg-cinta",
@@ -487,6 +525,27 @@ export const STATIC_TEMPLATES: StaticTemplateDef[] = [
     name: "Rumah Gadang — Minangkabau",
     file: "rumah-gadang/index.html",
     fields: GADANG_FIELDS,
+    photoSlots: GADANG_SLOTS,
+  },
+  {
+    id: "pendopo-biru-art",
+    name: "Pendopo Biru Art — Jawa sinematik",
+    file: "pendopo-biru-art/index.html",
+    fields: JART_FIELDS,
+    photoSlots: GADANG_SLOTS,
+  },
+  {
+    id: "siwaluh-jabu-art",
+    name: "Siwaluh Jabu Art — Karo sinematik",
+    file: "siwaluh-jabu-art/index.html",
+    fields: KART_FIELDS,
+    photoSlots: GADANG_SLOTS,
+  },
+  {
+    id: "rumah-bolon-art",
+    name: "Rumah Bolon Art — Batak sinematik",
+    file: "rumah-bolon-art/index.html",
+    fields: BART_FIELDS,
     photoSlots: GADANG_SLOTS,
   },
 ];
