@@ -19,7 +19,7 @@ body{font-family:'Jost',sans-serif;color:var(--ink);background:
   linear-gradient(180deg,var(--bg) 0%,var(--bg2) 55%,var(--bg) 100%);
   min-height:100vh;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E")}
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E")}
 .serif{font-family:'Cormorant Garamond',serif}
 main{max-width:560px;margin:0 auto;padding:0 18px 40px}
 section{padding:44px 0 8px;text-align:center;position:relative}
@@ -36,13 +36,13 @@ h2.sec{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;col
 .door.left{left:0;border-right:2px solid rgba(185,138,30,.45)}
 .door.right{right:0;border-left:2px solid rgba(185,138,30,.45)}
 .door::before{content:"";position:absolute;inset:0;opacity:.6;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E")}
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E")}
 .door .pendopo{position:absolute;top:13%;width:190%;max-width:none;opacity:.9;mix-blend-mode:multiply}
 .door.left .pendopo{right:-100%}
 .door.right .pendopo{left:-100%}
 .door .fc{position:absolute;width:62%;opacity:.95;mix-blend-mode:multiply}
-.door::after{content:"";position:absolute;top:0;bottom:0;width:16px;opacity:.9;background-size:16px 16px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect width='8' height='8' fill='%23141414'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23141414'/%3E%3Crect x='8' width='8' height='8' fill='%23f7f2e6'/%3E%3Crect y='8' width='8' height='8' fill='%23f7f2e6'/%3E%3C/svg%3E")}
+.door::after{content:"";position:absolute;top:0;bottom:0;width:12px;opacity:.5;background-size:12px 12px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Crect width='6' height='6' fill='%23261c12'/%3E%3Crect x='6' y='6' width='6' height='6' fill='%23261c12'/%3E%3Crect x='6' width='6' height='6' fill='%23f3ead6'/%3E%3Crect y='6' width='6' height='6' fill='%23f3ead6'/%3E%3C/svg%3E")}
 .door.left::after{right:0}
 .door.right::after{left:0}
 .door.left .fc{top:0;left:0}
@@ -52,7 +52,7 @@ h2.sec{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;col
 #coverCard{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;padding:22px;transition:opacity .5s ease,transform .5s ease}
 #cover.open #coverCard{opacity:0;transform:scale(.94);pointer-events:none}
 .cov-in{text-align:center;max-width:420px;width:100%;background:radial-gradient(ellipse at center,rgba(253,246,234,.9) 0%,rgba(253,246,234,.55) 55%,transparent 75%);padding:26px 18px;border-radius:30px}
-.cov-in .pendopo-sm{width:120px;margin:0 auto 6px;display:block;mix-blend-mode:multiply}
+.cov-in .pendopo-sm{width:118px;margin:0 auto 8px;display:block;border-radius:20px;box-shadow:0 10px 26px rgba(138,59,34,.22)}
 .cov-in .kick{margin-bottom:2px}
 .cov-names{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;color:var(--blue);line-height:1.12;margin:6px 0 2px}
 .cov-date{font-size:13px;letter-spacing:3px;color:var(--gold);font-weight:600;text-transform:uppercase}
@@ -75,7 +75,7 @@ h2.sec{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;col
 /* ---------- couple ---------- */
 .ccard{background:var(--card);border:1px solid rgba(138,59,34,.12);border-radius:20px;padding:26px 20px;margin:16px auto 0;max-width:420px;box-shadow:0 12px 30px rgba(138,59,34,.08);position:relative;overflow:hidden}
 .ccard::before{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.055'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E")}
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23000000' fill-opacity='0.04'/%3E%3Crect x='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect y='14' width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E")}
 .ccard .ph{width:170px;height:210px;object-fit:cover;border-radius:100px 100px 12px 12px;border:3px solid #fff;box-shadow:0 10px 24px rgba(138,59,34,.2);margin:0 auto;display:block;background:#eee0c4}
 .ccard h3{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--blue);margin-top:14px;font-weight:600}
 .ccard .ortu{font-size:13px;color:var(--mut);line-height:1.7;margin-top:4px}
@@ -139,7 +139,7 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
   <div id="coverCard">
     <div class="cov-in">
       <img class="pendopo-sm" src="/tema/candi-bentar/assets/emblem.jpg" alt="">
-      <p class="kick">Om Swastiastu · The Wedding Of</p>
+      <p class="kick">Om Swastiastu</p>
       <h1 class="cov-names" id="covNames"></h1>
       <p class="cov-date" id="covDate"></p>
       <div class="cov-to" id="covTo">Kepada Bapak/Ibu/Saudara/i<br><b>Tamu Undangan</b><br>di tempat</div>
