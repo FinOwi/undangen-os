@@ -345,6 +345,46 @@ export async function renderStaticTheme(
     const next = html.replace(/var JABU = \{[\s\S]*?\n\};/, "var JABU = " + JSON.stringify(jabu) + ";");
     if (next === html) throw new Error("blok JABU tidak ditemukan di tema siwaluh-jabu");
     html = next;
+  } else if (templateId === "candi-bentar") {
+    const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
+    const rek: { b: string; n: string; a: string }[] = [];
+    if (c.gift1_bank || c.gift1_num)
+      rek.push({ b: c.gift1_bank ?? "", n: c.gift1_num ?? "", a: c.gift1_an || `a.n. ${c.pria_full ?? ""}` });
+    if (c.gift2_bank || c.gift2_num)
+      rek.push({ b: c.gift2_bank ?? "", n: c.gift2_num ?? "", a: c.gift2_an || `a.n. ${c.wanita_full ?? ""}` });
+    const bali = {
+      PRIA: c.pria ?? "",
+      WANITA: c.wanita ?? "",
+      NAMA_PRIA: c.pria_full ?? "",
+      NAMA_WANITA: c.wanita_full ?? "",
+      ORTU_P: c.ortu_p ?? "",
+      ORTU_W: c.ortu_w ?? "",
+      TGL_ISO: f.iso,
+      TGL_TAMPIL: f.dateLabel,
+      AKAD_T: c.akad_t ?? "Pemberkatan",
+      AKAD_JAM: c.akad_jam ?? "",
+      AKAD_TEMPAT: c.akad_tempat ?? "",
+      AKAD_MAPS: c.akad_maps ?? "https://maps.google.com",
+      RESEPSI_T: c.resepsi_t ?? "Resepsi",
+      RESEPSI_JAM: c.resepsi_jam ?? "",
+      RESEPSI_TEMPAT: c.resepsi_tempat ?? "",
+      RESEPSI_MAPS: c.resepsi_maps ?? "https://maps.google.com",
+      WA: c.wa ?? "",
+      REK: rek,
+      ALAMAT: c.alamat ?? "",
+      MUSIK: c.music_url ?? "",
+      AYAT: c.ayat ?? "",
+      AYAT_SRC: c.ayat_src ?? "",
+      FOTO: {
+        pria: c.foto_pria ?? "",
+        wanita: c.foto_wanita ?? "",
+        pasangan: c.foto_pasangan ?? "",
+        galeri: pad(c.galeri, 6),
+      },
+    };
+    const next = html.replace(/var BALI = \{[\s\S]*?\n\};/, "var BALI = " + JSON.stringify(bali) + ";");
+    if (next === html) throw new Error("blok BALI tidak ditemukan di tema candi-bentar");
+    html = next;
   } else if (templateId === "rumah-bolon") {
     const f = c.dt ? fmtID(c.dt) : { iso: "", dateLabel: "" };
     const rek: { b: string; n: string; a: string }[] = [];
