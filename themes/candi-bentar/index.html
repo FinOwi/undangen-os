@@ -131,8 +131,8 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
 
 <!-- GERBANG CANDI BENTAR -->
 <div id="cover">
-  <div class="door left"><img class="pendopo" src="/tema/candi-bentar/assets/gate.jpg" alt=""><img class="fc" src="/tema/candi-bentar/assets/flower-corner.jpg" alt=""></div>
-  <div class="door right"><img class="pendopo" src="/tema/candi-bentar/assets/gate.jpg" alt=""><img class="fc" src="/tema/candi-bentar/assets/flower-corner.jpg" alt=""></div>
+  <div class="door left"><img class="pendopo" src="/tema/candi-bentar/assets/gate.jpg" alt=""><img class="fc" src="/tema/candi-bentar/assets/flower-corner.png" alt=""></div>
+  <div class="door right"><img class="pendopo" src="/tema/candi-bentar/assets/gate.jpg" alt=""><img class="fc" src="/tema/candi-bentar/assets/flower-corner.png" alt=""></div>
   <div id="coverCard">
     <div class="cov-in">
       <img class="pendopo-sm" src="/tema/candi-bentar/assets/emblem.jpg" alt="">
@@ -147,7 +147,7 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
 
 <main id="main" style="visibility:hidden">
   <section id="heroSec">
-    <img class="gun-sm rv" src="/tema/candi-bentar/assets/emblem.jpg" alt="">
+    <img class="gun-sm rv" src="/tema/candi-bentar/assets/emblem.png" alt="">
     <p class="kick rv">The Wedding Of</p>
     <div class="hero-photo" id="heroPhoto"></div>
     <h1 class="hero-names rv" id="heroNames"></h1>
@@ -213,7 +213,7 @@ footer .fn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--blu
 </main>
 
 <footer id="foot" style="visibility:hidden">
-  <img class="gun" src="/tema/candi-bentar/assets/emblem.jpg" alt="">
+  <img class="gun" src="/tema/candi-bentar/assets/emblem.png" alt="">
   <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami beserta keluarga<br>apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.<br><br>Hormat kami yang berbahagia,</p>
   <p class="fn" id="footNames"></p>
   <p style="margin-top:14px;font-size:11px;letter-spacing:2px">CANDI BENTAR · UNDANGEN.MY.ID</p>
@@ -333,12 +333,12 @@ function photoOr(ph,label){
   var hp=$("heroPhoto");
   if(BALI.FOTO.pasangan){
     hp.innerHTML='<img class="ph" src="'+esc(BALI.FOTO.pasangan)+'" alt="">'+
-      '<img class="fc tl" src="/tema/candi-bentar/assets/flower-corner.jpg" alt="">'+
-      '<img class="fc br" src="/tema/candi-bentar/assets/flower-corner.jpg" alt="">';
+      '<img class="fc tl" src="/tema/candi-bentar/assets/flower-corner.png" alt="">'+
+      '<img class="fc br" src="/tema/candi-bentar/assets/flower-corner.png" alt="">';
   }else{
     hp.innerHTML='<div class="ph" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#8a6a4a;font-size:13px"><span style="font-size:44px">🛕</span>Foto pasangan</div>'+
-      '<img class="fc tl" src="/tema/candi-bentar/assets/flower-corner.jpg" alt="">'+
-      '<img class="fc br" src="/tema/candi-bentar/assets/flower-corner.jpg" alt="">';
+      '<img class="fc tl" src="/tema/candi-bentar/assets/flower-corner.png" alt="">'+
+      '<img class="fc br" src="/tema/candi-bentar/assets/flower-corner.png" alt="">';
   }
   $("heroNames").innerHTML=esc(BALI.NAMA_PRIA)+'<br><span class="hero-amp">&</span> '+esc(BALI.NAMA_WANITA);
   $("heroDate").textContent=BALI.TGL_TAMPIL;
